@@ -38,7 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     
-    'SPI' # App Solicitação de Pedidos Interno
+    'spi' # App Solicitação de Pedidos Interno
     
 ]
 
