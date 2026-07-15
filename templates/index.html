@@ -1,10 +1,52 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+{% extends 'base.html' %}
 
-</body>
-</html>
+{% block page_title_text %}Dashboard{% endblock %}
+{% block page_title %}Visão geral{% endblock %}
+
+{% block content %}
+<div class="container-fluid dashboard-shell">
+    <div class="dashboard-welcome mb-4">
+        <div>
+            <span class="eyebrow">PAINEL DE CONTROLE</span>
+            <h1>Olá, {{ request.user.first_name|default:request.user.username }}!</h1>
+            <p>Acompanhe as solicitações e atividades mais recentes do sistema.</p>
+        </div>
+        <span class="today"><i class="bi bi-calendar3"></i> {% now "d/m/Y" %}</span>
+    </div>
+
+    <div class="row g-4 mb-4">
+        <div class="col-12 col-md-4"><article class="metric-card metric-cyan"><div><strong>806</strong><span>Solicitações em 2026</span></div><i class="bi bi-bar-chart-fill"></i></article></div>
+        <div class="col-12 col-md-4"><article class="metric-card metric-green"><div><strong>7</strong><span>Editais lançados em 2026</span></div><i class="bi bi-megaphone-fill"></i></article></div>
+        <div class="col-12 col-md-4"><article class="metric-card metric-red"><div><strong>11.441</strong><span>Usuários cadastrados</span></div><i class="bi bi-people-fill"></i></article></div>
+    </div>
+
+    <div class="row g-4">
+        <div class="col-12 col-xl-5">
+            <section class="dashboard-panel chart-panel h-100">
+                <div class="panel-heading"><i class="bi bi-grid-3x3-gap-fill"></i> Solicitações por mês</div>
+                <div class="chart-wrap" role="img" aria-label="Gráfico ilustrativo de solicitações mensais">
+                    <div class="chart-axis"><span>400</span><span>300</span><span>200</span><span>100</span><span>0</span></div>
+                    <svg viewBox="0 0 500 250" preserveAspectRatio="none" aria-hidden="true">
+                        <g class="grid"><line x1="0" y1="25" x2="500" y2="25"/><line x1="0" y1="80" x2="500" y2="80"/><line x1="0" y1="135" x2="500" y2="135"/><line x1="0" y1="190" x2="500" y2="190"/></g>
+                        <polyline points="0,220 80,218 150,48 225,35 300,219 380,210 500,195" />
+                        <g class="dots"><circle cx="0" cy="220" r="6"/><circle cx="80" cy="218" r="6"/><circle cx="150" cy="48" r="6"/><circle cx="225" cy="35" r="6"/><circle cx="300" cy="219" r="6"/><circle cx="380" cy="210" r="6"/></g>
+                    </svg>
+                    <div class="chart-months"><span>Jan</span><span>Fev</span><span>Mar</span><span>Abr</span><span>Mai</span><span>Jun</span><span>Jul</span><span>Ago</span><span>Set</span><span>Out</span><span>Nov</span><span>Dez</span></div>
+                </div>
+            </section>
+        </div>
+        <div class="col-12 col-xl-7">
+            <section class="dashboard-panel calls-panel h-100">
+                <div class="panel-heading d-flex justify-content-between"><span><i class="bi bi-clipboard2-check-fill"></i> Últimas solicitações</span><a href="#">Ver todas</a></div>
+                <div class="call-list">
+                    <a href="#"><span><small>03/07/2026</small><b>Aquisição de materiais de expediente</b></span><i class="bi bi-arrow-right"></i></a>
+                    <a href="#"><span><small>01/06/2026</small><b>Contratação de serviço especializado</b></span><i class="bi bi-arrow-right"></i></a>
+                    <a href="#"><span><small>07/04/2026</small><b>Manutenção de equipamentos</b></span><i class="bi bi-arrow-right"></i></a>
+                    <a href="#"><span><small>18/03/2026</small><b>Solicitação de apoio institucional</b></span><i class="bi bi-arrow-right"></i></a>
+                </div>
+                <button class="btn btn-light mt-3"><i class="bi bi-star-fill text-warning"></i> Ver favoritas</button>
+            </section>
+        </div>
+    </div>
+</div>
+{% endblock %}

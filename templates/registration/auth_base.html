@@ -1,0 +1,24 @@
+{% load static %}
+<!doctype html>
+<html lang="pt-br">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block title %}Acesso{% endblock %} | SPI</title>
+    {% include 'adminlte/partials/_assets_prebuilt.html' %}
+    <link rel="stylesheet" href="{% static 'css/app.css' %}">
+</head>
+<body class="auth-page">
+    <main class="auth-layout">
+        <section class="auth-visual" aria-label="Apresentação do sistema">
+            <a class="auth-brand" href="{% url 'login' %}"><img src="{% static 'images/spi-mark.svg' %}" alt=""><span><b>SPI</b><small>Sistema de Pedidos Internos</small></span></a>
+            <img class="auth-illustration" src="{% static 'images/auth-illustration.svg' %}" alt="Pessoa utilizando o sistema em um computador">
+            <p>Organize solicitações, acompanhe etapas e simplifique sua rotina.</p>
+        </section>
+        <section class="auth-action">
+            <div class="decorative-rings" aria-hidden="true"></div>
+            <div class="auth-card">{% block auth_content %}{% endblock %}</div>
+        </section>
+    </main>
+</body>
+</html>

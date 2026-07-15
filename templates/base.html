@@ -1,10 +1,18 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+{% extends 'adminlte/page.html' %}
+{% load static %}
 
-</body>
-</html>
+{% block title %}{% block page_title_text %}SPI{% endblock %} | Sistema de Pedidos Internos{% endblock %}
+
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'css/app.css' %}">
+    {% block page_css %}{% endblock %}
+{% endblock %}
+
+{% block breadcrumb %}
+    <li class="breadcrumb-item"><a href="{% url 'dashboard' %}">Início</a></li>
+    {% block breadcrumb_items %}{% endblock %}
+{% endblock %}
+
+{% block content %}{% endblock %}
+
+{% block extra_js %}{% block page_js %}{% endblock %}{% endblock %}

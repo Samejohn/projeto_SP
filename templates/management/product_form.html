@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+
+{% block page_title_text %}{% if object %}Editar produto{% else %}Cadastrar produto{% endif %}{% endblock %}
+{% block page_title %}{% if object %}Editar produto{% else %}Cadastrar produto{% endif %}{% endblock %}
+{% block breadcrumb_items %}<li class="breadcrumb-item"><a href="{% url 'product_list' %}">Produtos</a></li><li class="breadcrumb-item active">{% if object %}Editar{% else %}Cadastrar{% endif %}</li>{% endblock %}
+
+{% block content %}
+<div class="container-fluid management-shell">
+    <form method="post" class="management-card management-form" novalidate>
+        {% csrf_token %}
+        {% include 'management/_form_errors.html' %}
+        <div class="form-section">
+            <h2>Dados do produto</h2>
+            <div class="row g-3">
+                {% include 'management/_field.html' with field=form.nome_produto column='col-12' %}
+                {% include 'management/_field.html' with field=form.link_produto column='col-12' %}
+                {% include 'management/_field.html' with field=form.preco_atual column='col-md-6' %}
+            </div>
+        </div>
+        <footer class="form-actions"><a class="btn btn-light" href="{% url 'product_list' %}">Cancelar</a><button class="btn btn-primary" type="submit"><i class="bi bi-check-lg"></i> Salvar produto</button></footer>
+    </form>
+</div>
+{% endblock %}

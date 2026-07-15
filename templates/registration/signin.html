@@ -1,0 +1,15 @@
+{% extends 'registration/auth_base.html' %}
+{% block title %}Entrar{% endblock %}
+{% block auth_content %}
+<span class="eyebrow text-primary">BEM-VINDO DE VOLTA</span><h1>Olá!</h1><p class="auth-subtitle">Entre para acessar o seu painel.</p>
+{% if form.non_field_errors %}<div class="alert alert-danger">{{ form.non_field_errors|striptags }}</div>{% endif %}
+<form method="post" class="auth-form" novalidate>
+    {% csrf_token %}<input type="hidden" name="next" value="{{ next }}">
+    <div class="floating-field {% if form.username.errors %}has-error{% endif %}"><i class="bi bi-envelope"></i>{{ form.username }}{% for error in form.username.errors %}<small>{{ error }}</small>{% endfor %}</div>
+    <div class="floating-field {% if form.password.errors %}has-error{% endif %}"><i class="bi bi-lock"></i>{{ form.password }}{% for error in form.password.errors %}<small>{{ error }}</small>{% endfor %}</div>
+    <button class="auth-submit" type="submit">Entrar <i class="bi bi-arrow-right"></i></button>
+</form>
+{% comment %}
+<p class="auth-switch">Ainda não tem uma conta? <a href="{% url 'signup' %}">Cadastre-se</a></p>
+{% endcomment %}
+{% endblock %}

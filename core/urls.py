@@ -17,7 +17,16 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 
+admin.site.site_header = 'Administração SPI'
+admin.site.site_title = 'SPI Admin'
+admin.site.index_title = 'Painel administrativo'
+
 urlpatterns = [
     path('', include('spi.urls')),
     path('admin/', admin.site.urls),
 ]
+
+handler400 = 'spi.views.bad_request'
+handler403 = 'spi.views.permission_denied'
+handler404 = 'spi.views.page_not_found'
+handler500 = 'spi.views.server_error'

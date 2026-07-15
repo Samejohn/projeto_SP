@@ -32,14 +32,16 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'django_components',
+    'django_adminlte4',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    
-    'spi' # App Solicitação de Pedidos Interno
+
+    'spi',  # App Solicitação de Pedidos Interno
     
 ]
 
@@ -59,12 +61,18 @@ TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [os.path.join(BASE_DIR, 'templates')],
-        'APP_DIRS': True,
+        'APP_DIRS': False,
         'OPTIONS': {
+            'loaders': [
+                'django_components.template_loader.Loader',
+                'django.template.loaders.filesystem.Loader',
+                'django.template.loaders.app_directories.Loader',
+            ],
             'context_processors': [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'django_adminlte4.context_processors.adminlte',
             ],
         },
     },
@@ -124,3 +132,56 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/6.0/howto/static-files/
 
 STATIC_URL = 'static/'
+STATIC_ROOT = BASE_DIR / 'staticfiles'
+STATICFILES_DIRS = [BASE_DIR / 'static']
+
+COMPONENTS = {
+    'dirs': [],
+    'app_dirs': ['components'],
+    'autodiscover': True,
+}
+
+LOGIN_URL = 'login'
+LOGIN_REDIRECT_URL = 'dashboard'
+LOGOUT_REDIRECT_URL = 'login'
+
+
+def is_administrator(request):
+    return request.user.is_authenticated and request.user.is_staff
+
+
+ADMINLTE = {
+    'title': 'SPI',
+    'title_postfix': ' | Sistema de Pedidos Internos',
+    'logo': '<b>SPI</b>',
+    'logo_alt_text': 'SPI',
+    'logo_img': 'images/spi-mark.svg',
+    'logo_img_alt': 'SPI',
+    'logo_img_class': 'brand-image',
+    'admin_brand': 'Administração SPI',
+    'admin_enabled': True,
+    'assets_mode': 'static',
+    'sidebar_theme': 'light',
+    'classes_sidebar': 'bg-white shadow-sm',
+    'classes_topnav': 'navbar-expand bg-white border-bottom',
+    'classes_content': 'dashboard-content',
+    'navbar_search': False,
+    'color_mode_toggle': False,
+    'sidebar_docs_url': False,
+    'footer_left': 'SPI &copy; 2026',
+    'footer_right': 'Sistema de Pedidos Internos',
+    # Itens exibidos no menu lateral do dashboard.
+    'menu': [
+        {'text': 'Início', 'icon': 'bi bi-house-door-fill', 'route': 'dashboard'},
+        {
+            'text': 'Administrar',
+            'icon': 'bi bi-briefcase-fill',
+            'can': is_administrator,
+            'submenu': [
+                {'text': 'Usuários', 'icon': 'bi bi-people', 'route': 'user_list', 'can': 'auth.view_user'},
+                {'text': 'Grupos', 'icon': 'bi bi-collection', 'route': 'group_list', 'can': 'auth.view_group'},
+                {'text': 'Produtos', 'icon': 'bi bi-box-seam', 'route': 'product_list', 'can': 'spi.view_produto'},
+            ],
+        },
+    ],
+}
