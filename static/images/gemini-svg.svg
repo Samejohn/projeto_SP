@@ -1,0 +1,144 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="100%" height="100%">
+  <defs>
+    <!-- Glow de Fundo -->
+    <radialGradient id="bg-glow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#EFF6FF"/>
+      <stop offset="100%" stop-color="#DBEAFE" stop-opacity="0"/>
+    </radialGradient>
+
+    <!-- Gradientes das Caixas -->
+    <linearGradient id="box-front" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#E2A866"/>
+      <stop offset="100%" stop-color="#C68A48"/>
+    </linearGradient>
+
+    <linearGradient id="box-side" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#C68A48"/>
+      <stop offset="100%" stop-color="#9E6429"/>
+    </linearGradient>
+
+    <linearGradient id="box-top" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#F5C48B"/>
+      <stop offset="100%" stop-color="#E2A866"/>
+    </linearGradient>
+
+    <linearGradient id="box2-front" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#D49755"/>
+      <stop offset="100%" stop-color="#B07535"/>
+    </linearGradient>
+
+    <!-- Gradiente da Fita Adevisa -->
+    <linearGradient id="tape-grad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#60A5FA"/>
+      <stop offset="100%" stop-color="#2563EB"/>
+    </linearGradient>
+
+    <!-- Gradiente do Selo de Sucesso -->
+    <linearGradient id="badge-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#10B981"/>
+      <stop offset="100%" stop-color="#059669"/>
+    </linearGradient>
+
+    <!-- Filtros de Sombra -->
+    <filter id="drop-shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="12" stdDeviation="16" flood-color="#0F172A" flood-opacity="0.18"/>
+    </filter>
+
+    <filter id="badge-shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="6" stdDeviation="8" flood-color="#059669" flood-opacity="0.3"/>
+    </filter>
+  </defs>
+
+  <!-- Fundo Suave -->
+  <circle cx="256" cy="256" r="210" fill="url(#bg-glow)"/>
+
+  <!-- Sombra na Base -->
+  <ellipse cx="256" cy="420" rx="170" ry="24" fill="#0F172A" opacity="0.12"/>
+
+  <!-- Palete / Base -->
+  <g id="pallet" filter="url(#drop-shadow)">
+    <path d="M 90 355 L 256 395 L 422 355 L 256 315 Z" fill="#334155"/>
+    <path d="M 90 355 L 256 395 L 256 410 L 90 370 Z" fill="#1E293B"/>
+    <path d="M 256 395 L 422 355 L 422 370 L 256 410 Z" fill="#0F172A"/>
+    
+    <path d="M 120 367 L 160 376 L 160 384 L 120 375 Z" fill="#0F172A" opacity="0.6"/>
+    <path d="M 200 386 L 240 395 L 240 403 L 200 394 Z" fill="#0F172A" opacity="0.6"/>
+    <path d="M 272 395 L 312 386 L 312 394 L 272 403 Z" fill="#0F172A" opacity="0.6"/>
+    <path d="M 352 376 L 392 367 L 392 375 L 352 384 Z" fill="#0F172A" opacity="0.6"/>
+  </g>
+
+  <!-- Caixa Secundária (Fundo) -->
+  <g id="box-secondary">
+    <path d="M 120 250 L 200 220 L 270 245 L 190 275 Z" fill="#F5C48B"/>
+    <path d="M 120 250 L 190 275 L 190 345 L 120 320 Z" fill="url(#box2-front)"/>
+    <path d="M 190 275 L 270 245 L 270 315 L 190 345 Z" fill="#9E6429"/>
+    <path d="M 155 237 L 230 263 L 230 270 L 155 244 Z" fill="url(#tape-grad)" opacity="0.85"/>
+  </g>
+
+  <!-- Caixa Principal -->
+  <g id="box-main" filter="url(#drop-shadow)">
+    <path d="M 200 190 L 325 140 L 415 180 L 290 230 Z" fill="url(#box-top)"/>
+    <path d="M 200 190 L 290 230 L 290 360 L 200 320 Z" fill="url(#box-front)"/>
+    <path d="M 290 230 L 415 180 L 415 310 L 290 360 Z" fill="url(#box-side)"/>
+
+    <!-- Fita Adesiva -->
+    <path d="M 262.5 165 L 352.5 205 L 352.5 212 L 262.5 172 Z" fill="url(#tape-grad)"/>
+    <path d="M 290 230 L 290 360 L 298 356 L 298 226 Z" fill="url(#tape-grad)"/>
+
+    <!-- Etiqueta com Código de Barras -->
+    <g transform="matrix(0.9 0.4 -0.1 0.8 70 30)">
+      <rect x="200" y="220" width="48" height="60" rx="4" fill="#FFFFFF" opacity="0.95"/>
+      <rect x="208" y="228" width="32" height="4" fill="#1E293B"/>
+      <rect x="208" y="236" width="20" height="3" fill="#64748B"/>
+      <rect x="208" y="243" width="32" height="2" fill="#94A3B8"/>
+      <rect x="208" y="252" width="3" height="18" fill="#0F172A"/>
+      <rect x="213" y="252" width="2" height="18" fill="#0F172A"/>
+      <rect x="217" y="252" width="5" height="18" fill="#0F172A"/>
+      <rect x="224" y="252" width="2" height="18" fill="#0F172A"/>
+      <rect x="228" y="252" width="4" height="18" fill="#0F172A"/>
+      <rect x="234" y="252" width="6" height="18" fill="#0F172A"/>
+    </g>
+
+    <!-- Símbolo de Setas de Orientação ("Este Lado para Cima") -->
+    <g transform="matrix(0.8 -0.32 0.35 0.8 110 160)" opacity="0.4">
+      <path d="M 240 170 L 248 160 L 256 170 H 251 V 182 H 245 V 170 Z" fill="#422006"/>
+      <path d="M 262 170 L 270 160 L 278 170 H 273 V 182 H 267 V 170 Z" fill="#422006"/>
+      <line x1="238" y1="188" x2="280" y2="188" stroke="#422006" stroke-width="3" stroke-linecap="round"/>
+    </g>
+  </g>
+
+  <!-- Prancheta de Controle de Estoque (Checklist) -->
+  <g id="inventory-checklist" filter="url(#drop-shadow)">
+    <rect x="100" y="120" width="110" height="140" rx="12" fill="#FFFFFF"/>
+    <rect x="100" y="120" width="110" height="140" rx="12" fill="#F8FAFC" stroke="#E2E8F0" stroke-width="2"/>
+    
+    <!-- Clipe da Prancheta -->
+    <rect x="135" y="112" width="40" height="14" rx="4" fill="#94A3B8"/>
+    <rect x="145" y="108" width="20" height="8" rx="3" fill="#64748B"/>
+    <circle cx="155" cy="118" r="3" fill="#F8FAFC"/>
+
+    <!-- Itens Marcados -->
+    <rect x="116" y="142" width="50" height="8" rx="4" fill="#1E293B"/>
+    
+    <circle cx="124" cy="166" r="7" fill="#10B981"/>
+    <path d="M 121 166 L 123 168 L 127 164" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+    <rect x="138" y="163" width="58" height="6" rx="3" fill="#64748B"/>
+
+    <circle cx="124" cy="188" r="7" fill="#10B981"/>
+    <path d="M 121 188 L 123 190 L 127 186" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+    <rect x="138" y="185" width="48" height="6" rx="3" fill="#64748B"/>
+
+    <circle cx="124" cy="210" r="7" fill="#10B981"/>
+    <path d="M 121 210 L 123 212 L 127 208" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+    <rect x="138" y="207" width="52" height="6" rx="3" fill="#64748B"/>
+
+    <circle cx="124" cy="232" r="7" fill="#E2E8F0"/>
+    <rect x="138" y="229" width="38" height="6" rx="3" fill="#CBD5E1"/>
+  </g>
+
+  <!-- Selo de Status / Verificação -->
+  <g id="status-badge" filter="url(#badge-shadow)">
+    <circle cx="200" cy="240" r="22" fill="url(#badge-grad)"/>
+    <path d="M 191 240 L 197 246 L 209 234" stroke="#FFFFFF" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+  </g>
+</svg>

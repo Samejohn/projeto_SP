@@ -5,6 +5,7 @@ from django.contrib.auth.password_validation import validate_password
 from django.core.exceptions import ValidationError
 
 from spi.models import Produto
+from spi.models import Fornecedor
 
 
 class BootstrapFormMixin:
@@ -114,3 +115,43 @@ class ManagedProductForm(BootstrapFormMixin, forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self._apply_bootstrap_classes()
+
+
+#Fornecedor
+
+class FornecedorForm(forms.ModelForm):
+    class Meta:
+        model = Fornecedor
+        fields = [
+            "nome",
+            "cpf_cnpj",
+            "telefone",
+            "responsavel",
+            "ativo",
+        ]
+
+        labels = {
+            "cpf_cnpj": "CPF/CNPJ",
+        }
+
+        widgets = {
+            "nome": forms.TextInput(attrs={
+                "class": "form-control",
+                "placeholder": "Nome do fornecedor"
+            }),
+            "cpf_cnpj": forms.TextInput(attrs={
+                "class": "form-control",
+                "placeholder": "CPF ou CNPJ"
+            }),
+            "telefone": forms.TextInput(attrs={
+                "class": "form-control",
+                "placeholder": "(00) 00000-0000"
+            }),
+            "responsavel": forms.TextInput(attrs={
+                "class": "form-control",
+                "placeholder": "Nome do responsável"
+            }),
+            "ativo": forms.CheckboxInput(attrs={
+                "class": "form-check-input"
+            }),
+        }
