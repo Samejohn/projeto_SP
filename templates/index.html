@@ -3,6 +3,7 @@
 {% block page_title_text %}Dashboard{% endblock %}
 {% block page_title %}Visão geral{% endblock %}
 
+
 {% block content %}
 <div class="container-fluid dashboard-shell">
     <div class="dashboard-welcome mb-4">
@@ -15,15 +16,17 @@
     </div>
 
     <div class="row g-4 mb-4">
-        <div class="col-12 col-md-4"><article class="metric-card metric-cyan"><div><strong>806</strong><span>Solicitações em 2026</span></div><i class="bi bi-bar-chart-fill"></i></article></div>
-        <div class="col-12 col-md-4"><article class="metric-card metric-green"><div><strong>7</strong><span>Editais lançados em 2026</span></div><i class="bi bi-megaphone-fill"></i></article></div>
-        <div class="col-12 col-md-4"><article class="metric-card metric-red"><div><strong>11.441</strong><span>Usuários cadastrados</span></div><i class="bi bi-people-fill"></i></article></div>
+        
+        <div class="col-12 col-md-6 col-lg-3"><article class="metric-card metric-icy1 card-glass card-hover"><div><strong>806</strong><span>Produtos</span></div><i class="bi bi-bar-chart-fill"></i></article></div>
+        <div class="col-12 col-md-6 col-lg-3"><article class="metric-card metric-icy2 card-glass card-hover"><div><strong>7</strong><span>Estoque</span></div><i class="bi bi-megaphone-fill"></i></article></div>
+        <div class="col-12 col-md-6 col-lg-3"><article class="metric-card metric-icy3 card-glass card-hover"><div><strong>12</strong><span>Produtos Pendentes</span></div><i class="bi bi-people-fill"></i></article></div>
+        <div class="col-12 col-md-6 col-lg-3"><article class="metric-card metric-icy4 card-glass card-hover"><div><strong>11.441</strong><span>Descarte</span></div><i class="bi bi-people-fill"></i></article></div>
     </div>
 
     <div class="row g-4">
         <div class="col-12 col-xl-5">
             <section class="dashboard-panel chart-panel h-100">
-                <div class="panel-heading"><i class="bi bi-grid-3x3-gap-fill"></i> Solicitações por mês</div>
+                <div class="panel-heading"><i class="bi bi-grid-3x3-gap-fill"></i> Variação de preços por mês</div>
                 <div class="chart-wrap" role="img" aria-label="Gráfico ilustrativo de solicitações mensais">
                     <div class="chart-axis"><span>400</span><span>300</span><span>200</span><span>100</span><span>0</span></div>
                     <svg viewBox="0 0 500 250" preserveAspectRatio="none" aria-hidden="true">
@@ -49,4 +52,94 @@
         </div>
     </div>
 </div>
+
+<!--Últimos pedidos-->
+<div class="card">
+    <div class="card card-glass border text-white card-hover">
+    <div class="card-header">
+        <h3 class="card-title">Últimos pedidos</h3>
+
+        <div class="card-tools">
+            <button type="button" class="btn btn-tool">
+                <i class="fas fa-download"></i>
+            </button>
+
+            <button type="button" class="btn btn-tool">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+    </div>
+
+    <div class="card-body p-0">
+        <table class="table table-hover align-middle">
+            <thead>
+                <tr>
+                    <th>Produto</th>
+                    <th>Preço Atual</th>
+                    <th>Qnt.</th>
+                    <th>Status</th>
+                    <th class="text-center">Mais</th>
+                </tr>
+            </thead>
+
+            <tbody>
+
+            {% for pedido in ultimos_pedidos %}
+                <tr>
+                    <td>
+                        <strong>{{ pedido.produto.nome_produto }}</strong>
+                    </td>
+
+                    <td>
+                        R$ {{ pedido.produto.preco_atual }}
+                    </td>
+
+                    <td>
+                        {{ pedido.quantidade }}
+                    </td>
+
+                    <td>
+                        {% if pedido.status == "PENDENTE" %}
+                            <span class="badge bg-warning">
+                                Pendente
+                            </span>
+
+                        {% elif pedido.status == "APROVADO" %}
+                            <span class="badge bg-success">
+                                Aprovado
+                            </span>
+
+                        {% elif pedido.status == "CANCELADO" %}
+                            <span class="badge bg-danger">
+                                Cancelado
+                            </span>
+
+                        {% else %}
+                            <span class="badge bg-secondary">
+                                Em análise
+                            </span>
+                        {% endif %}
+                    </td>
+
+                    <td class="text-center">
+                        <a href="#" class="text-primary">
+                            <i class="fas fa-search"></i>
+                        </a>
+                    </td>
+                </tr>
+            {% empty %}
+                <tr>
+                    <td colspan="5" class="text-center">
+                        Nenhum pedido encontrado.
+                    </td>
+                </tr>
+            {% endfor %}
+
+            </tbody>
+        </table>
+    </div>
+</div>
+
+
+
 {% endblock %}

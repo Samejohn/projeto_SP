@@ -1,7 +1,7 @@
 from .produto import Produto
-from .fornecedor import Fornecedor
+from .descarte import Descarte
 
 
 __all__ = ["Produto"]
 
-__all__ = ["Fornecedor"]
+__all__ = ["Descarte"]

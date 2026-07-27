@@ -21,6 +21,7 @@ from .management import (
     UserDeleteView,
     UserListView,
     UserUpdateView,
+    DiscardListView
 )
 
 

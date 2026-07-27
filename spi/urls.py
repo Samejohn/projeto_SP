@@ -21,5 +21,6 @@ urlpatterns = [
     path('gestao/produtos/cadastrar/', views.ProductCreateView.as_view(), name='product_create'),
     path('gestao/produtos/<int:pk>/editar/', views.ProductUpdateView.as_view(), name='product_update'),
     path('gestao/produtos/<int:pk>/excluir/', views.ProductDeleteView.as_view(), name='product_delete'),
+    path('gestao/descarte/', views.DiscardListView.as_view(), name='discard_list'),
 
 ]

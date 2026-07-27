@@ -1,0 +1,16 @@
+:root{
+    --bg: #f4f6f9;
+    --surface: #ffffff;
+    --surface-2: #f8fafc;
+
+    --text: #1f2937;
+    --text-muted: #6b7280;
+
+    --primary: #2DB9E5;
+    --secondary: #7CAAD1;
+    --accent: #AFDEED;
+
+    --border: #d8e3ea;
+
+    --shadow: rgba(0,0,0,.08);
+}

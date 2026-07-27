@@ -5,7 +5,7 @@ from django.contrib.auth.password_validation import validate_password
 from django.core.exceptions import ValidationError
 
 from spi.models import Produto
-from spi.models import Fornecedor
+from spi.models import Descarte
 
 
 class BootstrapFormMixin:
@@ -101,15 +101,17 @@ class ManagedGroupForm(BootstrapFormMixin, forms.ModelForm):
 class ManagedProductForm(BootstrapFormMixin, forms.ModelForm):
     class Meta:
         model = Produto
-        fields = ("nome_produto", "link_produto", "preco_atual")
+        fields = ("nome_produto", "link_produto", "preco_atual", "quantidade_produto",)
         labels = {
             "nome_produto": "Nome do produto",
             "link_produto": "Link do produto",
             "preco_atual": "Preço atual",
+            "quantidade_produto": "Quantidade do produto"
         }
         widgets = {
             "link_produto": forms.URLInput(attrs={"placeholder": "https://exemplo.com/produto"}),
             "preco_atual": forms.NumberInput(attrs={"min": "0", "step": "0.01"}),
+            "quantidade_produto": forms.NumberInput( attrs={"min": "0"}),
         }
 
     def __init__(self, *args, **kwargs):
@@ -117,41 +119,26 @@ class ManagedProductForm(BootstrapFormMixin, forms.ModelForm):
         self._apply_bootstrap_classes()
 
 
-#Fornecedor
+#Descarte
 
-class FornecedorForm(forms.ModelForm):
+class DescarteForm(forms.ModelForm):
+
     class Meta:
-        model = Fornecedor
-        fields = [
-            "nome",
-            "cpf_cnpj",
-            "telefone",
-            "responsavel",
-            "ativo",
-        ]
+        model = Descarte
+        fields = "__all__"  # Inclui todos os campos do model Descarte
 
+        # Opcional: Personalização de rótulos (labels)
         labels = {
-            "cpf_cnpj": "CPF/CNPJ",
+            "motivo": "Motivo do Descarte",
+            "data_descarte": "Data do Descarte",
         }
 
+        # Opcional: Personalização de widgets/HTML
         widgets = {
-            "nome": forms.TextInput(attrs={
-                "class": "form-control",
-                "placeholder": "Nome do fornecedor"
-            }),
-            "cpf_cnpj": forms.TextInput(attrs={
-                "class": "form-control",
-                "placeholder": "CPF ou CNPJ"
-            }),
-            "telefone": forms.TextInput(attrs={
-                "class": "form-control",
-                "placeholder": "(00) 00000-0000"
-            }),
-            "responsavel": forms.TextInput(attrs={
-                "class": "form-control",
-                "placeholder": "Nome do responsável"
-            }),
-            "ativo": forms.CheckboxInput(attrs={
-                "class": "form-check-input"
-            }),
+            "data_descarte": forms.DateInput(
+                attrs={"type": "date", "class": "form-control"}
+            ),
+            "motivo": forms.Textarea(
+                attrs={"rows": 3, "class": "form-control"}
+            ),
         }

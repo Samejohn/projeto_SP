@@ -33,9 +33,11 @@ body { font-family: Inter, "Segoe UI", system-ui, -apple-system, sans-serif; }
 .metric-card strong { font-size: 2rem; line-height: 1.05; }
 .metric-card span { margin-top: .65rem; font-weight: 600; }
 .metric-card > i { position: absolute; right: 1.3rem; top: 1.35rem; font-size: 2.6rem; opacity: .22; }
-.metric-cyan { background: linear-gradient(135deg, #18a8bc, #1595b2); }
-.metric-green { background: linear-gradient(135deg, #28ad4c, #16953d); }
-.metric-red { background: linear-gradient(135deg, #ed4056, #d92d48); }
+.metric-icy1 { background: linear-gradient(135deg, #074479, #AFDEED); }
+.metric-icy2 { background: linear-gradient(135deg, #074479, #AFDEED); }
+.metric-icy3 { background: linear-gradient(135deg, #074479, #AFDEED); }
+.metric-icy4 { background: linear-gradient(135deg, #074479, #AFDEED); }
+
 
 .dashboard-panel { padding: 1.35rem; border-radius: 1rem; color: #fff; box-shadow: 0 12px 28px rgba(29,43,71,.1); }
 .chart-panel { background: linear-gradient(145deg, #25a9bc, #1595ae); }
@@ -135,3 +137,118 @@ body { font-family: Inter, "Segoe UI", system-ui, -apple-system, sans-serif; }
     .management-toolbar > .btn { width: 100%; }
     .management-search { width: 100%; }
 }
+
+/* --- Card index.html --- */
+.metric-card {
+    position: relative;
+    min-height: 132px;
+    padding: 1.35rem;
+    border-radius: 1rem;
+    color: #fff;
+    overflow: hidden;
+    box-shadow: 0 12px 28px rgba(29,43,71,.1);
+
+    border: 2px solid transparent; /* <-- adicione */
+}
+
+.card-hover {
+  transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+}
+
+.card-zoom {
+  transition: transform 0.3s ease;
+}
+
+/* --- O que acontece quando o usuário passa o mouse --- */
+/* Efeito 1: O card levanta, ganha sombra e muda a borda */
+.card-hover:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0,0,0,.15);
+    border-color: #007bff;
+}
+/* Efeito 2: O card (ou uma imagem dentro dele) ganha um zoom */
+.card-zoom:hover {
+  transform: scale(1.05); /* Aumenta o tamanho em 5% */
+}
+
+.metric-card {
+    border: 2px solid transparent;
+}
+
+.metric-icy1:hover { border-color: #4FC3F7; box-shadow: 0 10px 20px rgba(0,0,0,.15), 0 0 15px rgba(79,195,247,.5);}
+.metric-icy2:hover { border-color: #4FC3F7; box-shadow: 0 10px 20px rgba(0,0,0,.15), 0 0 15px rgba(79,195,247,.5);}
+.metric-icy3:hover { border-color: #4FC3F7; box-shadow: 0 10px 20px rgba(0,0,0,.15), 0 0 15px rgba(79,195,247,.5);}
+.metric-icy4:hover { border-color: #4FC3F7; box-shadow: 0 10px 20px rgba(0,0,0,.15), 0 0 15px rgba(79,195,247,.5);}
+
+/* Estilizacao light e dark*/
+body{
+    background:var(--bg);
+    color:var(--text);
+}
+
+.content-wrapper{
+    background:var(--bg);
+}
+
+.main-header{
+    background:var(--surface);
+    border-bottom:1px solid var(--border);
+}
+
+.main-sidebar{
+    background:var(--surface);
+}
+
+.sidebar-dark-primary{
+    background:var(--surface)!important;
+}
+
+.sidebar a{
+    color:var(--text)!important;
+}
+
+.sidebar a:hover{
+    background:var(--primary);
+    color:white!important;
+}
+
+.card{
+    background:var(--surface);
+    border:1px solid var(--border);
+    color:var(--text);
+}
+
+.table{
+    color:var(--text);
+}
+
+.form-control{
+    background:var(--surface);
+    color:var(--text);
+    border-color:var(--border);
+}
+
+.form-control:focus{
+    border-color:var(--primary);
+    box-shadow:0 0 0 .2rem rgba(45,185,229,.25);
+}
+
+.btn-primary{
+    background:var(--primary);
+    border-color:var(--primary);
+}
+
+
+
+
+
+
+/*
+h6{
+  background-color: #70C1BF;
+  background-color: #1A2C42;
+  background-color: #5AA8AD;
+  background-color: #EAF3F5;
+  background-color: #FFFFFF;
+}
+*/

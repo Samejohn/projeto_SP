@@ -127,6 +127,13 @@ USE_I18N = True
 
 USE_TZ = True
 
+# valores monetários brasileiro
+USE_THOUSAND_SEPARATOR = True
+
+DECIMAL_SEPARATOR = ","
+
+THOUSAND_SEPARATOR = "."
+
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/6.0/howto/static-files/
@@ -181,6 +188,8 @@ ADMINLTE = {
                 {'text': 'Usuários', 'icon': 'bi bi-people', 'route': 'user_list', 'can': 'auth.view_user'},
                 {'text': 'Grupos', 'icon': 'bi bi-collection', 'route': 'group_list', 'can': 'auth.view_group'},
                 {'text': 'Produtos', 'icon': 'bi bi-box-seam', 'route': 'product_list', 'can': 'spi.view_produto'},
+                {'text': 'Descartes', 'icon': 'bi bi-trash', 'route': 'discard_list', 'can': 'spi.view_descarte'},
+                {'text': 'Inventário', 'icon': 'bi bi-clipboard2-data-fill', 'route': 'inventory_list', 'can': 'spi.view_inventario'},
             ],
         },
     ],

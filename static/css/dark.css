@@ -1,0 +1,18 @@
+[data-bs-theme="dark"]{
+
+    --bg:#0f172a;
+    --surface:#1e293b;
+    --surface-2:#273549;
+
+    --text:#f1f5f9;
+    --text-muted:#cbd5e1;
+
+    --primary:#4FC3F7;
+    --secondary:#60A5FA;
+    --accent:#7DD3FC;
+
+    --border:#334155;
+
+    --shadow:rgba(0,0,0,.45);
+
+}

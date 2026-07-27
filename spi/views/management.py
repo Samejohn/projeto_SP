@@ -9,6 +9,7 @@ from django.views.generic import CreateView, DeleteView, ListView, UpdateView
 
 from spi.forms import ManagedGroupForm, ManagedProductForm, ManagedUserForm
 from spi.models import Produto
+from spi.models import Descarte
 
 
 class ManagementPermissionMixin(LoginRequiredMixin, PermissionRequiredMixin):
@@ -140,7 +141,7 @@ class GroupDeleteView(ManagementPermissionMixin, DeleteView):
         messages.success(self.request, "Grupo excluído com sucesso.")
         return super().form_valid(form)
 
-
+# PRODUTOS
 class ProductListView(ManagementPermissionMixin, SearchableListMixin, ListView):
     model = Produto
     permission_required = "spi.view_produto"
@@ -186,3 +187,21 @@ class ProductDeleteView(ManagementPermissionMixin, DeleteView):
     def form_valid(self, form):
         messages.success(self.request, "Produto excluído com sucesso.")
         return super().form_valid(form)
+
+# DESCARTES
+class DiscardListView(ManagementPermissionMixin, SearchableListMixin, ListView):
+    model = Descarte
+    permission_required = "spi.view_descarte"
+    template_name = "management/discard_list.html"
+    context_object_name = "discard"
+
+    search_fields = (
+        "produto__nome", "motivo", "observacao", "usuario__username", "usuario__first_name", "usuario__last_name",)
+
+    def get_queryset(self):
+        return (
+            super()
+            .get_queryset()
+            .select_related("produto", "usuario")
+            .order_by("-data_descarte")
+        )

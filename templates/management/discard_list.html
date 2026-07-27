@@ -1,8 +1,8 @@
 {% extends 'base.html' %}
 
-{% block page_title_text %}Produtos{% endblock %}
-{% block page_title %}Gerenciar produtos{% endblock %}
-{% block breadcrumb_items %}<li class="breadcrumb-item active">Produtos</li>{% endblock %}
+{% block page_title_text %}Descarte{% endblock %}
+{% block page_title %}Descartes Descartes{% endblock %}
+{% block breadcrumb_items %}<li class="breadcrumb-item active">Descartes</li>{% endblock %}
 
 {% block content %}
 <div class="container-fluid management-shell">
@@ -18,7 +18,7 @@
         </header>
         <div class="table-responsive">
             <table class="table management-table align-middle mb-0">
-                <thead><tr><th>Produto</th><th>Preço atual</th><th>Link</th><th>Quantidade</th><th class="text-end">Ações</th></tr></thead>
+                <thead><tr><th>Produto</th><th>Quantidade</th><th>Usuário</th><th>Destinação Recomendada</th><th>Observação</th><th class="text-start">Data do Descarte</th></thead>
                 <tbody>
                 {% for product in products %}
                     <tr>
@@ -39,5 +39,3 @@
     </section>
 </div>
 {% endblock %}
-
-
