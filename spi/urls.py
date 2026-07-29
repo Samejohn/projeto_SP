@@ -17,10 +17,17 @@ urlpatterns = [
     path('gestao/grupos/cadastrar/', views.GroupCreateView.as_view(), name='group_create'),
     path('gestao/grupos/<int:pk>/editar/', views.GroupUpdateView.as_view(), name='group_update'),
     path('gestao/grupos/<int:pk>/excluir/', views.GroupDeleteView.as_view(), name='group_delete'),
+    #PRODUTOS
     path('gestao/produtos/', views.ProductListView.as_view(), name='product_list'),
     path('gestao/produtos/cadastrar/', views.ProductCreateView.as_view(), name='product_create'),
     path('gestao/produtos/<int:pk>/editar/', views.ProductUpdateView.as_view(), name='product_update'),
     path('gestao/produtos/<int:pk>/excluir/', views.ProductDeleteView.as_view(), name='product_delete'),
+    #DESCARTES
     path('gestao/descarte/', views.DiscardListView.as_view(), name='discard_list'),
+    path('gestao/produtos/descarte/', views.DiscardListView.as_view(), name='discard_create'),
+    path('gestao/produtos/<int:pk>/editar/', views.DiscardUpdateView.as_view(), name='discard_update'),
+    path('gestao/produtos/<int:pk>/excluir/', views.DiscardDeleteView.as_view(), name='discard_delete'),
+    #INVENTÁRIO
+    path('gestao/inventario/', views.InventoryListView.as_view(), name='inventory_list'),
 
 ]

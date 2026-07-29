@@ -1,8 +1,8 @@
 {% extends 'base.html' %}
 
-{% block page_title_text %}Descarte{% endblock %}
-{% block page_title %}Descartes Descartes{% endblock %}
-{% block breadcrumb_items %}<li class="breadcrumb-item active">Descartes</li>{% endblock %}
+{% block page_title_text %}Inventário{% endblock %}
+{% block page_title %}Inventário de Patrimônio{% endblock %}
+{% block breadcrumb_items %}<li class="breadcrumb-item active">Produtos</li>{% endblock %}
 
 {% block content %}
 <div class="container-fluid management-shell">
@@ -14,11 +14,11 @@
                 <input type="search" name="q" value="{{ search_query }}" placeholder="Pesquisar produtos" aria-label="Pesquisar produtos">
                 <button class="btn btn-outline-primary" type="submit">Pesquisar</button>
             </form>
-            {% if perms.spi.add_produto %}<a class="btn btn-primary" href="{% url 'discard_create' %}"><i class="bi bi-plus-lg"></i> Adicionar produto</a>{% endif %}
+            {% if perms.spi.add_produto %}<a class="btn btn-primary" href="{% url 'product_create' %}"><i class="bi bi-plus-lg"></i> Adicionar produto</a>{% endif %}
         </header>
         <div class="table-responsive">
             <table class="table management-table align-middle mb-0">
-                <thead><tr><th>Produto</th><th>Quantidade</th><th>Usuário</th><th>Destinação Recomendada</th><th>Observação</th><th class="text-start">Data do Descarte</th></thead>
+                <thead><tr><th>Nº Patrimônio</th><th>ID do Ativo</th><th>Categoria</th><th>Item / Modelo</th><th>S/N (Série) / Licença</th><th>Aquisição</th><th>Valor (R$)</th><th>Garantia</th><th>Status</th><th>Setor</th><th>Usuário</th><th>Observações</th></thead>
                 <tbody>
                 {% for product in products %}
                     <tr>
@@ -27,8 +27,8 @@
                         <td><a href="{{ product.link_produto }}" target="_blank" rel="noopener noreferrer" class="product-link">Acessar produto <i class="bi bi-box-arrow-up-right"></i></a></td>
                         <td><strong>{{ product.quantidade_produto }}</strong></td>
                         <td class="text-end text-nowrap">
-                            {% if perms.spi.change_produto %}<a class="btn btn-sm btn-outline-primary" href="{% url 'discard_update' discard.pk %}" title="Editar produto"><i class="bi bi-pencil"></i></a>{% endif %}
-                            {% if perms.spi.delete_produto %}<a class="btn btn-sm btn-outline-danger" href="{% url 'discard_delete' discard.pk %}" title="Excluir produto"><i class="bi bi-trash"></i></a>{% endif %}
+                            {% if perms.spi.change_produto %}<a class="btn btn-sm btn-outline-primary" href="{% url 'product_update' product.pk %}" title="Editar produto"><i class="bi bi-pencil"></i></a>{% endif %}
+                            {% if perms.spi.delete_produto %}<a class="btn btn-sm btn-outline-danger" href="{% url 'product_delete' product.pk %}" title="Excluir produto"><i class="bi bi-trash"></i></a>{% endif %}
                         </td>
                     </tr>
                 {% empty %}<tr><td colspan="4" class="empty-state">Nenhum produto encontrado.</td></tr>{% endfor %}

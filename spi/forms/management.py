@@ -6,6 +6,7 @@ from django.core.exceptions import ValidationError
 
 from spi.models import Produto
 from spi.models import Descarte
+from spi.models import Inventario
 
 
 class BootstrapFormMixin:
@@ -136,6 +137,29 @@ class DescarteForm(forms.ModelForm):
         # Opcional: Personalização de widgets/HTML
         widgets = {
             "data_descarte": forms.DateInput(
+                attrs={"type": "date", "class": "form-control"}
+            ),
+            "motivo": forms.Textarea(
+                attrs={"rows": 3, "class": "form-control"}
+            ),
+        }
+
+#INVENTÁRIO
+class InventarioForm(forms.ModelForm):
+
+    class Meta:
+        model = Inventario
+        fields = "__all__"  # Inclui todos os campos do model inventario
+
+        # Opcional: Personalização de rótulos (labels)
+        labels = {
+            "motivo": "Motivo do inventario",
+            "data_inventario": "Data do inventario",
+        }
+
+        # Opcional: Personalização de widgets/HTML
+        widgets = {
+            "data_inventario": forms.DateInput(
                 attrs={"type": "date", "class": "form-control"}
             ),
             "motivo": forms.Textarea(

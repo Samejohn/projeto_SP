@@ -10,6 +10,7 @@ from django.views.generic import CreateView, DeleteView, ListView, UpdateView
 from spi.forms import ManagedGroupForm, ManagedProductForm, ManagedUserForm
 from spi.models import Produto
 from spi.models import Descarte
+from spi.models import Inventario
 
 
 class ManagementPermissionMixin(LoginRequiredMixin, PermissionRequiredMixin):
@@ -164,6 +165,8 @@ class ProductCreateView(ManagementPermissionMixin, CreateView):
         messages.success(self.request, "Produto cadastrado com sucesso.")
         return super().form_valid(form)
 
+  
+
 
 class ProductUpdateView(ManagementPermissionMixin, UpdateView):
     model = Produto
@@ -188,6 +191,8 @@ class ProductDeleteView(ManagementPermissionMixin, DeleteView):
         messages.success(self.request, "Produto excluído com sucesso.")
         return super().form_valid(form)
 
+
+
 # DESCARTES
 class DiscardListView(ManagementPermissionMixin, SearchableListMixin, ListView):
     model = Descarte
@@ -202,6 +207,37 @@ class DiscardListView(ManagementPermissionMixin, SearchableListMixin, ListView):
         return (
             super()
             .get_queryset()
-            .select_related("produto", "usuario")
+            .select_related("descarte", "usuario")
             .order_by("-data_descarte")
         )
+
+class DiscardUpdateView(ManagementPermissionMixin, UpdateView):
+    model = Descarte
+    permission_required = "spi.change_descarte"
+    form_class = ManagedProductForm
+    template_name = "management/discard_form.html"
+    success_url = reverse_lazy("discard_list")
+
+    def form_valid(self, form):
+        messages.success(self.request, "Descarte atualizado com sucesso.")
+        return super().form_valid(form)
+
+
+class DiscardDeleteView(ManagementPermissionMixin, DeleteView):
+    model = Descarte
+    permission_required = "spi.delete_descarte"
+    template_name = "management/confirm_delete.html"
+    success_url = reverse_lazy("discard_list")
+    extra_context = {"object_label": "descarte", "cancel_url_name": "discard_list"}
+
+    def form_valid(self, form):
+        messages.success(self.request, "Descarte excluído com sucesso.")
+        return super().form_valid(form)
+
+#INVENTÁRIO
+class InventoryListView(ManagementPermissionMixin, SearchableListMixin, ListView):
+    model = Inventario
+    permission_required = "spi.view_inventario"
+    template_name = "management/inventory_list.html"
+    context_object_name = "inventory"
+    paginate_by = 20
