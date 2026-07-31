@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+
+{% block page_title_text %}Fornecedores{% endblock %}
+{% block page_title %}Gerenciar fornecedores{% endblock %}
+{% block breadcrumb_items %}<li class="breadcrumb-item active">Fornecedores</li>{% endblock %}
+
+{% block content %}
+<div class="container-fluid management-shell">
+    {% include 'management/_messages.html' %}
+    <section class="management-card">
+        <header class="management-toolbar">
+            <form method="get" class="management-search">
+                <i class="bi bi-search"></i>
+                <input type="search" name="q" value="{{ search_query }}" placeholder="Pesquisar fornecedores" aria-label="Pesquisar fornecedores">
+                <button class="btn btn-outline-primary" type="submit">Pesquisar</button>
+            </form>
+            {% if perms.spi.add_fornecedor %}<a class="btn btn-primary" href="{% url 'fornecedor_create' %}"><i class="bi bi-plus-lg"></i> Adicionar fornecedor</a>{% endif %}
+        </header>
+        <div class="table-responsive">
+            <table class="table management-table align-middle mb-0">
+                <thead><tr><th>Fornecedor</th><th>CNPJ</th><th>Telefone</th><th>Responsável</th><th>Atualizado em</th><th class="text-end">Ações</th></tr></thead>
+                <tbody>
+                {% for fornecedor in fornecedores %}
+                    <tr>
+                        <td><strong>{{ fornecedor.nome_fornecedor }}</strong></td>
+                        <td>{{ fornecedor.cnpj_cnpj }}</td>
+                        <td>{{ fornecedor.telefone_fornecedor }}</td>
+                        <td>{{ fornecedor.responsavel_forncedor }}</td>
+                        <td>{{ fornecedor.controle_data.data_atualizacao|date:"d/m/Y H:i" }}</td>
+                        <td class="text-end text-nowrap">
+                            {% if perms.spi.change_fornecedor %}<a class="btn btn-sm btn-outline-primary" href="{% url 'fornecedor_update' fornecedor.pk %}" title="Editar fornecedor"><i class="bi bi-pencil"></i></a>{% endif %}
+                            {% if perms.spi.delete_fornecedor %}<a class="btn btn-sm btn-outline-danger" href="{% url 'fornecedor_delete' fornecedor.pk %}" title="Excluir fornecedor"><i class="bi bi-trash"></i></a>{% endif %}
+                        </td>
+                    </tr>
+                {% empty %}<tr><td colspan="6" class="empty-state">Nenhum fornecedor encontrado.</td></tr>{% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% include 'management/_pagination.html' %}
+    </section>
+</div>
+{% endblock %}

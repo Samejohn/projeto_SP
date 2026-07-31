@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+
+{% block page_title_text %}Links{% endblock %}
+{% block page_title %}Gerenciar links{% endblock %}
+{% block breadcrumb_items %}<li class="breadcrumb-item active">Links</li>{% endblock %}
+
+{% block content %}
+<div class="container-fluid management-shell">
+    {% include 'management/_messages.html' %}
+    <section class="management-card">
+        <header class="management-toolbar">
+            <form method="get" class="management-search">
+                <i class="bi bi-search"></i>
+                <input type="search" name="q" value="{{ search_query }}" placeholder="Pesquisar links" aria-label="Pesquisar links">
+                <button class="btn btn-outline-primary" type="submit">Pesquisar</button>
+            </form>
+            {% if perms.spi.add_link %}<a class="btn btn-primary" href="{% url 'link_create' %}"><i class="bi bi-plus-lg"></i> Adicionar link</a>{% endif %}
+        </header>
+        <div class="table-responsive">
+            <table class="table management-table align-middle mb-0">
+                <thead><tr><th>Nome</th><th>Fornecedor</th><th>URL</th><th>Atualizado em</th><th class="text-end">Ações</th></tr></thead>
+                <tbody>
+                {% for link in links %}
+                    <tr>
+                        <td><strong>{{ link.nome }}</strong></td>
+                        <td>{{ link.fornecedor.nome_fornecedor }}</td>
+                        <td><a href="{{ link.url }}" target="_blank" rel="noopener noreferrer" class="product-link">Acessar <i class="bi bi-box-arrow-up-right"></i></a></td>
+                        <td>{{ link.controle_data.data_atualizacao|date:"d/m/Y H:i" }}</td>
+                        <td class="text-end text-nowrap">
+                            {% if perms.spi.change_link %}<a class="btn btn-sm btn-outline-primary" href="{% url 'link_update' link.pk %}" title="Editar link"><i class="bi bi-pencil"></i></a>{% endif %}
+                            {% if perms.spi.delete_link %}<a class="btn btn-sm btn-outline-danger" href="{% url 'link_delete' link.pk %}" title="Excluir link"><i class="bi bi-trash"></i></a>{% endif %}
+                        </td>
+                    </tr>
+                {% empty %}<tr><td colspan="5" class="empty-state">Nenhum link encontrado.</td></tr>{% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% include 'management/_pagination.html' %}
+    </section>
+</div>
+{% endblock %}

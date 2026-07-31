@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+
+{% block page_title_text %}Valores de produtos{% endblock %}
+{% block page_title %}Gerenciar valores de produtos{% endblock %}
+{% block breadcrumb_items %}<li class="breadcrumb-item active">Valores de produtos</li>{% endblock %}
+
+{% block content %}
+<div class="container-fluid management-shell">
+    {% include 'management/_messages.html' %}
+    <section class="management-card">
+        <header class="management-toolbar">
+            <form method="get" class="management-search">
+                <i class="bi bi-search"></i>
+                <input type="search" name="q" value="{{ search_query }}" placeholder="Pesquisar valores" aria-label="Pesquisar valores de produtos">
+                <button class="btn btn-outline-primary" type="submit">Pesquisar</button>
+            </form>
+            {% if perms.spi.add_valorproduto %}<a class="btn btn-primary" href="{% url 'valor_produto_create' %}"><i class="bi bi-plus-lg"></i> Adicionar valor</a>{% endif %}
+        </header>
+        <div class="table-responsive">
+            <table class="table management-table align-middle mb-0">
+                <thead><tr><th>Produto</th><th>Código de barras</th><th>Link</th><th>Fornecedor</th><th>Valor</th><th>Cadastrado em</th><th class="text-end">Ações</th></tr></thead>
+                <tbody>
+                {% for item in valores_produtos %}
+                    <tr>
+                        <td><strong>{{ item.produto.nome }}</strong></td>
+                        <td>{{ item.produto.codigo_barras }}</td>
+                        <td>{{ item.link.nome }}</td>
+                        <td>{{ item.link.fornecedor.nome_fornecedor }}</td>
+                        <td>R$ {{ item.valor|floatformat:2 }}</td>
+                        <td>{{ item.controle_data.data_cadastro|date:"d/m/Y H:i" }}</td>
+                        <td class="text-end text-nowrap">
+                            {% if perms.spi.change_valorproduto %}<a class="btn btn-sm btn-outline-primary" href="{% url 'valor_produto_update' item.pk %}" title="Editar valor"><i class="bi bi-pencil"></i></a>{% endif %}
+                            {% if perms.spi.delete_valorproduto %}<a class="btn btn-sm btn-outline-danger" href="{% url 'valor_produto_delete' item.pk %}" title="Excluir valor"><i class="bi bi-trash"></i></a>{% endif %}
+                        </td>
+                    </tr>
+                {% empty %}<tr><td colspan="7" class="empty-state">Nenhum valor de produto encontrado.</td></tr>{% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% include 'management/_pagination.html' %}
+    </section>
+</div>
+{% endblock %}

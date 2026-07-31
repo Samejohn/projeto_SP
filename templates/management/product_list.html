@@ -18,20 +18,21 @@
         </header>
         <div class="table-responsive">
             <table class="table management-table align-middle mb-0">
-                <thead><tr><th>Produto</th><th>Preço atual</th><th>Link</th><th>Quantidade</th><th class="text-end">Ações</th></tr></thead>
+                <thead><tr><th>Produto</th><th>Código de barras</th><th>Responsável</th><th>Cadastrado em</th><th>Atualizado em</th><th class="text-end">Ações</th></tr></thead>
                 <tbody>
                 {% for product in products %}
                     <tr>
-                        <td><strong>{{ product.nome_produto }}</strong></td>
-                        <td>R$ {{ product.preco_atual|floatformat:2 }}</td>
-                        <td><a href="{{ product.link_produto }}" target="_blank" rel="noopener noreferrer" class="product-link">Acessar produto <i class="bi bi-box-arrow-up-right"></i></a></td>
-                        <td><strong>{{ product.quantidade_produto }}</strong></td>
+                        <td><strong>{{ product.nome }}</strong></td>
+                        <td>{{ product.codigo_barras }}</td>
+                        <td>{{ product.responsavel_cadastro.get_full_name|default:product.responsavel_cadastro.username }}</td>
+                        <td>{{ product.controle_data.data_cadastro|date:"d/m/Y H:i" }}</td>
+                        <td>{{ product.controle_data.data_atualizacao|date:"d/m/Y H:i" }}</td>
                         <td class="text-end text-nowrap">
                             {% if perms.spi.change_produto %}<a class="btn btn-sm btn-outline-primary" href="{% url 'product_update' product.pk %}" title="Editar produto"><i class="bi bi-pencil"></i></a>{% endif %}
                             {% if perms.spi.delete_produto %}<a class="btn btn-sm btn-outline-danger" href="{% url 'product_delete' product.pk %}" title="Excluir produto"><i class="bi bi-trash"></i></a>{% endif %}
                         </td>
                     </tr>
-                {% empty %}<tr><td colspan="4" class="empty-state">Nenhum produto encontrado.</td></tr>{% endfor %}
+                {% empty %}<tr><td colspan="6" class="empty-state">Nenhum produto encontrado.</td></tr>{% endfor %}
                 </tbody>
             </table>
         </div>

@@ -17,9 +17,9 @@
 
     <div class="row g-4 mb-4">
         
-        <div class="col-12 col-md-6 col-lg-3"><article class="metric-card metric-icy1 card-glass card-hover"><div><strong>806</strong><span>Produtos</span></div><i class="bi bi-bar-chart-fill"></i></article></div>
+        <div class="col-12 col-md-6 col-lg-3"><article class="metric-card metric-icy1 card-glass card-hover"><div><strong>{{ total_produtos }}</strong><span>Produtos</span></div><i class="bi bi-bar-chart-fill"></i></article></div>
         <div class="col-12 col-md-6 col-lg-3"><article class="metric-card metric-icy2 card-glass card-hover"><div><strong>7</strong><span>Estoque</span></div><i class="bi bi-megaphone-fill"></i></article></div>
-        <div class="col-12 col-md-6 col-lg-3"><article class="metric-card metric-icy3 card-glass card-hover"><div><strong>12</strong><span>Produtos Pendentes</span></div><i class="bi bi-people-fill"></i></article></div>
+        <div class="col-12 col-md-6 col-lg-3"><article class="metric-card metric-icy3 card-glass card-hover"><div><strong>{{ total_produtos_pendentes }}</strong><span>Produtos Pendentes</span></div><i class="bi bi-people-fill"></i></article></div>
         <div class="col-12 col-md-6 col-lg-3"><article class="metric-card metric-icy4 card-glass card-hover"><div><strong>11.441</strong><span>Descarte</span></div><i class="bi bi-people-fill"></i></article></div>
     </div>
 
@@ -87,15 +87,15 @@
             {% for pedido in ultimos_pedidos %}
                 <tr>
                     <td>
-                        <strong>{{ pedido.produto.nome_produto }}</strong>
+                        <strong>{{ pedido.produto.nome }}</strong>
                     </td>
 
                     <td>
-                        R$ {{ pedido.produto.preco_atual }}
+                        R$ {{ pedido.produto.valores.first.valor|default:"-" }}
                     </td>
 
                     <td>
-                        {{ pedido.quantidade }}
+                        {{ pedido.quantidade_produto }}
                     </td>
 
                     <td>

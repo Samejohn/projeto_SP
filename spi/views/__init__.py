@@ -7,20 +7,38 @@ from django.shortcuts import redirect, render
 from django.views.generic import TemplateView
 
 from spi.forms import SignInForm, SignUpForm
+from spi.models import Produto, ProdutoPedido
 
 from .management import (
     GroupCreateView,
     GroupDeleteView,
     GroupListView,
     GroupUpdateView,
+    FornecedorCreateView,
+    FornecedorDeleteView,
+    FornecedorListView,
+    FornecedorUpdateView,
+    LinkCreateView,
+    LinkDeleteView,
+    LinkListView,
+    LinkUpdateView,
     ProductCreateView,
     ProductDeleteView,
     ProductListView,
     ProductUpdateView,
+    ProdutoPedidoCreateView,
+    ProdutoPedidoDeleteView,
+    ProdutoPedidoListView,
+    ProdutoPedidoUpdateView,
     UserCreateView,
     UserDeleteView,
     UserListView,
     UserUpdateView,
+    ValorProdutoCreateView,
+    ValorProdutoDeleteView,
+    ValorProdutoListView,
+    ValorProdutoUpdateView,
+    DiscardCreateView,
     DiscardListView,
     DiscardUpdateView,
     DiscardDeleteView,
@@ -30,6 +48,14 @@ from .management import (
 
 class DashboardView(LoginRequiredMixin, TemplateView):
     template_name = 'index.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context.update(
+            total_produtos=Produto.objects.count(),
+            total_produtos_pendentes=ProdutoPedido.objects.filter(status="PENDENTE").count(),
+        )
+        return context
 
 
 class SignInView(LoginView):

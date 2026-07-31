@@ -4,9 +4,7 @@ from django.contrib.auth.models import Group
 from django.contrib.auth.password_validation import validate_password
 from django.core.exceptions import ValidationError
 
-from spi.models import Produto
-from spi.models import Descarte
-from spi.models import Inventario
+from spi.models import Descarte, Fornecedor, Inventario, Link, Produto, ProdutoPedido, ValorProduto
 
 
 class BootstrapFormMixin:
@@ -102,17 +100,13 @@ class ManagedGroupForm(BootstrapFormMixin, forms.ModelForm):
 class ManagedProductForm(BootstrapFormMixin, forms.ModelForm):
     class Meta:
         model = Produto
-        fields = ("nome_produto", "link_produto", "preco_atual", "quantidade_produto",)
+        fields = ("nome", "codigo_barras")
         labels = {
-            "nome_produto": "Nome do produto",
-            "link_produto": "Link do produto",
-            "preco_atual": "Preço atual",
-            "quantidade_produto": "Quantidade do produto"
+            "nome": "Nome do produto",
+            "codigo_barras": "Código de barras",
         }
         widgets = {
-            "link_produto": forms.URLInput(attrs={"placeholder": "https://exemplo.com/produto"}),
-            "preco_atual": forms.NumberInput(attrs={"min": "0", "step": "0.01"}),
-            "quantidade_produto": forms.NumberInput( attrs={"min": "0"}),
+            "codigo_barras": forms.TextInput(attrs={"placeholder": "Digite ou leia o código de barras"}),
         }
 
     def __init__(self, *args, **kwargs):
@@ -122,7 +116,7 @@ class ManagedProductForm(BootstrapFormMixin, forms.ModelForm):
 
 #Descarte
 
-class DescarteForm(forms.ModelForm):
+class DescarteForm(BootstrapFormMixin, forms.ModelForm):
 
     class Meta:
         model = Descarte
@@ -143,6 +137,86 @@ class DescarteForm(forms.ModelForm):
                 attrs={"rows": 3, "class": "form-control"}
             ),
         }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self._apply_bootstrap_classes()
+
+
+class ManagedFornecedorForm(BootstrapFormMixin, forms.ModelForm):
+    class Meta:
+        model = Fornecedor
+        fields = (
+            "nome_fornecedor",
+            "cnpj_cnpj",
+            "telefone_fornecedor",
+            "responsavel_forncedor",
+        )
+        labels = {
+            "nome_fornecedor": "Nome do fornecedor",
+            "cnpj_cnpj": "CNPJ",
+            "telefone_fornecedor": "Telefone",
+            "responsavel_forncedor": "Responsável",
+        }
+        widgets = {
+            "cnpj_cnpj": forms.TextInput(attrs={"placeholder": "00.000.000/0000-00"}),
+            "telefone_fornecedor": forms.TextInput(attrs={"placeholder": "(00) 00000-0000"}),
+        }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self._apply_bootstrap_classes()
+
+
+class ManagedLinkForm(BootstrapFormMixin, forms.ModelForm):
+    class Meta:
+        model = Link
+        fields = ("nome", "url", "fornecedor")
+        labels = {"nome": "Nome do link", "url": "URL", "fornecedor": "Fornecedor"}
+        widgets = {"url": forms.URLInput(attrs={"placeholder": "https://exemplo.com/produto"})}
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields["fornecedor"].queryset = Fornecedor.objects.order_by("nome_fornecedor")
+        self._apply_bootstrap_classes()
+
+
+class ManagedValorProdutoForm(BootstrapFormMixin, forms.ModelForm):
+    class Meta:
+        model = ValorProduto
+        fields = ("produto", "link", "valor")
+        labels = {"produto": "Produto", "link": "Link", "valor": "Valor"}
+        widgets = {"valor": forms.NumberInput(attrs={"min": "0", "step": "0.01"})}
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields["produto"].queryset = Produto.objects.order_by("nome")
+        self.fields["link"].queryset = Link.objects.select_related("fornecedor").order_by(
+            "fornecedor__nome_fornecedor", "nome"
+        )
+        self._apply_bootstrap_classes()
+
+
+class ManagedProdutoPedidoForm(BootstrapFormMixin, forms.ModelForm):
+    class Meta:
+        model = ProdutoPedido
+        fields = ("nome", "descricao", "produto", "quantidade_produto", "status")
+        labels = {
+            "nome": "Nome do item",
+            "descricao": "Descrição",
+            "produto": "Produto",
+            "quantidade_produto": "Quantidade",
+            "status": "Status",
+        }
+        widgets = {
+            "descricao": forms.Textarea(attrs={"rows": 4}),
+            "quantidade_produto": forms.NumberInput(attrs={"min": "1"}),
+        }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields["produto"].queryset = Produto.objects.order_by("nome")
+        self._apply_bootstrap_classes()
 
 #INVENTÁRIO
 class InventarioForm(forms.ModelForm):
