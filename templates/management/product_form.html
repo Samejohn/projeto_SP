@@ -15,6 +15,7 @@
                 {% include 'management/_field.html' with field=form.nome_produto column='col-12' %}
                 {% include 'management/_field.html' with field=form.link_produto column='col-12' %}
                 {% include 'management/_field.html' with field=form.preco_atual column='col-md-6' %}
+                {% include 'management/_field.html' with field=form.quantidade_produto column='col-md-6' %}
             </div>
         </div>
         <footer class="form-actions"><a class="btn btn-light" href="{% url 'product_list' %}">Cancelar</a><button class="btn btn-primary" type="submit"><i class="bi bi-check-lg"></i> Salvar produto</button></footer>
