@@ -14,11 +14,11 @@
                 <input type="search" name="q" value="{{ search_query }}" placeholder="Pesquisar produtos" aria-label="Pesquisar produtos">
                 <button class="btn btn-outline-primary" type="submit">Pesquisar</button>
             </form>
-            {% if perms.spi.add_produto %}<a class="btn btn-primary" href="{% url 'product_create' %}"><i class="bi bi-plus-lg"></i> Adicionar produto</a>{% endif %}
+            {% if perms.spi.add_produto %}<a class="btn btn-outline-primary" href="{% url 'product_create' %}"><i class="bi bi-plus-lg"></i> Adicionar produto</a>{% endif %}
         </header>
         <div class="table-responsive">
             <table class="table management-table align-middle mb-0">
-                <thead><tr><th>Nº Patrimônio</th><th>ID do Ativo</th><th>Categoria</th><th>Item / Modelo</th><th>S/N (Série) / Licença</th><th>Aquisição</th><th>Valor (R$)</th><th>Garantia</th><th>Status</th><th>Setor</th><th>Usuário</th><th>Observações</th></thead>
+                <thead><tr><th>Nº Patrimônio</th><th>ID Ativo</th><th>Categoria</th><th>Modelo</th><th>Nº(Série)Licença</th><th>Aquisição</th><th>Valor(R$)</th><th>Garantia</th><th>Status</th><th>Setor</th><th>Usuário</th><th>Observações</th></thead>
                 <tbody>
                 {% for item in inventory %}
                     <tr>

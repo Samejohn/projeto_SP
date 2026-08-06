@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 
 {% block page_title_text %}Produtos{% endblock %}
-{% block page_title %}Gerenciar produtos{% endblock %}
+{% block page_title %}Cadastrar produtos{% endblock %}
 {% block breadcrumb_items %}<li class="breadcrumb-item active">Produtos</li>{% endblock %}
 
 {% block content %}
@@ -14,11 +14,11 @@
                 <input type="search" name="q" value="{{ search_query }}" placeholder="Pesquisar produtos" aria-label="Pesquisar produtos">
                 <button class="btn btn-outline-primary" type="submit">Pesquisar</button>
             </form>
-            {% if perms.spi.add_produto %}<a class="btn btn-primary" href="{% url 'product_create' %}"><i class="bi bi-plus-lg"></i> Adicionar produto</a>{% endif %}
+            {% if perms.spi.add_produto %}<a class="btn btn-outline-primary" href="{% url 'product_create' %}"><i class="bi bi-plus-lg"></i> Adicionar produto</a>{% endif %}
         </header>
         <div class="table-responsive">
             <table class="table management-table align-middle mb-0">
-                <thead><tr><th>Produto</th><th>Código de barras</th><th>Responsável</th><th>Cadastrado em</th><th>Atualizado em</th><th class="text-end">Ações</th></tr></thead>
+                <thead><tr><th>Produto</th><th>Código de barras</th><th>Responsável</th><th>Cadastrado</th><th>Atualizado</th><th class="text-end">Ações</th></tr></thead>
                 <tbody>
                 {% for product in products %}
                     <tr>

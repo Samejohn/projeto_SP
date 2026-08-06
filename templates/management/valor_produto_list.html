@@ -14,7 +14,7 @@
                 <input type="search" name="q" value="{{ search_query }}" placeholder="Pesquisar valores" aria-label="Pesquisar valores de produtos">
                 <button class="btn btn-outline-primary" type="submit">Pesquisar</button>
             </form>
-            {% if perms.spi.add_valorproduto %}<a class="btn btn-primary" href="{% url 'valor_produto_create' %}"><i class="bi bi-plus-lg"></i> Adicionar valor</a>{% endif %}
+            {% if perms.spi.add_valorproduto %}<a class="btn btn-outline-primary" href="{% url 'valor_produto_create' %}"><i class="bi bi-plus-lg"></i> Adicionar valor</a>{% endif %}
         </header>
         <div class="table-responsive">
             <table class="table management-table align-middle mb-0">

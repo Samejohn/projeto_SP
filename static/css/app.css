@@ -1,7 +1,7 @@
 :root {
     --spi-blue: #2DB9E5;
     --spi-blue-dark: #0E8AC0;
-    --spi-navy: #17324d;
+    --spi-navy: #70C1BF;
     --spi-surface: #f4f7fb;
     --spi-muted: #6b7a90;
 }
@@ -178,11 +178,32 @@ body { font-family: Inter, "Segoe UI", system-ui, -apple-system, sans-serif; }
     border: 2px solid transparent;
 }
 
-.metric-icy1:hover { border-color: #4FC3F7; box-shadow: 0 10px 20px rgba(0,0,0,.15), 0 0 15px rgba(79,195,247,.5);}
-.metric-icy2:hover { border-color: #4FC3F7; box-shadow: 0 10px 20px rgba(0,0,0,.15), 0 0 15px rgba(79,195,247,.5);}
-.metric-icy3:hover { border-color: #4FC3F7; box-shadow: 0 10px 20px rgba(0,0,0,.15), 0 0 15px rgba(79,195,247,.5);}
-.metric-icy4:hover { border-color: #4FC3F7; box-shadow: 0 10px 20px rgba(0,0,0,.15), 0 0 15px rgba(79,195,247,.5);}
+/* Efeito de transição suave */
+.metric-card {
+    border: 2px solid transparent;
+    transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+}
 
+/* Cores individuais ao passar o mouse */
+.metric-icy1:hover { 
+    border-color: #4FC3F7; /* Azul Claro */
+    box-shadow: 0 10px 20px rgba(0,0,0,.15), 0 0 15px rgba(79, 195, 247, 0.5);
+}
+
+.metric-icy2:hover { 
+    border-color: #2ECC71; /* Verde */
+    box-shadow: 0 10px 20px rgba(0,0,0,.15), 0 0 15px rgba(46, 204, 113, 0.5);
+}
+
+.metric-icy3:hover { 
+    border-color: #F1C40F; /* Amarelo / Dourado */
+    box-shadow: 0 10px 20px rgba(0,0,0,.15), 0 0 15px rgba(241, 196, 15, 0.5);
+}
+
+.metric-icy4:hover { 
+    border-color: #E74C3C; /* Vermelho / Rosa */
+    box-shadow: 0 10px 20px rgba(0,0,0,.15), 0 0 15px rgba(231, 76, 60, 0.5);
+}
 /* Estilizacao light e dark*/
 body{
     background:var(--bg);
@@ -194,16 +215,16 @@ body{
 }
 
 .main-header{
-    background:var(--surface);
+    background:var(--card);
     border-bottom:1px solid var(--border);
 }
 
 .main-sidebar{
-    background:var(--surface);
+    background:var(--card);
 }
 
 .sidebar-dark-primary{
-    background:var(--surface)!important;
+    background:var(--card)!important;
 }
 
 .sidebar a{
@@ -216,7 +237,7 @@ body{
 }
 
 .card{
-    background:var(--surface);
+    background:var(--card);
     border:1px solid var(--border);
     color:var(--text);
 }
@@ -226,7 +247,7 @@ body{
 }
 
 .form-control{
-    background:var(--surface);
+    background:var(--card);
     color:var(--text);
     border-color:var(--border);
 }
@@ -241,17 +262,85 @@ body{
     border-color:var(--primary);
 }
 
+/* ==========================================
+   NAVBAR SUPERIOR - SPI
+========================================== */
 
-
-
-
-
-/*
-h6{
-  background-color: #70C1BF;
-  background-color: #1A2C42;
-  background-color: #5AA8AD;
-  background-color: #EAF3F5;
-  background-color: #FFFFFF;
+.app-header.navbar{
+    background-color:#1A2C42 !important;
+    border-bottom:none !important;
+    box-shadow:0 2px 8px rgba(0,0,0,.15);
 }
-*/
+
+.app-header .nav-link{
+    color:#EAF3F5 !important;
+    transition:.25s;
+}
+
+.app-header .nav-link i{
+    color:#EAF3F5 !important;
+}
+
+.app-header .nav-link:hover{
+    background:#6C96A0 !important;
+    color:#fff !important;
+    border-radius:8px;
+}
+
+.app-header .dropdown-toggle{
+    color:#EAF3F5 !important;
+}
+
+.app-header .dropdown-menu{
+    border:none;
+    border-radius:12px;
+}
+/* ==========================================
+   SIDEBAR Barra Lateral - SPI
+========================================== */
+
+.app-sidebar{
+    background:#253957 !important;
+}
+
+.app-sidebar .sidebar-brand{
+    background:#253957 !important;
+}
+
+.app-sidebar .brand-link{
+    color:#EAF3F5 !important;
+}
+
+.app-sidebar .nav-link{
+    color:#EAF3F5 !important;
+    border-radius:10px;
+    margin:4px 8px;
+    transition:.25s;
+}
+
+.app-sidebar .nav-link i{
+    color:#EAF3F5 !important;
+}
+
+.app-sidebar .nav-link:hover{
+    background:#6C96A0 !important;
+    color:#fff !important;
+}
+
+.app-sidebar .nav-link.active{
+    background:#6C96A0 !important;
+    color:#fff !important;
+    font-weight:600;
+}
+/* ==========================================
+   Dropdown do usuário
+========================================== */
+.user-menu .dropdown-menu{
+    border-radius:10px;
+    box-shadow:0 10px 25px rgba(0,0,0,.15);
+}
+
+.user-menu .dropdown-item:hover{
+    background:#00CED1;
+    color:#fff;
+}

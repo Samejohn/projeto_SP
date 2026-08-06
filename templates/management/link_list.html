@@ -14,7 +14,7 @@
                 <input type="search" name="q" value="{{ search_query }}" placeholder="Pesquisar links" aria-label="Pesquisar links">
                 <button class="btn btn-outline-primary" type="submit">Pesquisar</button>
             </form>
-            {% if perms.spi.add_link %}<a class="btn btn-primary" href="{% url 'link_create' %}"><i class="bi bi-plus-lg"></i> Adicionar link</a>{% endif %}
+            {% if perms.spi.add_link %}<a class="btn btn-outline-primary" href="{% url 'link_create' %}"><i class="bi bi-plus-lg"></i> Adicionar link</a>{% endif %}
         </header>
         <div class="table-responsive">
             <table class="table management-table align-middle mb-0">

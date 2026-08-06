@@ -17,10 +17,10 @@
 
     <div class="row g-4 mb-4">
         
-        <div class="col-12 col-md-6 col-lg-3"><article class="metric-card metric-icy1 card-glass card-hover"><div><strong>{{ total_produtos }}</strong><span>Produtos</span></div><i class="bi bi-bar-chart-fill"></i></article></div>
-        <div class="col-12 col-md-6 col-lg-3"><article class="metric-card metric-icy2 card-glass card-hover"><div><strong>7</strong><span>Estoque</span></div><i class="bi bi-megaphone-fill"></i></article></div>
-        <div class="col-12 col-md-6 col-lg-3"><article class="metric-card metric-icy3 card-glass card-hover"><div><strong>{{ total_produtos_pendentes }}</strong><span>Produtos Pendentes</span></div><i class="bi bi-people-fill"></i></article></div>
-        <div class="col-12 col-md-6 col-lg-3"><article class="metric-card metric-icy4 card-glass card-hover"><div><strong>11.441</strong><span>Descarte</span></div><i class="bi bi-people-fill"></i></article></div>
+        <div class="col-12 col-md-6 col-lg-3"><article class="metric-card metric-icy1 card-glass card-hover"><div><strong>{{ total_produtos }}</strong><span>Produtos</span></div><i class="bi bi-box-seam"></i></article></div>
+        <div class="col-12 col-md-6 col-lg-3"><article class="metric-card metric-icy2 card-glass card-hover"><div><strong>7</strong><span>Estoque</span></div><i class="bi bi-shop"></i></article></div>
+        <div class="col-12 col-md-6 col-lg-3"><article class="metric-card metric-icy3 card-glass card-hover"><div><strong>{{ total_produtos_pendentes }}</strong><span>Produtos Pendentes</span></div><i class="bi bi-archive"></i></article></div>
+        <div class="col-12 col-md-6 col-lg-3"><article class="metric-card metric-icy4 card-glass card-hover"><div><strong style="color: #e74c3c;">10</strong><span>Alerta de Estoque mínimo</span></div><i class="bi bi-exclamation-triangle-fill" style="color: #e74c3c;"></i></article></div>
     </div>
 
     <div class="row g-4">
@@ -52,94 +52,5 @@
         </div>
     </div>
 </div>
-
-<!--Últimos pedidos-->
-<div class="card">
-    <div class="card card-glass border text-white card-hover">
-    <div class="card-header">
-        <h3 class="card-title">Últimos pedidos</h3>
-
-        <div class="card-tools">
-            <button type="button" class="btn btn-tool">
-                <i class="fas fa-download"></i>
-            </button>
-
-            <button type="button" class="btn btn-tool">
-                <i class="fas fa-bars"></i>
-            </button>
-        </div>
-    </div>
-
-    <div class="card-body p-0">
-        <table class="table table-hover align-middle">
-            <thead>
-                <tr>
-                    <th>Produto</th>
-                    <th>Preço Atual</th>
-                    <th>Qnt.</th>
-                    <th>Status</th>
-                    <th class="text-center">Mais</th>
-                </tr>
-            </thead>
-
-            <tbody>
-
-            {% for pedido in ultimos_pedidos %}
-                <tr>
-                    <td>
-                        <strong>{{ pedido.produto.nome }}</strong>
-                    </td>
-
-                    <td>
-                        R$ {{ pedido.produto.valores.first.valor|default:"-" }}
-                    </td>
-
-                    <td>
-                        {{ pedido.quantidade_produto }}
-                    </td>
-
-                    <td>
-                        {% if pedido.status == "PENDENTE" %}
-                            <span class="badge bg-warning">
-                                Pendente
-                            </span>
-
-                        {% elif pedido.status == "APROVADO" %}
-                            <span class="badge bg-success">
-                                Aprovado
-                            </span>
-
-                        {% elif pedido.status == "CANCELADO" %}
-                            <span class="badge bg-danger">
-                                Cancelado
-                            </span>
-
-                        {% else %}
-                            <span class="badge bg-secondary">
-                                Em análise
-                            </span>
-                        {% endif %}
-                    </td>
-
-                    <td class="text-center">
-                        <a href="#" class="text-primary">
-                            <i class="fas fa-search"></i>
-                        </a>
-                    </td>
-                </tr>
-            {% empty %}
-                <tr>
-                    <td colspan="5" class="text-center">
-                        Nenhum pedido encontrado.
-                    </td>
-                </tr>
-            {% endfor %}
-
-            </tbody>
-        </table>
-    </div>
-</div>
-
-
 
 {% endblock %}

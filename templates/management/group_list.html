@@ -14,7 +14,7 @@
                 <input type="search" name="q" value="{{ search_query }}" placeholder="Pesquisar grupos" aria-label="Pesquisar grupos">
                 <button class="btn btn-outline-primary" type="submit">Pesquisar</button>
             </form>
-            {% if perms.auth.add_group %}<a class="btn btn-primary" href="{% url 'group_create' %}"><i class="bi bi-plus-lg"></i> Adicionar grupo</a>{% endif %}
+            {% if perms.auth.add_group %}<a class="btn btn-outline-primary" href="{% url 'group_create' %}"><i class="bi bi-plus-lg"></i> Adicionar grupo</a>{% endif %}
         </header>
         <div class="table-responsive">
             <table class="table management-table align-middle mb-0">

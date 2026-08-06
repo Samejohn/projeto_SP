@@ -27,7 +27,7 @@
                 <div class="col-12 d-flex flex-wrap gap-4">{% include 'management/_checkbox.html' with field=form.is_active %}{% include 'management/_checkbox.html' with field=form.is_staff %}</div>
             </div>
         </div>
-        <footer class="form-actions"><a class="btn btn-light" href="{% url 'user_list' %}">Cancelar</a><button class="btn btn-primary" type="submit"><i class="bi bi-check-lg"></i> Salvar</button></footer>
+        <footer class="form-actions"><a class="btn btn-light" href="{% url 'user_list' %}">Cancelar</a><button class="btn btn-outline-primary" type="submit"><i class="bi bi-check-lg"></i> Salvar</button></footer>
     </form>
 </div>
 {% endblock %}

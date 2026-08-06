@@ -14,7 +14,7 @@
                 <input type="search" name="q" value="{{ search_query }}" placeholder="Pesquisar produtos" aria-label="Pesquisar produtos">
                 <button class="btn btn-outline-primary" type="submit">Pesquisar</button>
             </form>
-            {% if perms.spi.add_descarte %}<a class="btn btn-primary" href="{% url 'discard_create' %}"><i class="bi bi-plus-lg"></i> Adicionar descarte</a>{% endif %}
+            {% if perms.spi.add_descarte %}<a class="btn btn-outline-primary" href="{% url 'discard_create' %}"><i class="bi bi-plus-lg"></i> Adicionar descarte</a>{% endif %}
         </header>
         <div class="table-responsive">
             <table class="table management-table align-middle mb-0">

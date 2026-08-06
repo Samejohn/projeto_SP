@@ -240,3 +240,15 @@ class InventarioForm(forms.ModelForm):
                 attrs={"rows": 3, "class": "form-control"}
             ),
         }
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,7 +1,7 @@
 {% extends 'adminlte/page.html' %}
 
 {% load static %}
-
+    <button id="theme-toggle" class="btn btn-link"> <i class="bi bi-moon-fill"></i></button>
 {% block title %}{% block page_title_text %}SPI{% endblock %} |Sistema de Pedidos Internos{% endblock %}
 
 {% block extra_css %}
@@ -22,4 +22,7 @@
 
 {% block content %}{% endblock %}
 
-{% block extra_js %}{% block page_js %}{% endblock %}{% endblock %}
+{% block extra_js %}
+    <script src="{% static 'js/theme.js' %}"></script>
+    {% block page_js %}{% endblock %}
+{% endblock %}

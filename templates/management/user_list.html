@@ -14,7 +14,7 @@
                 <input type="search" name="q" value="{{ search_query }}" placeholder="Pesquisar usuários" aria-label="Pesquisar usuários">
                 <button class="btn btn-outline-primary" type="submit">Pesquisar</button>
             </form>
-            {% if perms.auth.add_user %}<a class="btn btn-primary" href="{% url 'user_create' %}"><i class="bi bi-plus-lg"></i> Adicionar usuário</a>{% endif %}
+            {% if perms.auth.add_user %}<a class="btn btn-outline-primary" href="{% url 'user_create' %}"><i class="bi bi-plus-lg"></i> Adicionar usuário</a>{% endif %}
         </header>
         <div class="table-responsive">
             <table class="table management-table align-middle mb-0">

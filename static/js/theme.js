@@ -1,17 +1,9 @@
 const html = document.documentElement;
 
-const theme = localStorage.getItem("theme") || "light";
+const atual = html.getAttribute("data-bs-theme");
 
-html.setAttribute("data-bs-theme", theme);
-
-function toggleTheme(){
-
-    const current = html.getAttribute("data-bs-theme");
-
-    const next = current === "light" ? "dark" : "light";
-
-    html.setAttribute("data-bs-theme", next);
-
-    localStorage.setItem("theme", next);
-
+if(atual === "dark"){
+    html.setAttribute("data-bs-theme","light");
+}else{
+    html.setAttribute("data-bs-theme","dark");
 }
