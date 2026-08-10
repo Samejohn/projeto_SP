@@ -1,0 +1,155 @@
+{% extends 'base.html' %}
+
+{% block page_title_text %}Inventário{% endblock %}
+{% block page_title %}
+    {% if object %}
+        Editar Inventário
+    {% else %}
+        Novo Inventário
+    {% endif %}
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid management-shell">
+    {% include 'management/_messages.html' %}
+    <section class="management-card">
+    <div class="card card-outline card-primary shadow-sm">
+
+        <div class="card-header">
+            <h3 class="card-title">
+                <i class="bi bi-pc-display"></i>
+
+                {% if object %}
+                    Editar Item do Inventário
+                {% else %}
+                    Cadastrar Item do Inventário
+                {% endif %}
+            </h3>
+        </div>
+
+        <form method="post" novalidate>
+
+            {% csrf_token %}
+
+            <div class="card-body">
+
+                <div class="row">
+
+                    <div class="col-md-4 mb-3">
+                        <label>Nº Patrimônio</label>
+                        {{ form.numero_patrimonio }}
+                        {{ form.numero_patrimonio.errors }}
+                    </div>
+
+                    <div class="col-md-4 mb-3">
+                        <label>ID Ativo</label>
+                        {{ form.id_ativo }}
+                        {{ form.id_ativo.errors }}
+                    </div>
+
+                    <div class="col-md-4 mb-3">
+                        <label>Categoria</label>
+                        {{ form.categoria }}
+                        {{ form.categoria.errors }}
+                    </div>
+
+                </div>
+
+                <div class="row">
+
+                    <div class="col-md-6 mb-3">
+                        <label>Modelo</label>
+                        {{ form.item_modelo }}
+                        {{ form.item_modelo.errors }}
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+                        <label>Nº Série / Licença</label>
+                        {{ form.serie_licenca }}
+                        {{ form.serie_licenca.errors }}
+                    </div>
+
+                </div>
+
+                <div class="row">
+
+                    <div class="col-md-4 mb-3">
+                        <label>Data de Aquisição</label>
+                        {{ form.data_aquisicao }}
+                        {{ form.data_aquisicao.errors }}
+                    </div>
+
+                    <div class="col-md-4 mb-3">
+                        <label>Valor (R$)</label>
+                        {{ form.valor }}
+                        {{ form.valor.errors }}
+                    </div>
+
+                    <div class="col-md-4 mb-3">
+                        <label>Garantia</label>
+                        {{ form.validade_garantia }}
+                        {{ form.validade_garantia.errors }}
+                    </div>
+
+                </div>
+
+                <div class="row">
+
+                    <div class="col-md-4 mb-3">
+                        <label>Status</label>
+                        {{ form.status }}
+                        {{ form.status.errors }}
+                    </div>
+
+                    <div class="col-md-4 mb-3">
+                        <label>Setor</label>
+                        {{ form.setor }}
+                        {{ form.setor.errors }}
+                    </div>
+
+                    <div class="col-md-4 mb-3">
+                        <label>Usuário Responsável</label>
+                        {{ form.usuario }}
+                        {{ form.usuario.errors }}
+                    </div>
+
+                </div>
+
+                <div class="row">
+
+                    <div class="col-12 mb-3">
+                        <label>Observações</label>
+                        {{ form.observacoes }}
+                        {{ form.observacoes.errors }}
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div class="card-footer d-flex justify-content-between">
+
+                <a href="{% url 'inventory_list' %}" class="btn btn-secondary">
+                    <i class="bi bi-arrow-left"></i>
+                    Voltar
+                </a>
+
+                <button type="submit" class="btn btn-outline-primary">
+                    <i class="bi bi-floppy"></i>
+
+                    {% if object %}
+                        Atualizar
+                    {% else %}
+                        Salvar
+                    {% endif %}
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+</section>
+</div>
+
+{% endblock %}

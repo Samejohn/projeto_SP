@@ -219,29 +219,43 @@ class ManagedProdutoPedidoForm(BootstrapFormMixin, forms.ModelForm):
         self._apply_bootstrap_classes()
 
 #INVENTÁRIO
+from django import forms
+from spi.models import Inventario
+
+
 class InventarioForm(forms.ModelForm):
 
     class Meta:
         model = Inventario
-        fields = "__all__"  # Inclui todos os campos do model inventario
+        fields = "__all__"
 
-        # Opcional: Personalização de rótulos (labels)
-        labels = {
-            "motivo": "Motivo do inventario",
-            "data_inventario": "Data do inventario",
-        }
-
-        # Opcional: Personalização de widgets/HTML
         widgets = {
-            "data_inventario": forms.DateInput(
-                attrs={"type": "date", "class": "form-control"}
-            ),
-            "motivo": forms.Textarea(
-                attrs={"rows": 3, "class": "form-control"}
-            ),
+            "data_aquisicao": forms.DateInput(attrs={"type": "date"}),
+            "validade_garantia": forms.DateInput(attrs={"type": "date"}),
+            "observacoes": forms.Textarea(attrs={"rows": 4}),
         }
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
 
+        for field in self.fields.values():
+
+            if isinstance(field.widget, (
+                forms.Select,
+                forms.SelectMultiple,
+            )):
+                field.widget.attrs["class"] = "form-select"
+
+            elif isinstance(field.widget, forms.CheckboxInput):
+                field.widget.attrs["class"] = "form-check-input"
+
+            elif isinstance(field.widget, forms.Textarea):
+                field.widget.attrs["class"] = "form-control"
+
+            else:
+                field.widget.attrs["class"] = "form-control"
+
+            field.widget.attrs["autocomplete"] = "off"
 
 
 

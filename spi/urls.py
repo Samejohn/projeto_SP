@@ -49,5 +49,7 @@ urlpatterns = [
     path('gestao/descarte/<int:pk>/excluir/', views.DiscardDeleteView.as_view(), name='discard_delete'),
     #INVENTÁRIO
     path('gestao/inventario/', views.InventoryListView.as_view(), name='inventory_list'),
-
+    path('gestao/inventario/cadastrar/', views.InventoryCreateView.as_view(), name='inventory_create'),
+    path('gestao/inventario/<int:pk>/editar/', views.InventoryUpdateView.as_view(), name='inventory_update'),
+    path('gestao/inventario/<int:pk>/excluir/', views.InventoryDeleteView.as_view(), name='inventory_delete'),
 ]

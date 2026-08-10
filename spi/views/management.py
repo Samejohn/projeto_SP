@@ -20,6 +20,7 @@ from spi.forms import (
     ManagedUserForm,
     ManagedValorProdutoForm,
 )
+from spi.forms.management import InventarioForm
 from spi.models import (
     ControleData,
     Descarte,
@@ -155,7 +156,7 @@ class UserDeleteView(ManagementPermissionMixin, DeleteView):
         messages.success(self.request, "Usuário excluído com sucesso.")
         return super().form_valid(form)
 
-
+#GRUPOS 
 class GroupListView(ManagementPermissionMixin, SearchableListMixin, ListView):
     model = Group
     permission_required = "auth.view_group"
@@ -165,7 +166,6 @@ class GroupListView(ManagementPermissionMixin, SearchableListMixin, ListView):
 
     def get_queryset(self):
         return super().get_queryset().prefetch_related("permissions").order_by("name")
-
 
 class GroupCreateView(ManagementPermissionMixin, CreateView):
     model = Group
@@ -178,7 +178,6 @@ class GroupCreateView(ManagementPermissionMixin, CreateView):
         messages.success(self.request, "Grupo cadastrado com sucesso.")
         return super().form_valid(form)
 
-
 class GroupUpdateView(ManagementPermissionMixin, UpdateView):
     model = Group
     permission_required = "auth.change_group"
@@ -189,7 +188,6 @@ class GroupUpdateView(ManagementPermissionMixin, UpdateView):
     def form_valid(self, form):
         messages.success(self.request, "Grupo atualizado com sucesso.")
         return super().form_valid(form)
-
 
 class GroupDeleteView(ManagementPermissionMixin, DeleteView):
     model = Group
@@ -215,7 +213,6 @@ class ProductListView(ManagementPermissionMixin, SearchableListMixin, ListView):
             "responsavel_cadastro", "controle_data"
         ).order_by("nome")
 
-
 class ProductCreateView(ManagementPermissionMixin, CreateView):
     model = Produto
     permission_required = "spi.add_produto"
@@ -235,9 +232,6 @@ class ProductCreateView(ManagementPermissionMixin, CreateView):
         messages.success(self.request, "Produto cadastrado com sucesso.")
         return response
 
-  
-
-
 class ProductUpdateView(ManagementPermissionMixin, UpdateView):
     model = Produto
     permission_required = "spi.change_produto"
@@ -254,7 +248,6 @@ class ProductUpdateView(ManagementPermissionMixin, UpdateView):
         messages.success(self.request, "Produto atualizado com sucesso.")
         return response
 
-
 class ProductDeleteView(ManagementPermissionMixin, DeleteView):
     model = Produto
     permission_required = "spi.delete_produto"
@@ -266,7 +259,6 @@ class ProductDeleteView(ManagementPermissionMixin, DeleteView):
         messages.success(self.request, "Produto excluído com sucesso.")
         return super().form_valid(form)
 
-
 # FORNECEDORES
 class FornecedorListView(ManagementPermissionMixin, SearchableListMixin, ListView):
     model = Fornecedor
@@ -277,7 +269,6 @@ class FornecedorListView(ManagementPermissionMixin, SearchableListMixin, ListVie
 
     def get_queryset(self):
         return super().get_queryset().select_related("controle_data").order_by("nome_fornecedor")
-
 
 class FornecedorCreateView(ControleDataCreateMixin, ManagementPermissionMixin, CreateView):
     model = Fornecedor
@@ -293,7 +284,6 @@ class FornecedorCreateView(ControleDataCreateMixin, ManagementPermissionMixin, C
         "submit_label": "Salvar fornecedor",
     }
 
-
 class FornecedorUpdateView(ControleDataUpdateMixin, ManagementPermissionMixin, UpdateView):
     model = Fornecedor
     permission_required = "spi.change_fornecedor"
@@ -308,7 +298,6 @@ class FornecedorUpdateView(ControleDataUpdateMixin, ManagementPermissionMixin, U
         "submit_label": "Salvar fornecedor",
     }
 
-
 class FornecedorDeleteView(ProtectedDeleteMixin, ManagementPermissionMixin, DeleteView):
     model = Fornecedor
     permission_required = "spi.delete_fornecedor"
@@ -317,7 +306,6 @@ class FornecedorDeleteView(ProtectedDeleteMixin, ManagementPermissionMixin, Dele
     success_message = "Fornecedor excluído com sucesso."
     protected_message = "O fornecedor não pode ser excluído porque possui links vinculados."
     extra_context = {"object_label": "fornecedor", "cancel_url_name": "fornecedor_list"}
-
 
 # LINKS
 class LinkListView(ManagementPermissionMixin, SearchableListMixin, ListView):
@@ -329,8 +317,7 @@ class LinkListView(ManagementPermissionMixin, SearchableListMixin, ListView):
 
     def get_queryset(self):
         return super().get_queryset().select_related("fornecedor", "controle_data").order_by("nome")
-
-
+    
 class LinkCreateView(ControleDataCreateMixin, ManagementPermissionMixin, CreateView):
     model = Link
     permission_required = "spi.add_link"
@@ -344,8 +331,6 @@ class LinkCreateView(ControleDataCreateMixin, ManagementPermissionMixin, CreateV
         "cancel_url_name": "link_list",
         "submit_label": "Salvar link",
     }
-
-
 class LinkUpdateView(ControleDataUpdateMixin, ManagementPermissionMixin, UpdateView):
     model = Link
     permission_required = "spi.change_link"
@@ -360,7 +345,6 @@ class LinkUpdateView(ControleDataUpdateMixin, ManagementPermissionMixin, UpdateV
         "submit_label": "Salvar link",
     }
 
-
 class LinkDeleteView(ProtectedDeleteMixin, ManagementPermissionMixin, DeleteView):
     model = Link
     permission_required = "spi.delete_link"
@@ -369,7 +353,6 @@ class LinkDeleteView(ProtectedDeleteMixin, ManagementPermissionMixin, DeleteView
     success_message = "Link excluído com sucesso."
     protected_message = "O link não pode ser excluído porque possui valores de produtos vinculados."
     extra_context = {"object_label": "link", "cancel_url_name": "link_list"}
-
 
 # VALORES DE PRODUTOS
 class ValorProdutoListView(ManagementPermissionMixin, SearchableListMixin, ListView):
@@ -383,7 +366,6 @@ class ValorProdutoListView(ManagementPermissionMixin, SearchableListMixin, ListV
         return super().get_queryset().select_related(
             "produto", "link", "link__fornecedor", "controle_data"
         ).order_by("-controle_data__data_cadastro")
-
 
 class ValorProdutoCreateView(ControleDataCreateMixin, ManagementPermissionMixin, CreateView):
     model = ValorProduto
@@ -399,7 +381,6 @@ class ValorProdutoCreateView(ControleDataCreateMixin, ManagementPermissionMixin,
         "submit_label": "Salvar valor",
     }
 
-
 class ValorProdutoUpdateView(ControleDataUpdateMixin, ManagementPermissionMixin, UpdateView):
     model = ValorProduto
     permission_required = "spi.change_valorproduto"
@@ -414,7 +395,6 @@ class ValorProdutoUpdateView(ControleDataUpdateMixin, ManagementPermissionMixin,
         "submit_label": "Salvar valor",
     }
 
-
 class ValorProdutoDeleteView(ProtectedDeleteMixin, ManagementPermissionMixin, DeleteView):
     model = ValorProduto
     permission_required = "spi.delete_valorproduto"
@@ -422,7 +402,6 @@ class ValorProdutoDeleteView(ProtectedDeleteMixin, ManagementPermissionMixin, De
     success_url = reverse_lazy("valor_produto_list")
     success_message = "Valor de produto excluído com sucesso."
     extra_context = {"object_label": "valor de produto", "cancel_url_name": "valor_produto_list"}
-
 
 # PRODUTOS DE PEDIDOS
 class ProdutoPedidoListView(ManagementPermissionMixin, SearchableListMixin, ListView):
@@ -436,7 +415,6 @@ class ProdutoPedidoListView(ManagementPermissionMixin, SearchableListMixin, List
         return super().get_queryset().select_related("produto", "controle_data").order_by(
             "-controle_data__data_cadastro"
         )
-
 
 class ProdutoPedidoCreateView(ControleDataCreateMixin, ManagementPermissionMixin, CreateView):
     model = ProdutoPedido
@@ -452,7 +430,6 @@ class ProdutoPedidoCreateView(ControleDataCreateMixin, ManagementPermissionMixin
         "submit_label": "Salvar produto do pedido",
     }
 
-
 class ProdutoPedidoUpdateView(ControleDataUpdateMixin, ManagementPermissionMixin, UpdateView):
     model = ProdutoPedido
     permission_required = "spi.change_produtopedido"
@@ -467,7 +444,6 @@ class ProdutoPedidoUpdateView(ControleDataUpdateMixin, ManagementPermissionMixin
         "submit_label": "Salvar produto do pedido",
     }
 
-
 class ProdutoPedidoDeleteView(ProtectedDeleteMixin, ManagementPermissionMixin, DeleteView):
     model = ProdutoPedido
     permission_required = "spi.delete_produtopedido"
@@ -475,7 +451,6 @@ class ProdutoPedidoDeleteView(ProtectedDeleteMixin, ManagementPermissionMixin, D
     success_url = reverse_lazy("produto_pedido_list")
     success_message = "Produto do pedido excluído com sucesso."
     extra_context = {"object_label": "produto do pedido", "cancel_url_name": "produto_pedido_list"}
-
 
 
 # DESCARTES
@@ -496,7 +471,6 @@ class DiscardListView(ManagementPermissionMixin, SearchableListMixin, ListView):
             .order_by("-data_descarte")
         )
 
-
 class DiscardCreateView(ManagementPermissionMixin, CreateView):
     model = Descarte
     permission_required = "spi.add_descarte"
@@ -508,7 +482,6 @@ class DiscardCreateView(ManagementPermissionMixin, CreateView):
         messages.success(self.request, "Descarte cadastrado com sucesso.")
         return super().form_valid(form)
 
-
 class DiscardUpdateView(ManagementPermissionMixin, UpdateView):
     model = Descarte
     permission_required = "spi.change_descarte"
@@ -519,7 +492,6 @@ class DiscardUpdateView(ManagementPermissionMixin, UpdateView):
     def form_valid(self, form):
         messages.success(self.request, "Descarte atualizado com sucesso.")
         return super().form_valid(form)
-
 
 class DiscardDeleteView(ManagementPermissionMixin, DeleteView):
     model = Descarte
@@ -539,3 +511,35 @@ class InventoryListView(ManagementPermissionMixin, SearchableListMixin, ListView
     template_name = "management/inventory_list.html"
     context_object_name = "inventory"
     paginate_by = 20
+
+class InventoryCreateView(ManagementPermissionMixin, CreateView):
+    model = Inventario
+    permission_required = "spi.add_inventario"
+    form_class = InventarioForm
+    template_name = "management/inventory_form.html"
+    success_url = reverse_lazy("inventory_list")
+
+    def form_valid(self, form):
+        messages.success(self.request, "Inventário cadastrado com sucesso.")
+        return super().form_valid(form)
+class InventoryUpdateView(ManagementPermissionMixin, UpdateView):
+    model = Inventario
+    permission_required = "spi.change_inventario"
+    form_class = InventarioForm
+    template_name = "management/inventory_form.html"
+    success_url = reverse_lazy("inventory_list")
+
+    def form_valid(self, form):
+        messages.success(self.request, "Inventário atualizado com sucesso.")
+        return super().form_valid(form)
+
+class InventoryDeleteView(ManagementPermissionMixin, DeleteView):
+    model = Inventario
+    permission_required = "spi.delete_inventario"
+    template_name = "management/confirm_delete.html"
+    success_url = reverse_lazy("inventory_list")
+    extra_context = {"object_label": "inventário", "cancel_url_name": "inventory_list"}
+
+    def form_valid(self, form):
+        messages.success(self.request, "Inventário excluído com sucesso.")
+        return super().form_valid(form)

@@ -43,6 +43,9 @@ from .management import (
     DiscardUpdateView,
     DiscardDeleteView,
     InventoryListView,
+    InventoryCreateView,
+    InventoryUpdateView,
+    InventoryDeleteView,
 )
 
 
