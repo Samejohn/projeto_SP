@@ -1,10 +1,13 @@
 """Views responsáveis por fornecedores e seus links."""
 
 from django.contrib.auth.decorators import login_required, permission_required
+from django.db import transaction
+from django.http import JsonResponse
 from django.shortcuts import get_object_or_404
+from django.views.decorators.http import require_POST
 
 from spi.forms import ManagedFornecedorForm, ManagedLinkForm
-from spi.models import Fornecedor, Link
+from spi.models import ControleData, Fornecedor, Link
 
 from .helpers import delete_record, render_catalog_form, render_searchable_list
 
@@ -40,6 +43,38 @@ def create_supplier(request):
         "Cadastrar fornecedor",
         "Dados do fornecedor",
         "Salvar fornecedor",
+    )
+
+
+@require_POST
+@login_required
+@permission_required("spi.add_fornecedor", raise_exception=True)
+def create_supplier_from_product(request):
+    """Cadastra um fornecedor pelo modal do formulário de produto."""
+    supplier_form = ManagedFornecedorForm(request.POST)
+    if not supplier_form.is_valid():
+        return JsonResponse(
+            {"success": False, "errors": supplier_form.errors.get_json_data()},
+            status=400,
+        )
+
+    with transaction.atomic():
+        supplier_record = supplier_form.save(commit=False)
+        supplier_record.controle_data = ControleData.objects.create(
+            usuario_cadastro=request.user,
+            usuario_atualizacao=request.user,
+        )
+        supplier_record.save()
+
+    return JsonResponse(
+        {
+            "success": True,
+            "supplier": {
+                "id": supplier_record.id,
+                "name": supplier_record.nome_fornecedor,
+            },
+        },
+        status=201,
     )
 
 

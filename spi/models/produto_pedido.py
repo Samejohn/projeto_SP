@@ -16,6 +16,13 @@ class ProdutoPedido(models.Model):
         related_name="pedidos",
         verbose_name="Produto",
     )
+    link = models.ForeignKey(
+        "Link",
+        on_delete=models.PROTECT,
+        related_name="pedidos",
+        verbose_name="Link do produto",
+        null=True,
+    )
     quantidade_produto = models.PositiveIntegerField("Quantidade do produto")
     status = models.CharField(
         "Status",
@@ -37,3 +44,15 @@ class ProdutoPedido(models.Model):
 
     def __str__(self):
         return f"{self.nome} - {self.quantidade_produto} un."
+
+    def get_registered_product_value(self):
+        """Obtém o valor cadastrado para a combinação de produto e link."""
+        if not self.produto_id or not self.link_id:
+            return None
+
+        from .valor_produto import ValorProduto
+
+        return ValorProduto.objects.filter(
+            produto_id=self.produto_id,
+            link_id=self.link_id,
+        ).first()

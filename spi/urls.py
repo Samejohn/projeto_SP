@@ -25,12 +25,22 @@ urlpatterns = [
     # Produtos
     path("gestao/produtos/", views.list_products, name="product_list"),
     path("gestao/produtos/cadastrar/", views.create_product, name="product_create"),
+    path(
+        "gestao/produtos/cadastrar-no-modal/",
+        views.create_product_from_modal,
+        name="product_create_from_modal",
+    ),
     path("gestao/produtos/<int:product_id>/editar/", views.update_product, name="product_update"),
     path("gestao/produtos/<int:product_id>/excluir/", views.delete_product, name="product_delete"),
 
     # Fornecedores
     path("gestao/fornecedores/", views.list_suppliers, name="fornecedor_list"),
     path("gestao/fornecedores/cadastrar/", views.create_supplier, name="fornecedor_create"),
+    path(
+        "gestao/fornecedores/cadastrar-no-produto/",
+        views.create_supplier_from_product,
+        name="supplier_create_from_product",
+    ),
     path("gestao/fornecedores/<int:supplier_id>/editar/", views.update_supplier, name="fornecedor_update"),
     path("gestao/fornecedores/<int:supplier_id>/excluir/", views.delete_supplier, name="fornecedor_delete"),
 
@@ -60,4 +70,5 @@ urlpatterns = [
 
     # Inventário
     path("gestao/inventario/", views.list_inventory, name="inventory_list"),
+    path("gestao/inventario/cadastrar/", views.create_inventory, name="inventory_create"),
 ]

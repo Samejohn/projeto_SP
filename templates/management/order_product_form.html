@@ -1,0 +1,125 @@
+{% extends 'base.html' %}
+
+{% block page_title_text %}{{ form_title }}{% endblock %}
+{% block page_title %}{{ form_title }}{% endblock %}
+{% block breadcrumb_items %}<li class="breadcrumb-item"><a href="{% url cancel_url_name %}">Pedidos de produtos</a></li><li class="breadcrumb-item active">{{ form_title }}</li>{% endblock %}
+
+{% block content %}
+<div class="container-fluid management-shell">
+    <form method="post" class="management-card management-form" novalidate>
+        {% csrf_token %}
+        {% include 'management/_form_errors.html' %}
+
+        <section class="form-section">
+            <h2>{{ section_title }}</h2>
+            <div class="row g-3">
+                {% include 'management/_field.html' with field=form.nome column='col-12' %}
+                {% include 'management/_field.html' with field=form.descricao column='col-12' %}
+                {% include 'management/_field.html' with field=form.produto column='col-12 col-md-6' %}
+                <div class="col-12 col-md-6">
+                    <label class="form-label" for="{{ form.link.id_for_label }}">
+                        {{ form.link.label }} <span class="text-danger">*</span>
+                    </label>
+                    {{ form.link }}
+                    {% for error in form.link.errors %}<div class="invalid-feedback d-block">{{ error }}</div>{% endfor %}
+                    <div id="selected-product-value" class="form-text">Selecione um produto para visualizar seus links e valores.</div>
+                    <div id="selected-link-supplier" class="form-text"></div>
+                </div>
+                {% include 'management/_field.html' with field=form.quantidade_produto column='col-12 col-md-6' %}
+                {% if form.status %}
+                    {% include 'management/_field.html' with field=form.status column='col-12 col-md-6' %}
+                {% endif %}
+            </div>
+        </section>
+
+        <footer class="form-actions">
+            <a class="btn btn-light" href="{% url cancel_url_name %}">Cancelar</a>
+            <button class="btn btn-outline-primary" type="submit"><i class="bi bi-check-lg"></i> {{ submit_label }}</button>
+        </footer>
+    </form>
+</div>
+{% endblock %}
+
+{% block page_js %}
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    const productSelect = document.getElementById("id_produto");
+    const productLinkSelect = document.getElementById("id_link");
+    const selectedValueMessage = document.getElementById("selected-product-value");
+    const selectedSupplierMessage = document.getElementById("selected-link-supplier");
+    const productLinkOptions = Array.from(productLinkSelect.options);
+
+    function formatCurrency(rawValue) {
+        return new Intl.NumberFormat("pt-BR", {
+            style: "currency",
+            currency: "BRL",
+        }).format(Number(rawValue));
+    }
+
+    function updateSelectedValueMessage() {
+        const selectedOption = productLinkSelect.selectedOptions[0];
+        const valuesByProduct = selectedOption?.dataset.productValues
+            ? JSON.parse(selectedOption.dataset.productValues)
+            : {};
+        const selectedValue = valuesByProduct[productSelect.value];
+
+        if (selectedValue) {
+            selectedValueMessage.textContent = `Valor do link selecionado: ${formatCurrency(selectedValue)}`;
+            selectedSupplierMessage.textContent = `Fornecedor do link selecionado: ${selectedOption.dataset.supplierName}`;
+        } else if (productSelect.value) {
+            selectedValueMessage.textContent = "Selecione um dos links disponíveis para este produto.";
+            selectedSupplierMessage.textContent = "";
+        } else {
+            selectedValueMessage.textContent = "Selecione um produto para visualizar seus links e valores.";
+            selectedSupplierMessage.textContent = "";
+        }
+    }
+
+    function filterLinksByProduct() {
+        const selectedProductId = productSelect.value;
+        let availableLinkCount = 0;
+
+        productLinkOptions.forEach(function (productLinkOption) {
+            if (!productLinkOption.value) {
+                productLinkOption.hidden = false;
+                productLinkOption.disabled = false;
+                return;
+            }
+
+            const valuesByProduct = JSON.parse(
+                productLinkOption.dataset.productValues || "{}"
+            );
+            const belongsToSelectedProduct = Boolean(
+                selectedProductId && valuesByProduct[selectedProductId]
+            );
+            productLinkOption.hidden = !belongsToSelectedProduct;
+            productLinkOption.disabled = !belongsToSelectedProduct;
+            if (belongsToSelectedProduct) {
+                availableLinkCount += 1;
+            }
+        });
+
+        const selectedLink = productLinkSelect.selectedOptions[0];
+        const selectedLinkValues = selectedLink?.dataset.productValues
+            ? JSON.parse(selectedLink.dataset.productValues)
+            : {};
+        if (selectedLink?.value && !selectedLinkValues[selectedProductId]) {
+            productLinkSelect.value = "";
+        }
+
+        productLinkSelect.disabled = !selectedProductId;
+        if (selectedProductId && availableLinkCount === 0) {
+            productLinkSelect.value = "";
+            selectedValueMessage.textContent = "Este produto ainda não possui links e valores cadastrados.";
+            selectedSupplierMessage.textContent = "";
+            return;
+        }
+        updateSelectedValueMessage();
+    }
+
+    productSelect.addEventListener("change", filterLinksByProduct);
+    productLinkSelect.addEventListener("change", updateSelectedValueMessage);
+    filterLinksByProduct();
+});
+</script>
+{% endblock %}

@@ -4,7 +4,7 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required, permission_required
 from django.shortcuts import get_object_or_404, redirect, render
 
-from spi.forms import DescarteForm
+from spi.forms import DescarteForm, InventarioForm
 from spi.models import Descarte, Inventario
 
 from .helpers import delete_record, render_searchable_list
@@ -85,7 +85,32 @@ def list_inventory(request):
     return render_searchable_list(
         request,
         inventory_records,
-        (),
+        (
+            "numero_patrimonio",
+            "id_ativo",
+            "item_modelo",
+            "serie_licenca",
+            "setor",
+            "usuario__username",
+        ),
         "management/inventory_list.html",
         "inventory",
+    )
+
+
+@login_required
+@permission_required("spi.add_inventario", raise_exception=True)
+def create_inventory(request):
+    submitted_data = request.POST if request.method == "POST" else None
+    inventory_form = InventarioForm(submitted_data)
+
+    if request.method == "POST" and inventory_form.is_valid():
+        inventory_form.save()
+        messages.success(request, "Item cadastrado no inventário com sucesso.")
+        return redirect("inventory_list")
+
+    return render(
+        request,
+        "management/inventory_form.html",
+        {"form": inventory_form, "object": None},
     )

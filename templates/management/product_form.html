@@ -9,14 +9,228 @@
     <form method="post" class="management-card management-form" novalidate>
         {% csrf_token %}
         {% include 'management/_form_errors.html' %}
-        <div class="form-section">
-            <h2>Dados do produto</h2>
-            <div class="row g-3">
-                {% include 'management/_field.html' with field=form.nome column='col-md-8' %}
-                {% include 'management/_field.html' with field=form.codigo_barras column='col-md-4' %}
+
+        <section class="form-section">
+            <h2>Fornecedor</h2>
+            <div class="row g-3 align-items-end">
+                {% include 'management/_field.html' with field=link_form.fornecedor column='col-12 col-md-9' %}
+                {% if perms.spi.add_fornecedor %}
+                    <div class="col-12 col-md-3">
+                        <button class="btn btn-outline-primary w-100" type="button" data-bs-toggle="modal" data-bs-target="#supplier-modal">
+                            <i class="bi bi-plus-lg"></i> Adicionar fornecedor
+                        </button>
+                    </div>
+                {% endif %}
             </div>
-        </div>
-        <footer class="form-actions"><a class="btn btn-light" href="{% url 'product_list' %}">Cancelar</a><button class="btn btn-outline-primary" type="submit"><i class="bi bi-check-lg"></i> Salvar produto</button></footer>
+        </section>
+
+        <section class="form-section mt-4">
+            <h2>Dados do produto</h2>
+            {% if object %}
+            <div class="row g-3">
+                {% include 'management/_field.html' with field=form.nome column='col-12 col-md-8' %}
+                {% include 'management/_field.html' with field=form.codigo_barras column='col-12 col-md-4' %}
+            </div>
+            {% else %}
+            <div class="row g-3 align-items-end">
+                {% include 'management/_field.html' with field=product_selection_form.produto column='col-12 col-md-9' %}
+                {% if perms.spi.add_produto %}
+                    <div class="col-12 col-md-3">
+                        <button class="btn btn-outline-primary w-100" type="button" data-bs-toggle="modal" data-bs-target="#product-modal">
+                            <i class="bi bi-plus-lg"></i> Cadastrar produto
+                        </button>
+                    </div>
+                {% endif %}
+            </div>
+            {% endif %}
+        </section>
+
+        <section class="form-section mt-4">
+            <h2>Dados do link</h2>
+            {% if link_form.non_field_errors %}<div class="alert alert-danger">{{ link_form.non_field_errors }}</div>{% endif %}
+            <div class="row g-3">
+                {% include 'management/_field.html' with field=link_form.nome column='col-12 col-md-5' %}
+                {% include 'management/_field.html' with field=link_form.url column='col-12 col-md-7' %}
+            </div>
+        </section>
+
+        <section class="form-section mt-4">
+            <h2>Valor do produto</h2>
+            {% if product_value_form.non_field_errors %}<div class="alert alert-danger">{{ product_value_form.non_field_errors }}</div>{% endif %}
+            <div class="row g-3">
+                {% include 'management/_field.html' with field=product_value_form.valor column='col-12 col-md-4' %}
+            </div>
+        </section>
+
+        <footer class="form-actions">
+            <a class="btn btn-light" href="{% url 'product_list' %}">Cancelar</a>
+            <button class="btn btn-outline-primary" type="submit"><i class="bi bi-check-lg"></i> Salvar produto</button>
+        </footer>
     </form>
 </div>
+
+{% if not object and perms.spi.add_produto %}
+<div class="modal fade" id="product-modal" tabindex="-1" aria-labelledby="product-modal-title" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content">
+            <form id="product-modal-form" action="{% url 'product_create_from_modal' %}" method="post" novalidate>
+                {% csrf_token %}
+                <div class="modal-header">
+                    <h2 class="modal-title fs-5" id="product-modal-title">Cadastrar produto</h2>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+                </div>
+                <div class="modal-body">
+                    <div id="product-modal-errors" class="alert alert-danger d-none" role="alert"></div>
+                    <div class="row g-3">
+                        {% include 'management/_field.html' with field=new_product_form.nome column='col-12 col-md-8' %}
+                        {% include 'management/_field.html' with field=new_product_form.codigo_barras column='col-12 col-md-4' %}
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancelar</button>
+                    <button id="save-product-button" type="submit" class="btn btn-outline-primary">
+                        <i class="bi bi-check-lg"></i> Salvar produto
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+{% if perms.spi.add_fornecedor %}
+<div class="modal fade" id="supplier-modal" tabindex="-1" aria-labelledby="supplier-modal-title" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content">
+            <form id="supplier-modal-form" action="{% url 'supplier_create_from_product' %}" method="post" novalidate>
+                {% csrf_token %}
+                <div class="modal-header">
+                    <h2 class="modal-title fs-5" id="supplier-modal-title">Adicionar fornecedor</h2>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+                </div>
+                <div class="modal-body">
+                    <div id="supplier-modal-errors" class="alert alert-danger d-none" role="alert"></div>
+                    <div class="row g-3">
+                        {% include 'management/_field.html' with field=supplier_form.nome_fornecedor column='col-12' %}
+                        {% include 'management/_field.html' with field=supplier_form.cnpj_cnpj column='col-12 col-md-6' %}
+                        {% include 'management/_field.html' with field=supplier_form.telefone_fornecedor column='col-12 col-md-6' %}
+                        {% include 'management/_field.html' with field=supplier_form.responsavel_forncedor column='col-12' %}
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancelar</button>
+                    <button id="save-supplier-button" type="submit" class="btn btn-outline-primary">
+                        <i class="bi bi-check-lg"></i> Salvar fornecedor
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endif %}
+{% endblock %}
+
+{% block page_js %}
+{% if not object and perms.spi.add_produto %}
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    const productForm = document.getElementById("product-modal-form");
+    const productSelect = document.getElementById("id_produto");
+    const errorContainer = document.getElementById("product-modal-errors");
+    const saveButton = document.getElementById("save-product-button");
+    const productModalElement = document.getElementById("product-modal");
+
+    productForm.addEventListener("submit", async function (submitEvent) {
+        submitEvent.preventDefault();
+        errorContainer.classList.add("d-none");
+        errorContainer.replaceChildren();
+        saveButton.disabled = true;
+
+        try {
+            const serverResponse = await fetch(productForm.action, {
+                method: "POST",
+                body: new FormData(productForm),
+                headers: {"X-Requested-With": "XMLHttpRequest"},
+            });
+            const responseData = await serverResponse.json();
+
+            if (!serverResponse.ok) {
+                const validationMessages = Object.values(responseData.errors || {})
+                    .flat()
+                    .map(function (validationError) { return validationError.message; });
+                errorContainer.textContent = validationMessages.join(" ") || "Não foi possível cadastrar o produto.";
+                errorContainer.classList.remove("d-none");
+                return;
+            }
+
+            const productOption = new Option(
+                `${responseData.product.name} — ${responseData.product.barcode}`,
+                responseData.product.id,
+                true,
+                true
+            );
+            productSelect.add(productOption);
+            productForm.reset();
+            bootstrap.Modal.getOrCreateInstance(productModalElement).hide();
+        } catch (requestError) {
+            errorContainer.textContent = "Não foi possível comunicar com o servidor. Tente novamente.";
+            errorContainer.classList.remove("d-none");
+        } finally {
+            saveButton.disabled = false;
+        }
+    });
+});
+</script>
+{% endif %}
+{% if perms.spi.add_fornecedor %}
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    const supplierForm = document.getElementById("supplier-modal-form");
+    const supplierSelect = document.getElementById("id_link-fornecedor");
+    const errorContainer = document.getElementById("supplier-modal-errors");
+    const saveButton = document.getElementById("save-supplier-button");
+    const supplierModalElement = document.getElementById("supplier-modal");
+
+    supplierForm.addEventListener("submit", async function (submitEvent) {
+        submitEvent.preventDefault();
+        errorContainer.classList.add("d-none");
+        errorContainer.replaceChildren();
+        saveButton.disabled = true;
+
+        try {
+            const serverResponse = await fetch(supplierForm.action, {
+                method: "POST",
+                body: new FormData(supplierForm),
+                headers: {"X-Requested-With": "XMLHttpRequest"},
+            });
+            const responseData = await serverResponse.json();
+
+            if (!serverResponse.ok) {
+                const validationMessages = Object.values(responseData.errors || {})
+                    .flat()
+                    .map(function (validationError) { return validationError.message; });
+                errorContainer.textContent = validationMessages.join(" ") || "Não foi possível cadastrar o fornecedor.";
+                errorContainer.classList.remove("d-none");
+                return;
+            }
+
+            const supplierOption = new Option(
+                responseData.supplier.name,
+                responseData.supplier.id,
+                true,
+                true
+            );
+            supplierSelect.add(supplierOption);
+            supplierForm.reset();
+            bootstrap.Modal.getOrCreateInstance(supplierModalElement).hide();
+        } catch (requestError) {
+            errorContainer.textContent = "Não foi possível comunicar com o servidor. Tente novamente.";
+            errorContainer.classList.remove("d-none");
+        } finally {
+            saveButton.disabled = false;
+        }
+    });
+});
+</script>
+{% endif %}
 {% endblock %}

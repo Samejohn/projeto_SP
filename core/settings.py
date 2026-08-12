@@ -181,37 +181,28 @@ ADMINLTE = {
     'menu': [
         {'text': 'Início', 'icon': 'bi bi-house-door-fill', 'route': 'dashboard'},
         {
-            'text': 'Autenticação',
-            'icon': 'bi bi-briefcase-fill',
-            'can': is_administrator,
-            'submenu': [
-                {'text': 'Usuários', 'icon': 'bi bi-people', 'route': 'user_list', 'can': 'auth.view_user'},
-                {'text': 'Grupos', 'icon': 'bi bi-collection', 'route': 'group_list', 'can': 'auth.view_group'},
-            ],           
+            'text': 'Pedidos de produtos',
+            'icon': 'bi bi-cart-check',
+            'route': 'produto_pedido_list',
+            'can': 'spi.view_produtopedido',
         },
-
         {
-        'text': 'Produtos',
-        'icon': 'bi bi-box-seam',
-        'can': is_administrator,
-        'submenu': [
-            {'text': 'Cadastrar', 'icon': 'bi bi-box-seam', 'route': 'product_list', 'can': 'spi.view_produto'},
-            {'text': 'Links', 'icon': 'bi bi-link-45deg', 'route': 'link_list', 'can': 'spi.view_link'},
-            {'text': 'Valores de produtos', 'icon': 'bi bi-currency-dollar', 'route': 'valor_produto_list', 'can': 'spi.view_valorproduto'},
-            {'text': 'Pedidos de Produtos', 'icon': 'bi bi-cart-check', 'route': 'produto_pedido_list', 'can': 'spi.view_produtopedido'},
-        ],           
+            'text': 'Produtos',
+            'icon': 'bi bi-box-seam',
+            'route': 'product_list',
+            'can': 'spi.view_produto',
         },
-
         {
-        'text': 'Fornecedores','icon': 'bi bi-building','route': 'fornecedor_list','can': 'spi.view_fornecedor',
+            'text': 'Descarte',
+            'icon': 'bi bi-trash',
+            'route': 'discard_list',
+            'can': 'spi.view_descarte',
         },
-
         {
-        'text': 'Descartes','icon': 'bi bi-trash','route': 'discard_list','can': 'spi.view_descarte',
+            'text': 'Inventário',
+            'icon': 'bi bi-clipboard2-data-fill',
+            'route': 'inventory_list',
+            'can': 'spi.view_inventario',
         },
-
-        {'text': 'Inventário','icon': 'bi bi-clipboard2-data-fill','route': 'inventory_list','can': 'spi.view_inventario',
-        },
-
     ],
 }

@@ -51,6 +51,7 @@ def render_catalog_form(
     section_title,
     submit_label,
     database_record=None,
+    template_name="management/catalog_form.html",
 ):
     """Processa formulários que possuem dados de controle de criação e edição."""
     submitted_data = request.POST if request.method == "POST" else None
@@ -86,7 +87,7 @@ def render_catalog_form(
         "cancel_url_name": success_route_name,
         "submit_label": submit_label,
     }
-    return render(request, "management/catalog_form.html", template_context)
+    return render(request, template_name, template_context)
 
 
 def delete_record(

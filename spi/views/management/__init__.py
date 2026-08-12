@@ -12,6 +12,7 @@ from .access import (
 )
 from .inventory import (
     create_discard,
+    create_inventory,
     delete_discard,
     list_discards,
     list_inventory,
@@ -20,6 +21,7 @@ from .inventory import (
 from .products import (
     create_order_product,
     create_product,
+    create_product_from_modal,
     create_product_value,
     delete_order_product,
     delete_product,
@@ -34,6 +36,7 @@ from .products import (
 from .suppliers import (
     create_link,
     create_supplier,
+    create_supplier_from_product,
     delete_link,
     delete_supplier,
     list_links,
@@ -46,11 +49,14 @@ from .suppliers import (
 __all__ = [
     "create_discard",
     "create_group",
+    "create_inventory",
     "create_link",
     "create_order_product",
     "create_product",
+    "create_product_from_modal",
     "create_product_value",
     "create_supplier",
+    "create_supplier_from_product",
     "create_user",
     "delete_discard",
     "delete_group",

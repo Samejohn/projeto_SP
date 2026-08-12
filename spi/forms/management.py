@@ -1,3 +1,5 @@
+import json
+
 from django import forms
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Group
@@ -113,6 +115,43 @@ class ManagedProductForm(BootstrapFormMixin, forms.ModelForm):
         super().__init__(*args, **kwargs)
         self._apply_bootstrap_classes()
 
+    def clean(self):
+        cleaned_data = super().clean()
+        product_name = cleaned_data.get("nome")
+        barcode = cleaned_data.get("codigo_barras")
+        if not product_name or not barcode:
+            return cleaned_data
+
+        product_with_same_identity = Produto.objects.filter(
+            nome__iexact=product_name,
+            codigo_barras=barcode,
+        ).exclude(id=self.instance.id)
+        if product_with_same_identity.exists():
+            self.add_error(
+                "codigo_barras",
+                "Não é possível cadastrar: já existe um produto com este nome e código de barras.",
+            )
+        return cleaned_data
+
+
+class ManagedProductSelectionForm(BootstrapFormMixin, forms.Form):
+    produto = forms.ModelChoiceField(
+        label="Produto cadastrado",
+        queryset=Produto.objects.none(),
+        empty_label="Selecione um produto",
+    )
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        product_field = self.fields["produto"]
+        product_field.queryset = Produto.objects.order_by("nome", "codigo_barras")
+        product_field.label_from_instance = self._get_product_label
+        self._apply_bootstrap_classes()
+
+    @staticmethod
+    def _get_product_label(product_record):
+        return f"{product_record.nome} — {product_record.codigo_barras}"
+
 
 #Descarte
 
@@ -197,14 +236,48 @@ class ManagedValorProdutoForm(BootstrapFormMixin, forms.ModelForm):
         self._apply_bootstrap_classes()
 
 
+class ProductLinkSelect(forms.Select):
+    """Inclui os valores de cada produto nos atributos da opção de link."""
+
+    def create_option(self, name, value, label, selected, index, subindex=None, attrs=None):
+        option = super().create_option(
+            name,
+            value,
+            label,
+            selected,
+            index,
+            subindex=subindex,
+            attrs=attrs,
+        )
+        link_record = getattr(value, "instance", None)
+        if link_record is not None:
+            values_by_product = {}
+            for product_value_record in link_record.valores_produtos.all():
+                product_id = str(product_value_record.produto_id)
+                values_by_product.setdefault(product_id, str(product_value_record.valor))
+            option["attrs"]["data-product-values"] = json.dumps(values_by_product)
+            option["attrs"]["data-supplier-name"] = (
+                link_record.fornecedor.nome_fornecedor
+            )
+        return option
+
+
 class ManagedProdutoPedidoForm(BootstrapFormMixin, forms.ModelForm):
     class Meta:
         model = ProdutoPedido
-        fields = ("nome", "descricao", "produto", "quantidade_produto", "status")
+        fields = (
+            "nome",
+            "descricao",
+            "produto",
+            "link",
+            "quantidade_produto",
+            "status",
+        )
         labels = {
             "nome": "Nome do item",
             "descricao": "Descrição",
             "produto": "Produto",
+            "link": "Link do produto",
             "quantidade_produto": "Quantidade",
             "status": "Status",
         }
@@ -216,14 +289,69 @@ class ManagedProdutoPedidoForm(BootstrapFormMixin, forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields["produto"].queryset = Produto.objects.order_by("nome")
+        link_field = self.fields["link"]
+        link_field.required = True
+        link_field.widget = ProductLinkSelect()
+        link_field.queryset = Link.objects.filter(
+            valores_produtos__isnull=False
+        ).select_related("fornecedor").prefetch_related(
+            "valores_produtos"
+        ).order_by("nome").distinct()
+        link_field.label_from_instance = self._get_link_label
         self._apply_bootstrap_classes()
 
-#INVENTÁRIO
-from django import forms
-from spi.models import Inventario
+    @staticmethod
+    def _get_link_label(link_record):
+        return f"{link_record.nome} — {link_record.fornecedor.nome_fornecedor}"
+
+    def clean(self):
+        cleaned_data = super().clean()
+        selected_product = cleaned_data.get("produto")
+        selected_link = cleaned_data.get("link")
+        if (
+            selected_product
+            and selected_link
+            and not ValorProduto.objects.filter(
+                produto=selected_product,
+                link=selected_link,
+            ).exists()
+        ):
+            self.add_error(
+                "link",
+                "Selecione um link pertencente ao produto informado.",
+            )
+        return cleaned_data
 
 
-class InventarioForm(forms.ModelForm):
+class ManagedOrderProductCreateForm(ManagedProdutoPedidoForm):
+    """Cadastro de pedido sem status, utilizando o padrão definido no modelo."""
+
+    class Meta(ManagedProdutoPedidoForm.Meta):
+        fields = (
+            "nome",
+            "descricao",
+            "produto",
+            "link",
+            "quantidade_produto",
+        )
+
+
+class ManagedProductValueAmountForm(BootstrapFormMixin, forms.ModelForm):
+    """Formulário usado quando produto e link ainda serão criados juntos."""
+
+    class Meta:
+        model = ValorProduto
+        fields = ("valor",)
+        labels = {"valor": "Valor do produto"}
+        widgets = {"valor": forms.NumberInput(attrs={"min": "0", "step": "0.01"})}
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self._apply_bootstrap_classes()
+
+
+# Inventário
+class InventarioForm(BootstrapFormMixin, forms.ModelForm):
 
     class Meta:
         model = Inventario
@@ -237,32 +365,7 @@ class InventarioForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-
+        self._apply_bootstrap_classes()
         for field in self.fields.values():
-
-            if isinstance(field.widget, (
-                forms.Select,
-                forms.SelectMultiple,
-            )):
-                field.widget.attrs["class"] = "form-select"
-
-            elif isinstance(field.widget, forms.CheckboxInput):
-                field.widget.attrs["class"] = "form-check-input"
-
-            elif isinstance(field.widget, forms.Textarea):
-                field.widget.attrs["class"] = "form-control"
-
-            else:
-                field.widget.attrs["class"] = "form-control"
-
             field.widget.attrs["autocomplete"] = "off"
-
-
-
-
-
-
-
-
-
 
