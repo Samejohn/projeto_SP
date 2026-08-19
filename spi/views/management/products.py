@@ -33,6 +33,7 @@ def list_products(request):
         product_records,
         (
             "nome",
+            "descricao",
             "codigo_barras",
             "responsavel_cadastro__username",
         ),
@@ -130,6 +131,7 @@ def create_product_from_modal(request):
             "product": {
                 "id": product_record.id,
                 "name": product_record.nome,
+                "description": product_record.descricao,
                 "barcode": product_record.codigo_barras,
             },
         },
@@ -251,6 +253,7 @@ def list_product_values(request):
         product_value_records,
         (
             "produto__nome",
+            "produto__descricao",
             "produto__codigo_barras",
             "link__nome",
             "link__fornecedor__nome_fornecedor",

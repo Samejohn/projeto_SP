@@ -25,7 +25,7 @@ def list_suppliers(request):
             "nome_fornecedor",
             "cnpj_cnpj",
             "telefone_fornecedor",
-            "responsavel_forncedor",
+            "responsavel_fornecedor",
         ),
         "management/fornecedor_list.html",
         "fornecedores",

@@ -25,7 +25,7 @@
                         <td><strong>{{ fornecedor.nome_fornecedor }}</strong></td>
                         <td>{{ fornecedor.cnpj_cnpj }}</td>
                         <td>{{ fornecedor.telefone_fornecedor }}</td>
-                        <td>{{ fornecedor.responsavel_forncedor }}</td>
+                        <td>{{ fornecedor.responsavel_fornecedor }}</td>
                         <td>{{ fornecedor.controle_data.data_atualizacao|date:"d/m/Y H:i" }}</td>
                         <td class="text-end text-nowrap">
                             {% if perms.spi.change_fornecedor %}<a class="btn btn-sm btn-outline-primary" href="{% url 'fornecedor_update' fornecedor.pk %}" title="Editar fornecedor"><i class="bi bi-pencil"></i></a>{% endif %}

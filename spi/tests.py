@@ -30,6 +30,7 @@ class DashboardTests(TestCase):
             )
             produto = Produto.objects.create(
                 nome=f"Produto {index}",
+                descricao=f"Descrição do produto {index}",
                 codigo_barras=f"78900000010{index}",
                 responsavel_cadastro=self.user,
                 controle_data=controle,
@@ -66,7 +67,7 @@ class ProductManagementTests(TestCase):
             nome_fornecedor="Fornecedor de produtos",
             cnpj_cnpj="00.000.000/0010-00",
             telefone_fornecedor="(82) 99999-0010",
-            responsavel_forncedor="Responsável",
+            responsavel_fornecedor="Responsável",
             controle_data=supplier_control_data,
         )
 
@@ -75,6 +76,7 @@ class ProductManagementTests(TestCase):
             reverse("product_create_from_modal"),
             {
                 "nome": "Produto de teste",
+                "descricao": "Descrição do produto de teste",
                 "codigo_barras": "789000000001",
             },
             HTTP_X_REQUESTED_WITH="XMLHttpRequest",
@@ -112,6 +114,7 @@ class ProductManagementTests(TestCase):
             reverse("product_create_from_modal"),
             {
                 "nome": "Produto duplicado",
+                "descricao": "Descrição do produto duplicado",
                 "codigo_barras": "789000000099",
             },
             HTTP_X_REQUESTED_WITH="XMLHttpRequest",
@@ -138,7 +141,7 @@ class ProductManagementTests(TestCase):
         for barcode in ("789000000097", "789000000098"):
             response = self.client.post(
                 reverse("product_create_from_modal"),
-                {"nome": "Produto com variações", "codigo_barras": barcode},
+                {"nome": "Produto com variações", "descricao": "Descrição do produto com variações", "codigo_barras": barcode},
                 HTTP_X_REQUESTED_WITH="XMLHttpRequest",
             )
             self.assertEqual(response.status_code, 201)
@@ -155,6 +158,7 @@ class ProductManagementTests(TestCase):
         )
         product = Produto.objects.create(
             nome="Nome inicial",
+            descricao="Descrição inicial",
             codigo_barras="789000000002",
             responsavel_cadastro=self.user,
             controle_data=controle_data,
@@ -183,6 +187,7 @@ class ProductManagementTests(TestCase):
             reverse("product_update", args=(product.pk,)),
             {
                 "nome": "Nome atualizado",
+                "descricao": "Descrição atualizada",
                 "codigo_barras": product.codigo_barras,
                 "link-nome": "Link atualizado",
                 "link-url": "https://example.com/atualizado",
@@ -209,6 +214,7 @@ class ProductManagementTests(TestCase):
         )
         Produto.objects.create(
             nome="Produto listado",
+            descricao="Descrição do produto listado",
             codigo_barras="789000000003",
             responsavel_cadastro=self.user,
             controle_data=controle_data,
@@ -276,6 +282,7 @@ class CatalogManagementTests(TestCase):
         )
         self.produto = Produto.objects.create(
             nome="Notebook",
+            descricao="Notebook de desenvolvimento",
             codigo_barras="789100000001",
             responsavel_cadastro=self.user,
             controle_data=controle_produto,
@@ -304,7 +311,7 @@ class CatalogManagementTests(TestCase):
                 "nome_fornecedor": "Fornecedor teste",
                 "cnpj_cnpj": "00.000.000/0001-00",
                 "telefone_fornecedor": "(82) 99999-0000",
-                "responsavel_forncedor": "Maria",
+                "responsavel_fornecedor": "Maria",
             },
         )
         self.assertRedirects(response, reverse("fornecedor_list"))
@@ -387,7 +394,7 @@ class CatalogManagementTests(TestCase):
                 "nome_fornecedor": "Fornecedor cadastrado no modal",
                 "cnpj_cnpj": "00.000.000/0004-00",
                 "telefone_fornecedor": "(82) 99999-0004",
-                "responsavel_forncedor": "Carlos",
+                "responsavel_fornecedor": "Carlos",
             },
             HTTP_X_REQUESTED_WITH="XMLHttpRequest",
         )
@@ -415,7 +422,7 @@ class CatalogManagementTests(TestCase):
             nome_fornecedor="Nome inicial",
             cnpj_cnpj="00.000.000/0002-00",
             telefone_fornecedor="(82) 3333-0000",
-            responsavel_forncedor="João",
+            responsavel_fornecedor="João",
             controle_data=controle,
         )
         editor = get_user_model().objects.create_superuser(
@@ -431,7 +438,7 @@ class CatalogManagementTests(TestCase):
                 "nome_fornecedor": "Nome atualizado",
                 "cnpj_cnpj": fornecedor.cnpj_cnpj,
                 "telefone_fornecedor": fornecedor.telefone_fornecedor,
-                "responsavel_forncedor": fornecedor.responsavel_forncedor,
+                "responsavel_fornecedor": fornecedor.responsavel_fornecedor,
             },
         )
 
@@ -451,7 +458,7 @@ class CatalogManagementTests(TestCase):
             nome_fornecedor="Fornecedor removível",
             cnpj_cnpj="00.000.000/0003-00",
             telefone_fornecedor="(82) 3333-0001",
-            responsavel_forncedor="Ana",
+            responsavel_fornecedor="Ana",
             controle_data=controle,
         )
 
@@ -459,3 +466,4 @@ class CatalogManagementTests(TestCase):
 
         self.assertRedirects(response, reverse("fornecedor_list"))
         self.assertFalse(Fornecedor.objects.filter(pk=fornecedor.pk).exists())
+

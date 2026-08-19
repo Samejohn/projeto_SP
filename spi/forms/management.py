@@ -102,13 +102,14 @@ class ManagedGroupForm(BootstrapFormMixin, forms.ModelForm):
 class ManagedProductForm(BootstrapFormMixin, forms.ModelForm):
     class Meta:
         model = Produto
-        fields = ("nome", "codigo_barras")
+        fields = ("nome", "descricao", "codigo_barras")
         labels = {
             "nome": "Nome do produto",
+            "descricao": "Descrição",
             "codigo_barras": "Código de barras",
         }
         widgets = {
-            "codigo_barras": forms.TextInput(attrs={"placeholder": "Digite ou leia o código de barras"}),
+            "codigo_barras": forms.TextInput(attrs={"placeholder": "Digite o código de barras"}),
         }
 
     def __init__(self, *args, **kwargs):
@@ -118,12 +119,14 @@ class ManagedProductForm(BootstrapFormMixin, forms.ModelForm):
     def clean(self):
         cleaned_data = super().clean()
         product_name = cleaned_data.get("nome")
+        product_description = cleaned_data.get("descricao")
         barcode = cleaned_data.get("codigo_barras")
         if not product_name or not barcode:
             return cleaned_data
 
         product_with_same_identity = Produto.objects.filter(
             nome__iexact=product_name,
+            descricao=product_description,
             codigo_barras=barcode,
         ).exclude(id=self.instance.id)
         if product_with_same_identity.exists():
@@ -136,7 +139,7 @@ class ManagedProductForm(BootstrapFormMixin, forms.ModelForm):
 
 class ManagedProductSelectionForm(BootstrapFormMixin, forms.Form):
     produto = forms.ModelChoiceField(
-        label="Produto cadastrado",
+        label="Cadastrar Produto",
         queryset=Produto.objects.none(),
         empty_label="Selecione um produto",
     )
@@ -188,18 +191,37 @@ class ManagedFornecedorForm(BootstrapFormMixin, forms.ModelForm):
         fields = (
             "nome_fornecedor",
             "cnpj_cnpj",
+            "cep_fornecedor",
             "telefone_fornecedor",
-            "responsavel_forncedor",
+            "whatsapp_fornecedor",
+            "email_fornecedor",
+            "responsavel_fornecedor",
         )
         labels = {
             "nome_fornecedor": "Nome do fornecedor",
             "cnpj_cnpj": "CNPJ",
+            "cep_fornecedor": "CEP",
             "telefone_fornecedor": "Telefone",
-            "responsavel_forncedor": "Responsável",
+            "whatsapp_fornecedor": "WhatsApp",
+            "email_fornecedor": "E-mail",
+            "responsavel_fornecedor": "Responsável",
         }
         widgets = {
-            "cnpj_cnpj": forms.TextInput(attrs={"placeholder": "00.000.000/0000-00"}),
-            "telefone_fornecedor": forms.TextInput(attrs={"placeholder": "(00) 00000-0000"}),
+            "cnpj_cnpj": forms.TextInput(
+                attrs={"placeholder": "00.000.000/0000-00"}
+            ),
+            "cep_fornecedor": forms.TextInput(
+                attrs={"placeholder": "00000-000"}
+            ),
+            "telefone_fornecedor": forms.TextInput(
+                attrs={"placeholder": "(00) 00000-0000"}
+            ),
+            "whatsapp_fornecedor": forms.TextInput(
+                attrs={"placeholder": "(00) 00000-0000"}
+            ),
+            "email_fornecedor": forms.EmailInput(
+                attrs={"placeholder": "exemplo@dominio.com"}
+            )
         }
 
     def __init__(self, *args, **kwargs):
@@ -211,7 +233,7 @@ class ManagedLinkForm(BootstrapFormMixin, forms.ModelForm):
     class Meta:
         model = Link
         fields = ("nome", "url", "fornecedor")
-        labels = {"nome": "Nome do link", "url": "URL", "fornecedor": "Fornecedor"}
+        labels = {"nome": "Empresa E-commerce de Marketplace", "url": "URL", "fornecedor": "Fornecedor"}
         widgets = {"url": forms.URLInput(attrs={"placeholder": "https://exemplo.com/produto"})}
 
     def __init__(self, *args, **kwargs):

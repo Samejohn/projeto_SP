@@ -4,8 +4,8 @@ from spi.models import ControleData, Fornecedor, Link, Produto, ProdutoPedido, V
 
 @admin.register(Produto)
 class ProdutoAdmin(admin.ModelAdmin):
-    list_display = ("nome", "codigo_barras", "responsavel_cadastro", "controle_data")
-    search_fields = ("nome", "codigo_barras", "responsavel_cadastro__username")
+    list_display = ("nome", "codigo_barras", "descricao", "responsavel_cadastro", "controle_data")
+    search_fields = ("nome", "codigo_barras", "descricao", "responsavel_cadastro__username")
     list_select_related = ("responsavel_cadastro", "controle_data")
 
 
@@ -17,7 +17,7 @@ class ControleDataAdmin(admin.ModelAdmin):
 
 @admin.register(Fornecedor)
 class FornecedorAdmin(admin.ModelAdmin):
-    list_display = ("nome_fornecedor", "cnpj_cnpj", "telefone_fornecedor", "responsavel_forncedor")
+    list_display = ("nome_fornecedor", "cnpj_cnpj", "cep_fornecedor", "telefone_fornecedor", "whatsapp_fornecedor", "email_fornecedor", "responsavel_fornecedor")
     search_fields = ("nome_fornecedor", "cnpj_cnpj")
 
 

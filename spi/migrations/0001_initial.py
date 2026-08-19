@@ -35,8 +35,10 @@ class Migration(migrations.Migration):
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('nome_fornecedor', models.CharField(max_length=255, verbose_name='Nome do fornecedor')),
                 ('cnpj_cnpj', models.CharField(max_length=18, unique=True, verbose_name='CNPJ')),
+                ('cep_fornecedor', models.CharField(max_length=9, verbose_name='CEP')),
                 ('telefone_fornecedor', models.CharField(max_length=32, verbose_name='Telefone')),
-                ('responsavel_forncedor', models.CharField(max_length=255, verbose_name='Responsável')),
+                ('whatsapp_fornecedor', models.CharField(max_length=32, verbose_name='whatsapp')),
+                ('responsavel_fornecedor', models.CharField(max_length=255, verbose_name='Responsável')),
                 ('controle_data', models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, related_name='fornecedores', to='spi.controledata', verbose_name='Controle de datas')),
             ],
             options={
@@ -90,6 +92,7 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('nome', models.CharField(max_length=255, verbose_name='Nome')),
+                ('descricao', models.TextField(blank=True, verbose_name='Descrição')),
                 ('codigo_barras', models.CharField(max_length=128, unique=True, verbose_name='Código de barras')),
                 ('controle_data', models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, related_name='produtos', to='spi.controledata', verbose_name='Controle de datas')),
                 ('responsavel_cadastro', models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, related_name='produtos_cadastrados', to=settings.AUTH_USER_MODEL, verbose_name='Responsável pelo cadastro')),

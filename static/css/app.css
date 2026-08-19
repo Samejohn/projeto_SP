@@ -107,10 +107,10 @@ body { font-family: Inter, "Segoe UI", system-ui, -apple-system, sans-serif; }
 .management-badge { margin: .1rem; background: #edf6ff; color: var(--spi-blue-dark); font-weight: 600; }
 .status-pill { display: inline-flex; padding: .25rem .55rem; border-radius: 999px; font-size: .76rem; font-weight: 700; }
 .status-active { background: #e9f8ee; color: #16803d; }
-.status-pendente { background: #fff4d6; color: #9a6700; }
+.status-pendente { background: #ffe0d6; color: #9a6700; }
 .status-aprovado { background: #e8f2ff; color: #175cd3; }
 .status-comprado { background: #e9f8ee; color: #16803d; }
-.status-inactive { background: #f2f4f7; color: #667085; }
+.status-inactive { background: #f2f4f7; color: #e74c3c; }
 .empty-state { padding: 3rem !important; text-align: center; color: var(--spi-muted) !important; }
 .management-pagination { display: flex; align-items: center; justify-content: space-between; padding: 1rem 1.25rem; color: var(--spi-muted); font-size: .85rem; }
 .management-pagination div { display: flex; gap: .5rem; }
@@ -166,7 +166,7 @@ body { font-family: Inter, "Segoe UI", system-ui, -apple-system, sans-serif; }
 /* Efeito 1: O card levanta, ganha sombra e muda a borda */
 .card-hover:hover {
     transform: translateY(-5px);
-    box-shadow: 0 10px 20px rgba(0,0,0,.15);
+    box-shadow: 0 10px 20px #292D32;
     border-color: #007bff;
 }
 /* Efeito 2: O card (ou uma imagem dentro dele) ganha um zoom */
@@ -204,7 +204,7 @@ body { font-family: Inter, "Segoe UI", system-ui, -apple-system, sans-serif; }
     border-color: #E74C3C; /* Vermelho / Rosa */
     box-shadow: 0 10px 20px rgba(0,0,0,.15), 0 0 15px rgba(231, 76, 60, 0.5);
 }
-/* Estilizacao light e dark*/
+/* Estilizacao light e dark
 body{
     background:var(--bg);
     color:var(--text);
@@ -261,6 +261,7 @@ body{
     background:var(--primary);
     border-color:var(--primary);
 }
+*/
 
 /* ==========================================
    NAVBAR SUPERIOR - SPI
@@ -343,4 +344,27 @@ body{
 .user-menu .dropdown-item:hover{
     background:#00CED1;
     color:#fff;
+}
+/* ==========================================
+   Formulário Cadastrar produto
+========================================== */
+.management-form {
+    padding: 0;
+    overflow: hidden;
+}
+
+.management-form .form-section {
+    padding: 28px 24px;
+    margin: 0 !important;
+}
+
+.management-form .form-section + .form-section {
+    border-top: 1px solid var(--border-color, #e2e8f0);
+}
+
+.management-form .form-section h2 {
+    margin: 0 0 22px;
+    font-size: 1rem;
+    font-weight: 600;
+    letter-spacing: 0.01em;
 }

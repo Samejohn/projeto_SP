@@ -10,28 +10,39 @@
         {% csrf_token %}
         {% include 'management/_form_errors.html' %}
 
-        <section class="form-section">
-            <h2>Fornecedor</h2>
-            <div class="row g-3 align-items-end">
-                {% include 'management/_field.html' with field=link_form.fornecedor column='col-12 col-md-9' %}
-                {% if perms.spi.add_fornecedor %}
-                    <div class="col-12 col-md-3">
-                        <button class="btn btn-outline-primary w-100" type="button" data-bs-toggle="modal" data-bs-target="#supplier-modal">
-                            <i class="bi bi-plus-lg"></i> Adicionar fornecedor
-                        </button>
-                    </div>
-                {% endif %}
-            </div>
-        </section>
 
-        <section class="form-section mt-4">
-            <h2>Dados do produto</h2>
-            {% if object %}
+<!-- Seção: Fornecedor -->
+<div class="card card-info mb-4">
+    <div class="card-header">
+        <h3 class="card-title">Fornecedor</h3>
+    </div>
+    <div class="card-body">
+        <div class="row g-3 align-items-end">
+            {% include 'management/_field.html' with field=link_form.fornecedor column='col-12 col-md-9' %}
+            {% if perms.spi.add_fornecedor %}
+                <div class="col-12 col-md-3">
+                    <button class="btn btn-outline-primary w-100" type="button" data-bs-toggle="modal" data-bs-target="#supplier-modal">
+                        <i class="bi bi-plus-lg"></i> Adicionar fornecedor
+                    </button>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<!-- Seção: Dados do produto -->
+<div class="card card-info mb-4">
+    <div class="card-header">
+        <h3 class="card-title">Dados do produto</h3>
+    </div>
+    <div class="card-body">
+        {% if object %}
             <div class="row g-3">
                 {% include 'management/_field.html' with field=form.nome column='col-12 col-md-8' %}
+                {% include 'management/_field.html' with field=form.descricao column='col-12 col-md-8' %}
                 {% include 'management/_field.html' with field=form.codigo_barras column='col-12 col-md-4' %}
             </div>
-            {% else %}
+        {% else %}
             <div class="row g-3 align-items-end">
                 {% include 'management/_field.html' with field=product_selection_form.produto column='col-12 col-md-9' %}
                 {% if perms.spi.add_produto %}
@@ -42,32 +53,50 @@
                     </div>
                 {% endif %}
             </div>
-            {% endif %}
-        </section>
-
-        <section class="form-section mt-4">
-            <h2>Dados do link</h2>
-            {% if link_form.non_field_errors %}<div class="alert alert-danger">{{ link_form.non_field_errors }}</div>{% endif %}
-            <div class="row g-3">
-                {% include 'management/_field.html' with field=link_form.nome column='col-12 col-md-5' %}
-                {% include 'management/_field.html' with field=link_form.url column='col-12 col-md-7' %}
-            </div>
-        </section>
-
-        <section class="form-section mt-4">
-            <h2>Valor do produto</h2>
-            {% if product_value_form.non_field_errors %}<div class="alert alert-danger">{{ product_value_form.non_field_errors }}</div>{% endif %}
-            <div class="row g-3">
-                {% include 'management/_field.html' with field=product_value_form.valor column='col-12 col-md-4' %}
-            </div>
-        </section>
-
-        <footer class="form-actions">
-            <a class="btn btn-light" href="{% url 'product_list' %}">Cancelar</a>
-            <button class="btn btn-outline-primary" type="submit"><i class="bi bi-check-lg"></i> Salvar produto</button>
-        </footer>
-    </form>
+        {% endif %}
+    </div>
 </div>
+
+<!-- Seção: Dados do link -->
+<div class="card card-info mb-4">
+    <div class="card-header">
+        <h3 class="card-title">Dados do link</h3>
+    </div>
+    <div class="card-body">
+        {% if link_form.non_field_errors %}
+            <div class="alert alert-danger">{{ link_form.non_field_errors }}</div>
+        {% endif %}
+        <div class="row g-3">
+            {% include 'management/_field.html' with field=link_form.nome column='col-12 col-md-5' %}
+            {% include 'management/_field.html' with field=link_form.url column='col-12 col-md-7' %}
+        </div>
+    </div>
+</div>
+
+<!-- Seção: Valor do produto -->
+<div class="card card-info mb-4">
+    <div class="card-header">
+        <h3 class="card-title">Valor do produto</h3>
+    </div>
+    <div class="card-body">
+        {% if product_value_form.non_field_errors %}
+            <div class="alert alert-danger">{{ product_value_form.non_field_errors }}</div>
+        {% endif %}
+        <div class="row g-3">
+            {% include 'management/_field.html' with field=product_value_form.valor column='col-12 col-md-4' %}
+        </div>
+    </div>
+</div>
+
+<!-- Ações do Formulário -->
+<footer class="form-actions d-flex justify-content-end gap-2 mb-4">
+    <a class="btn btn-light" href="{% url 'product_list' %}">Cancelar</a>
+    <button class="btn btn-outline-primary" type="submit">
+        <i class="bi bi-check-lg"></i> Salvar produto
+    </button>
+</footer>
+
+
 
 {% if not object and perms.spi.add_produto %}
 <div class="modal fade" id="product-modal" tabindex="-1" aria-labelledby="product-modal-title" aria-hidden="true">
@@ -83,6 +112,7 @@
                     <div id="product-modal-errors" class="alert alert-danger d-none" role="alert"></div>
                     <div class="row g-3">
                         {% include 'management/_field.html' with field=new_product_form.nome column='col-12 col-md-8' %}
+                        {% include 'management/_field.html' with field=new_product_form.descricao column='col-12 col-md-8' %}
                         {% include 'management/_field.html' with field=new_product_form.codigo_barras column='col-12 col-md-4' %}
                     </div>
                 </div>
@@ -113,14 +143,17 @@
                     <div class="row g-3">
                         {% include 'management/_field.html' with field=supplier_form.nome_fornecedor column='col-12' %}
                         {% include 'management/_field.html' with field=supplier_form.cnpj_cnpj column='col-12 col-md-6' %}
+                        {% include 'management/_field.html' with field=supplier_form.cep_fornecedor column='col-12 col-md-4' %}
                         {% include 'management/_field.html' with field=supplier_form.telefone_fornecedor column='col-12 col-md-6' %}
-                        {% include 'management/_field.html' with field=supplier_form.responsavel_forncedor column='col-12' %}
+                        {% include 'management/_field.html' with field=supplier_form.whatsapp_fornecedor column='col-12 col-md-6' %}
+                        {% include 'management/_field.html' with field=supplier_form.email_fornecedor column='col-12 col-md-6' %}
+                        {% include 'management/_field.html' with field=supplier_form.responsavel_fornecedor column='col-12' %}
                     </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancelar</button>
                     <button id="save-supplier-button" type="submit" class="btn btn-outline-primary">
-                        <i class="bi bi-check-lg"></i> Salvar fornecedor
+                        <i class="bi bi-check-lg"></i> Salvar Fornecedor
                     </button>
                 </div>
             </form>
