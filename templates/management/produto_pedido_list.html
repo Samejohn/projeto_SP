@@ -18,7 +18,7 @@
         </header>
         <div class="table-responsive">
             <table class="table management-table align-middle mb-0">
-                <thead><tr><th>Nome</th><th>Produto</th><th>Descrição</th><th>Quantidade</th><th>Status</th><th>Cadastrado em</th><th class="text-end">Ações</th></tr></thead>
+                <thead><tr><th>Nome</th><th>Produto</th><th>Descrição</th><th>Quant.</th><th>Valor</th><th>Total</th><th>Status</th><th>Cadastrado</th><th class="text-end">Ações</th></tr></thead>
                 <tbody>
                 {% for item in produtos_pedidos %}
                     <tr>
@@ -26,6 +26,8 @@
                         <td>{{ item.produto.nome }}</td>
                         <td>{{ item.descricao|default:"-"|truncatechars:80 }}</td>
                         <td>{{ item.quantidade_produto }}</td>
+                        <td>R$ {{ item.valor_produto|default:"0,00" }}</td>
+                        <td>R$ {{ item.total|default:"0,00" }}</td>
                         <td><span class="status-pill status-{{ item.status|lower }}">{{ item.get_status_display }}</span></td>
                         <td>{{ item.controle_data.data_cadastro|date:"d/m/Y H:i" }}</td>
                         <td class="text-end text-nowrap">

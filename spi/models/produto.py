@@ -17,6 +17,8 @@ class Produto(models.Model):
         related_name="produtos",
         verbose_name="Controle de datas",
     )
+    estoque_atual = models.IntegerField(default=0)
+    estoque_minimo = models.IntegerField(default=5) # Quantidade mínima padrão
 
     class Meta:
         verbose_name = "Produto"

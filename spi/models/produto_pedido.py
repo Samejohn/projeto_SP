@@ -1,3 +1,4 @@
+from decimal import Decimal
 from django.db import models
 
 
@@ -6,6 +7,7 @@ class ProdutoPedido(models.Model):
         ("PENDENTE", "Pendente"),
         ("APROVADO", "Aprovado"),
         ("COMPRADO", "Comprado"),
+        ("RECEBIDO", "Recebido"),
     ]
 
     nome = models.CharField("Nome", max_length=255)
@@ -29,6 +31,20 @@ class ProdutoPedido(models.Model):
         max_length=10,
         choices=STATUS_CHOICES,
         default="PENDENTE",
+    )
+    valor_produto = models.DecimalField(
+        "Valor do produto",
+        max_digits=10,
+        decimal_places=2,
+        null=True,
+        blank=True,
+    )
+    total = models.DecimalField(
+        "Total",
+        max_digits=10,
+        decimal_places=2,
+        null=True,
+        blank=True,
     )
     controle_data = models.ForeignKey(
         "ControleData",
@@ -56,3 +72,21 @@ class ProdutoPedido(models.Model):
             produto_id=self.produto_id,
             link_id=self.link_id,
         ).first()
+
+    def save(self, *args, **kwargs):
+        # 1. Busca o valor unitário cadastrado caso valor_produto não tenha sido preenchido
+        if not self.valor_produto:
+            registro_valor = self.get_registered_product_value()
+            if registro_valor:
+                # Assumindo que a model ValorProduto possui o campo 'valor'
+                self.valor_produto = registro_valor.valor
+
+        # 2. Calcula o Total automaticamente se o valor_produto existir
+        if self.valor_produto is not None:
+            qtd = Decimal(self.quantidade_produto or 0)
+            unitario = Decimal(self.valor_produto)
+            self.total = qtd * unitario
+        else:
+            self.total = Decimal("0.00")
+
+        super().save(*args, **kwargs)

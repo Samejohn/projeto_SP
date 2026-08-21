@@ -35,6 +35,6 @@ class ValorProdutoAdmin(admin.ModelAdmin):
 
 @admin.register(ProdutoPedido)
 class ProdutoPedidoAdmin(admin.ModelAdmin):
-    list_display = ("nome", "produto", "quantidade_produto", "status", "controle_data")
+    list_display = ("nome", "produto", "quantidade_produto", "valor_produto", "total", "status", "controle_data")
     search_fields = ("nome", "produto__nome")
     list_filter = ("status",)

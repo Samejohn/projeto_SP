@@ -45,6 +45,7 @@
 document.addEventListener("DOMContentLoaded", function () {
     const productSelect = document.getElementById("id_produto");
     const productLinkSelect = document.getElementById("id_link");
+    const quantityInput = document.getElementById("id_quantidade_produto");
     const selectedValueMessage = document.getElementById("selected-product-value");
     const selectedSupplierMessage = document.getElementById("selected-link-supplier");
     const productLinkOptions = Array.from(productLinkSelect.options);
@@ -62,9 +63,16 @@ document.addEventListener("DOMContentLoaded", function () {
             ? JSON.parse(selectedOption.dataset.productValues)
             : {};
         const selectedValue = valuesByProduct[productSelect.value];
+        const quantity = quantityInput ? parseFloat(quantityInput.value) || 1 : 1;
 
         if (selectedValue) {
-            selectedValueMessage.textContent = `Valor do link selecionado: ${formatCurrency(selectedValue)}`;
+            const unitValue = parseFloat(selectedValue);
+            const totalValue = unitValue * quantity;
+
+            selectedValueMessage.innerHTML = `
+                Valor unitário: <strong>${formatCurrency(unitValue)}</strong> | 
+                Total (${quantity}x): <strong>${formatCurrency(totalValue)}</strong>
+            `;
             selectedSupplierMessage.textContent = `Fornecedor do link selecionado: ${selectedOption.dataset.supplierName}`;
         } else if (productSelect.value) {
             selectedValueMessage.textContent = "Selecione um dos links disponíveis para este produto.";
@@ -74,6 +82,59 @@ document.addEventListener("DOMContentLoaded", function () {
             selectedSupplierMessage.textContent = "";
         }
     }
+
+    function filterLinksByProduct() {
+        const selectedProductId = productSelect.value;
+        let availableLinkCount = 0;
+
+        productLinkOptions.forEach(function (productLinkOption) {
+            if (!productLinkOption.value) {
+                productLinkOption.hidden = false;
+                productLinkOption.disabled = false;
+                return;
+            }
+
+            const valuesByProduct = JSON.parse(
+                productLinkOption.dataset.productValues || "{}"
+            );
+            const belongsToSelectedProduct = Boolean(
+                selectedProductId && valuesByProduct[selectedProductId]
+            );
+            productLinkOption.hidden = !belongsToSelectedProduct;
+            productLinkOption.disabled = !belongsToSelectedProduct;
+            if (belongsToSelectedProduct) {
+                availableLinkCount += 1;
+            }
+        });
+
+        const selectedLink = productLinkSelect.selectedOptions[0];
+        const selectedLinkValues = selectedLink?.dataset.productValues
+            ? JSON.parse(selectedLink.dataset.productValues)
+            : {};
+        if (selectedLink?.value && !selectedLinkValues[selectedProductId]) {
+            productLinkSelect.value = "";
+        }
+
+        productLinkSelect.disabled = !selectedProductId;
+        if (selectedProductId && availableLinkCount === 0) {
+            productLinkSelect.value = "";
+            selectedValueMessage.textContent = "Este produto ainda não possui links e valores cadastrados.";
+            selectedSupplierMessage.textContent = "";
+            return;
+        }
+        updateSelectedValueMessage();
+    }
+
+    productSelect.addEventListener("change", filterLinksByProduct);
+    productLinkSelect.addEventListener("change", updateSelectedValueMessage);
+    
+    // Atualiza o total dinamicamente conforme digita a quantidade
+    if (quantityInput) {
+        quantityInput.addEventListener("input", updateSelectedValueMessage);
+    }
+
+    filterLinksByProduct();
+});
 
     function filterLinksByProduct() {
         const selectedProductId = productSelect.value;

@@ -20,7 +20,30 @@
         <div class="col-12 col-md-6 col-lg-3"><article class="metric-card metric-icy1 card-glass card-hover"><div><strong>{{ total_produtos }}</strong><span>Produtos</span></div><i class="bi bi-box-seam"></i></article></div>
         <div class="col-12 col-md-6 col-lg-3"><article class="metric-card metric-icy2 card-glass card-hover"><div><strong>7</strong><span>Estoque</span></div><i class="bi bi-shop"></i></article></div>
         <div class="col-12 col-md-6 col-lg-3"><article class="metric-card metric-icy3 card-glass card-hover"><div><strong>{{ total_produtos_pendentes }}</strong><span>Produtos Pendentes</span></div><i class="bi bi-archive"></i></article></div>
-        <div class="col-12 col-md-6 col-lg-3"><article class="metric-card metric-icy4 card-glass card-hover"><div><strong style="color: #e74c3c;">10</strong><span>Alerta de Estoque mínimo</span></div><i class="bi bi-exclamation-triangle-fill" style="color: #e74c3c;"></i></article></div>
+        <!--Alerta de Estoque mínimo-->
+        <div class="col-12 col-md-6 col-lg-3">
+    <article class="metric-card metric-icy4 card-glass card-hover
+        {% if total_produtos_alerta > 0 %}
+            metric-danger
+        {% else %}
+            metric-success
+        {% endif %}">
+
+        <div>
+            <strong>{{ total_produtos_alerta }}</strong>
+            <span>Alerta de Estoque mínimo</span>
+        </div>
+
+        {% if total_produtos_alerta > 0 %}
+            <i class="bi bi-exclamation-triangle-fill"></i>
+        {% else %}
+            <i class="bi bi-check-circle-fill"></i>
+        {% endif %}
+
+    </article>
+</div>
+   
+   
     </div>
 
     <div class="row g-4">

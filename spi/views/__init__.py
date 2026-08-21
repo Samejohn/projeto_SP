@@ -2,6 +2,7 @@ from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth import login, logout
 from django.contrib.auth.decorators import login_required
+from django.db.models import F  # <-- NOVO IMPORT
 from django.http import HttpResponseNotFound
 from django.shortcuts import redirect, render, resolve_url
 from django.utils.http import url_has_allowed_host_and_scheme
@@ -52,10 +53,23 @@ from .management import (
 
 @login_required
 def dashboard(request):
+    # Produtos cujo estoque atual está no mínimo ou abaixo dele
+    produtos_em_alerta = Produto.objects.filter(
+        estoque_atual__lte=F("estoque_minimo")
+    )
+
+    # Quantidade de produtos em alerta
+    total_produtos_alerta = produtos_em_alerta.count()
+
     dashboard_context = {
         "total_produtos": Produto.objects.count(),
-        "total_produtos_pendentes": ProdutoPedido.objects.filter(status="PENDENTE").count(),
+        "total_produtos_pendentes": ProdutoPedido.objects.filter(
+            status="PENDENTE"
+        ).count(),
+        "total_produtos_alerta": total_produtos_alerta,
+        "produtos_em_alerta": produtos_em_alerta,
     }
+
     return render(request, "index.html", dashboard_context)
 
 

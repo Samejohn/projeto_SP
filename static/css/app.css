@@ -8,6 +8,8 @@
 
 body { font-family: Inter, "Segoe UI", system-ui, -apple-system, sans-serif; }
 
+
+
 .app-wrapper { background: var(--spi-surface); }
 .app-content { background: var(--spi-surface); }
 .app-content-header { padding: 1.25rem .5rem .4rem; }
@@ -105,12 +107,15 @@ body { font-family: Inter, "Segoe UI", system-ui, -apple-system, sans-serif; }
 .management-table tbody td { padding: .9rem 1rem; border-color: #edf1f5; color: #344054; }
 .management-table tbody tr:hover { background: #fbfdff; }
 .management-badge { margin: .1rem; background: #edf6ff; color: var(--spi-blue-dark); font-weight: 600; }
+
 .status-pill { display: inline-flex; padding: .25rem .55rem; border-radius: 999px; font-size: .76rem; font-weight: 700; }
-.status-active { background: #e9f8ee; color: #16803d; }
-.status-pendente { background: #ffe0d6; color: #9a6700; }
+.status-active { background: #FFFFFF; color: #1E88E5; }
+.status-pendente { background: #ffe0d6; color: #e74c3c; }
 .status-aprovado { background: #e8f2ff; color: #175cd3; }
 .status-comprado { background: #e9f8ee; color: #16803d; }
-.status-inactive { background: #f2f4f7; color: #e74c3c; }
+.status-inactive { background: #f2f4f7; color: #78909C; }
+.status-recebido { background: #e9f8ee; color: #00838F; }
+
 .empty-state { padding: 3rem !important; text-align: center; color: var(--spi-muted) !important; }
 .management-pagination { display: flex; align-items: center; justify-content: space-between; padding: 1rem 1.25rem; color: var(--spi-muted); font-size: .85rem; }
 .management-pagination div { display: flex; gap: .5rem; }
@@ -367,4 +372,14 @@ body{
     font-size: 1rem;
     font-weight: 600;
     letter-spacing: 0.01em;
+}
+/*--Alerta de Estoque mínimo--*/
+.metric-success strong,
+.metric-success i {
+    color: #27ae60;
+}
+
+.metric-danger strong,
+.metric-danger i {
+    color: #e74c3c;
 }

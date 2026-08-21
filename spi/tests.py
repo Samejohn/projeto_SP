@@ -28,17 +28,27 @@ class DashboardTests(TestCase):
                 usuario_cadastro=self.user,
                 usuario_atualizacao=self.user,
             )
+            
+            # Adicionando estoque mínimo
+            estoque_minimo = 5
+            estoque_atual = 3 if index < 2 else 10    # 2 produtos em alerta
+            
             produto = Produto.objects.create(
                 nome=f"Produto {index}",
                 descricao=f"Descrição do produto {index}",
                 codigo_barras=f"78900000010{index}",
                 responsavel_cadastro=self.user,
                 controle_data=controle,
+                estoque_atual=estoque_atual,
+                estoque_minimo=estoque_minimo,
             )
+            
             ProdutoPedido.objects.create(
                 nome=f"Pedido {index}",
                 produto=produto,
                 quantidade_produto=1,
+                valor_produto="3499.90",
+                total="6999.80",
                 status="PENDENTE" if index < 2 else "APROVADO",
                 controle_data=controle,
             )
@@ -47,6 +57,7 @@ class DashboardTests(TestCase):
 
         self.assertEqual(response.context["total_produtos"], 3)
         self.assertEqual(response.context["total_produtos_pendentes"], 2)
+        self.assertEqual(response.context["total_produtos_alerta"], 2)  # NOVO TESTE
         self.assertContains(response, "<strong>3</strong>", html=True)
         self.assertContains(response, "<strong>2</strong>", html=True)
 
@@ -92,6 +103,8 @@ class ProductManagementTests(TestCase):
                 "link-url": "https://example.com/produto-teste",
                 "link-fornecedor": self.supplier.pk,
                 "value-valor": "125.90",
+                "valor_produto": "3499.90",
+                "total": "6999.80",
             },
         )
 
@@ -298,6 +311,8 @@ class CatalogManagementTests(TestCase):
             descricao="",
             produto=self.produto,
             quantidade_produto=1,
+            valor_produto="3499.90",
+            total="6999.80",
             controle_data=controle,
         )
 
@@ -351,6 +366,8 @@ class CatalogManagementTests(TestCase):
                 "produto": self.produto.pk,
                 "link": link.pk,
                 "quantidade_produto": 2,
+                "valor_produto": "3499.90",
+                "total": "6999.80",
             },
         )
         self.assertRedirects(response, reverse("produto_pedido_list"))

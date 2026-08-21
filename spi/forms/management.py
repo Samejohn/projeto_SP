@@ -293,6 +293,8 @@ class ManagedProdutoPedidoForm(BootstrapFormMixin, forms.ModelForm):
             "produto",
             "link",
             "quantidade_produto",
+            "valor_produto",
+            "total",
             "status",
         )
         labels = {
@@ -301,11 +303,15 @@ class ManagedProdutoPedidoForm(BootstrapFormMixin, forms.ModelForm):
             "produto": "Produto",
             "link": "Link do produto",
             "quantidade_produto": "Quantidade",
+            "valor_produto": "Valor do produto",
+            "total": "Total",
             "status": "Status",
         }
         widgets = {
             "descricao": forms.Textarea(attrs={"rows": 4}),
             "quantidade_produto": forms.NumberInput(attrs={"min": "1"}),
+            "valor_produto": forms.NumberInput(attrs={"min": "0", "step": "0.01"}),
+            "total": forms.NumberInput(attrs={"min": "0", "step": "0.01"}),
         }
 
     def __init__(self, *args, **kwargs):
@@ -355,6 +361,8 @@ class ManagedOrderProductCreateForm(ManagedProdutoPedidoForm):
             "produto",
             "link",
             "quantidade_produto",
+            "valor_produto",
+            "total",
         )
 
 
