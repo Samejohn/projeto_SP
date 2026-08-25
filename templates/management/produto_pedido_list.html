@@ -18,12 +18,11 @@
         </header>
         <div class="table-responsive">
             <table class="table management-table align-middle mb-0">
-                <thead><tr><th>Nome</th><th>Produto</th><th>Descrição</th><th>Quant.</th><th>Valor</th><th>Total</th><th>Status</th><th>Cadastrado</th><th class="text-end">Ações</th></tr></thead>
+                <thead><tr><th>Nome Produto</th><th>Descrição</th><th>Quant.</th><th>Valor</th><th>Total</th><th>Status</th><th>Cadastrado</th><th class="text-end">Ações</th></tr></thead>
                 <tbody>
                 {% for item in produtos_pedidos %}
-                    <tr>
-                        <td><strong>{{ item.nome }}</strong></td>
-                        <td>{{ item.produto.nome }}</td>
+                    <tr>                        
+                        <td><strong>{{ item.produto.nome }}</strong></td>
                         <td>{{ item.descricao|default:"-"|truncatechars:80 }}</td>
                         <td>{{ item.quantidade_produto }}</td>
                         <td>R$ {{ item.valor_produto|default:"0,00" }}</td>

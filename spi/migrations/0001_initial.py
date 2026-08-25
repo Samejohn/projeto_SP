@@ -125,7 +125,6 @@ class Migration(migrations.Migration):
             name='ProdutoPedido',
             fields=[
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('nome', models.CharField(max_length=255, verbose_name='Nome')),
                 ('descricao', models.TextField(blank=True, verbose_name='Descrição')),
                 ('quantidade_produto', models.PositiveIntegerField(verbose_name='Quantidade do produto')),
                 ('valor_produto', models.DecimalField(decimal_places=2, max_digits=10, null=True, blank=True, verbose_name='Valor do produto')),

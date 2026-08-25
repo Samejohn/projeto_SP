@@ -10,14 +10,16 @@ class ProdutoPedido(models.Model):
         ("RECEBIDO", "Recebido"),
     ]
 
-    nome = models.CharField("Nome", max_length=255)
-    descricao = models.TextField("Descrição", blank=True)
+
     produto = models.ForeignKey(
-        "Produto",
-        on_delete=models.PROTECT,
-        related_name="pedidos",
-        verbose_name="Produto",
-    )
+            "Produto",
+            on_delete=models.PROTECT,
+            related_name="pedidos",
+            verbose_name="Produto",
+        )
+    
+    descricao = models.TextField("Descrição", blank=True)
+    
     link = models.ForeignKey(
         "Link",
         on_delete=models.PROTECT,

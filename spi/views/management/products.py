@@ -315,7 +315,7 @@ def list_order_products(request):
     return render_searchable_list(
         request,
         order_product_records,
-        ("nome", "descricao", "status", "produto__nome", "produto__codigo_barras"),
+        ("produto__nome", "descricao", "status", "produto__codigo_barras"),
         "management/produto_pedido_list.html",
         "produtos_pedidos",
     )

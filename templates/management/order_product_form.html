@@ -4,6 +4,7 @@
 {% block page_title %}{{ form_title }}{% endblock %}
 {% block breadcrumb_items %}<li class="breadcrumb-item"><a href="{% url cancel_url_name %}">Pedidos de produtos</a></li><li class="breadcrumb-item active">{{ form_title }}</li>{% endblock %}
 
+<!--Cadastrar pedido de produto-->
 {% block content %}
 <div class="container-fluid management-shell">
     <form method="post" class="management-card management-form" novalidate>
@@ -14,8 +15,9 @@
             <h2>{{ section_title }}</h2>
             <div class="row g-3">
                 {% include 'management/_field.html' with field=form.nome column='col-12' %}
-                {% include 'management/_field.html' with field=form.descricao column='col-12' %}
                 {% include 'management/_field.html' with field=form.produto column='col-12 col-md-6' %}
+                {% include 'management/_field.html' with field=form.descricao column='col-12' %}
+                
                 <div class="col-12 col-md-6">
                     <label class="form-label" for="{{ form.link.id_for_label }}">
                         {{ form.link.label }} <span class="text-danger">*</span>

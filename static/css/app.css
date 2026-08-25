@@ -6,7 +6,7 @@
     --spi-muted: #6b7a90;
 }
 
-body { font-family: Inter, "Segoe UI", system-ui, -apple-system, sans-serif; }
+body { font-family: Inter, "Segoe UI", system-ui, -apple-system, sans-serif;}
 
 
 
@@ -103,8 +103,8 @@ body { font-family: Inter, "Segoe UI", system-ui, -apple-system, sans-serif; }
 .management-search > i { position: absolute; left: .9rem; top: .7rem; color: #98a2b3; }
 .management-search input { min-width: 0; flex: 1; height: 38px; padding: 0 .9rem 0 2.4rem; border: 1px solid #d7e0ea; border-radius: .5rem; outline: none; }
 .management-search input:focus { border-color: var(--spi-blue); box-shadow: 0 0 0 .2rem rgba(8,126,229,.1); }
-.management-table thead th { padding: .85rem 1rem; border-bottom-width: 1px; background: #f8fafc; color: #667085; font-size: .75rem; text-transform: uppercase; letter-spacing: .04em; }
-.management-table tbody td { padding: .9rem 1rem; border-color: #edf1f5; color: #344054; }
+.management-table thead th { padding: .85rem 1rem; border-bottom-width: 1px; background: #f8fafc; color: #2563EB; font-size: .75rem; text-transform: uppercase; letter-spacing: .04em; }
+.management-table tbody td { padding: .9rem 1rem; border-color: #edf1f5; color: #2563EB; }
 .management-table tbody tr:hover { background: #fbfdff; }
 .management-badge { margin: .1rem; background: #edf6ff; color: var(--spi-blue-dark); font-weight: 600; }
 
@@ -383,3 +383,4 @@ body{
 .metric-danger i {
     color: #e74c3c;
 }
+

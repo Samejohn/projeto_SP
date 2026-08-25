@@ -288,9 +288,8 @@ class ManagedProdutoPedidoForm(BootstrapFormMixin, forms.ModelForm):
     class Meta:
         model = ProdutoPedido
         fields = (
-            "nome",
-            "descricao",
             "produto",
+            "descricao",
             "link",
             "quantidade_produto",
             "valor_produto",
@@ -298,9 +297,8 @@ class ManagedProdutoPedidoForm(BootstrapFormMixin, forms.ModelForm):
             "status",
         )
         labels = {
-            "nome": "Nome do item",
-            "descricao": "Descrição",
             "produto": "Produto",
+            "descricao": "Descrição",           
             "link": "Link do produto",
             "quantidade_produto": "Quantidade",
             "valor_produto": "Valor do produto",
@@ -355,10 +353,9 @@ class ManagedOrderProductCreateForm(ManagedProdutoPedidoForm):
     """Cadastro de pedido sem status, utilizando o padrão definido no modelo."""
 
     class Meta(ManagedProdutoPedidoForm.Meta):
-        fields = (
-            "nome",
-            "descricao",
+        fields = (           
             "produto",
+            "descricao",
             "link",
             "quantidade_produto",
             "valor_produto",
