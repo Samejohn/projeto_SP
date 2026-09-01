@@ -209,64 +209,6 @@ body { font-family: Inter, "Segoe UI", system-ui, -apple-system, sans-serif;}
     border-color: #E74C3C; /* Vermelho / Rosa */
     box-shadow: 0 10px 20px rgba(0,0,0,.15), 0 0 15px rgba(231, 76, 60, 0.5);
 }
-/* Estilizacao light e dark
-body{
-    background:var(--bg);
-    color:var(--text);
-}
-
-.content-wrapper{
-    background:var(--bg);
-}
-
-.main-header{
-    background:var(--card);
-    border-bottom:1px solid var(--border);
-}
-
-.main-sidebar{
-    background:var(--card);
-}
-
-.sidebar-dark-primary{
-    background:var(--card)!important;
-}
-
-.sidebar a{
-    color:var(--text)!important;
-}
-
-.sidebar a:hover{
-    background:var(--primary);
-    color:white!important;
-}
-
-.card{
-    background:var(--card);
-    border:1px solid var(--border);
-    color:var(--text);
-}
-
-.table{
-    color:var(--text);
-}
-
-.form-control{
-    background:var(--card);
-    color:var(--text);
-    border-color:var(--border);
-}
-
-.form-control:focus{
-    border-color:var(--primary);
-    box-shadow:0 0 0 .2rem rgba(45,185,229,.25);
-}
-
-.btn-primary{
-    background:var(--primary);
-    border-color:var(--primary);
-}
-*/
 
 /* ==========================================
    NAVBAR SUPERIOR - SPI
@@ -384,3 +326,4 @@ body{
     color: #e74c3c;
 }
 
+/* -- Card de Produto E-commerce -- */

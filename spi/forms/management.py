@@ -7,7 +7,8 @@ from django.contrib.auth.password_validation import validate_password
 from django.core.exceptions import ValidationError
 
 from spi.models import Descarte, Fornecedor, Inventario, Link, Produto, ProdutoPedido, ValorProduto
-
+# Importações dos modelos de estoque
+from spi.models.estoque import Estoque, MovimentacaoEstoque
 
 class BootstrapFormMixin:
     def _apply_bootstrap_classes(self):
@@ -21,7 +22,7 @@ class BootstrapFormMixin:
                 css_class = "form-control"
             widget.attrs["class"] = f'{widget.attrs.get("class", "")} {css_class}'.strip()
 
-
+# FORMS USUÁRIO E GRUPO 
 class ManagedUserForm(BootstrapFormMixin, forms.ModelForm):
     password1 = forms.CharField(
         label="Senha",
@@ -98,7 +99,7 @@ class ManagedGroupForm(BootstrapFormMixin, forms.ModelForm):
         ).order_by("content_type__app_label", "content_type__model", "codename")
         self._apply_bootstrap_classes()
 
-
+# FORMS DE PRODUTO 
 class ManagedProductForm(BootstrapFormMixin, forms.ModelForm):
     class Meta:
         model = Produto
@@ -155,36 +156,25 @@ class ManagedProductSelectionForm(BootstrapFormMixin, forms.Form):
     def _get_product_label(product_record):
         return f"{product_record.nome} — {product_record.codigo_barras}"
 
-
-#Descarte
-
+# FORMS DE DESCARTE 
 class DescarteForm(BootstrapFormMixin, forms.ModelForm):
-
     class Meta:
         model = Descarte
-        fields = "__all__"  # Inclui todos os campos do model Descarte
-
-        # Opcional: Personalização de rótulos (labels)
+        fields = "__all__"
         labels = {
             "motivo": "Motivo do Descarte",
             "data_descarte": "Data do Descarte",
         }
-
-        # Opcional: Personalização de widgets/HTML
         widgets = {
-            "data_descarte": forms.DateInput(
-                attrs={"type": "date", "class": "form-control"}
-            ),
-            "motivo": forms.Textarea(
-                attrs={"rows": 3, "class": "form-control"}
-            ),
+            "data_descarte": forms.DateInput(attrs={"type": "date", "class": "form-control"}),
+            "motivo": forms.Textarea(attrs={"rows": 3, "class": "form-control"}),
         }
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self._apply_bootstrap_classes()
 
-
+# FORMS DE FORNECEDOR
 class ManagedFornecedorForm(BootstrapFormMixin, forms.ModelForm):
     class Meta:
         model = Fornecedor
@@ -207,28 +197,18 @@ class ManagedFornecedorForm(BootstrapFormMixin, forms.ModelForm):
             "responsavel_fornecedor": "Responsável",
         }
         widgets = {
-            "cnpj_cnpj": forms.TextInput(
-                attrs={"placeholder": "00.000.000/0000-00"}
-            ),
-            "cep_fornecedor": forms.TextInput(
-                attrs={"placeholder": "00000-000"}
-            ),
-            "telefone_fornecedor": forms.TextInput(
-                attrs={"placeholder": "(00) 00000-0000"}
-            ),
-            "whatsapp_fornecedor": forms.TextInput(
-                attrs={"placeholder": "(00) 00000-0000"}
-            ),
-            "email_fornecedor": forms.EmailInput(
-                attrs={"placeholder": "exemplo@dominio.com"}
-            )
+            "cnpj_cnpj": forms.TextInput(attrs={"placeholder": "00.000.000/0000-00"}),
+            "cep_fornecedor": forms.TextInput(attrs={"placeholder": "00000-000"}),
+            "telefone_fornecedor": forms.TextInput(attrs={"placeholder": "(00) 00000-0000"}),
+            "whatsapp_fornecedor": forms.TextInput(attrs={"placeholder": "(00) 00000-0000"}),
+            "email_fornecedor": forms.EmailInput(attrs={"placeholder": "exemplo@dominio.com"}),
         }
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self._apply_bootstrap_classes()
 
-
+# FORMS DE LINK 
 class ManagedLinkForm(BootstrapFormMixin, forms.ModelForm):
     class Meta:
         model = Link
@@ -241,7 +221,7 @@ class ManagedLinkForm(BootstrapFormMixin, forms.ModelForm):
         self.fields["fornecedor"].queryset = Fornecedor.objects.order_by("nome_fornecedor")
         self._apply_bootstrap_classes()
 
-
+# FORMS DE VALOR PRODUTO 
 class ManagedValorProdutoForm(BootstrapFormMixin, forms.ModelForm):
     class Meta:
         model = ValorProduto
@@ -256,10 +236,8 @@ class ManagedValorProdutoForm(BootstrapFormMixin, forms.ModelForm):
             "fornecedor__nome_fornecedor", "nome"
         )
         self._apply_bootstrap_classes()
-
-
-class ProductLinkSelect(forms.Select):
-    """Inclui os valores de cada produto nos atributos da opção de link."""
+#
+class ProductLinkSelect(forms.Select): #Inclui os valores de produto nos link
 
     def create_option(self, name, value, label, selected, index, subindex=None, attrs=None):
         option = super().create_option(
@@ -278,12 +256,10 @@ class ProductLinkSelect(forms.Select):
                 product_id = str(product_value_record.produto_id)
                 values_by_product.setdefault(product_id, str(product_value_record.valor))
             option["attrs"]["data-product-values"] = json.dumps(values_by_product)
-            option["attrs"]["data-supplier-name"] = (
-                link_record.fornecedor.nome_fornecedor
-            )
+            option["attrs"]["data-supplier-name"] = link_record.fornecedor.nome_fornecedor
         return option
 
-
+# FORMS DE PEDIDO 
 class ManagedProdutoPedidoForm(BootstrapFormMixin, forms.ModelForm):
     class Meta:
         model = ProdutoPedido
@@ -298,7 +274,7 @@ class ManagedProdutoPedidoForm(BootstrapFormMixin, forms.ModelForm):
         )
         labels = {
             "produto": "Produto",
-            "descricao": "Descrição",           
+            "descricao": "Descrição",
             "link": "Link do produto",
             "quantidade_produto": "Quantidade",
             "valor_produto": "Valor do produto",
@@ -350,10 +326,8 @@ class ManagedProdutoPedidoForm(BootstrapFormMixin, forms.ModelForm):
 
 
 class ManagedOrderProductCreateForm(ManagedProdutoPedidoForm):
-    """Cadastro de pedido sem status, utilizando o padrão definido no modelo."""
-
     class Meta(ManagedProdutoPedidoForm.Meta):
-        fields = (           
+        fields = (
             "produto",
             "descricao",
             "link",
@@ -363,8 +337,7 @@ class ManagedOrderProductCreateForm(ManagedProdutoPedidoForm):
         )
 
 
-class ManagedProductValueAmountForm(BootstrapFormMixin, forms.ModelForm):
-    """Formulário usado quando produto e link ainda serão criados juntos."""
+class ManagedProductValueAmountForm(BootstrapFormMixin, forms.ModelForm):  
 
     class Meta:
         model = ValorProduto
@@ -376,14 +349,11 @@ class ManagedProductValueAmountForm(BootstrapFormMixin, forms.ModelForm):
         super().__init__(*args, **kwargs)
         self._apply_bootstrap_classes()
 
-
-# Inventário
+# FORMS DE INVENTÁRIO 
 class InventarioForm(BootstrapFormMixin, forms.ModelForm):
-
     class Meta:
         model = Inventario
         fields = "__all__"
-
         widgets = {
             "data_aquisicao": forms.DateInput(attrs={"type": "date"}),
             "validade_garantia": forms.DateInput(attrs={"type": "date"}),
@@ -396,3 +366,106 @@ class InventarioForm(BootstrapFormMixin, forms.ModelForm):
         for field in self.fields.values():
             field.widget.attrs["autocomplete"] = "off"
 
+# FORMS PARA ESTOQUE 
+class EstoqueForm(BootstrapFormMixin, forms.ModelForm):  
+
+    class Meta:
+        model = Estoque
+        fields = (
+            'nome',
+            'descricao',
+            'quantidade_estoque',
+            'estoque_minimo',
+            'codigo_barras',
+            'valor_unitario_atual'
+        )
+        widgets = {
+            'quantidade_estoque': forms.NumberInput(attrs={'min': '0'}),
+            'estoque_minimo': forms.NumberInput(attrs={'min': '0'}),
+            'valor_unitario_atual': forms.NumberInput(attrs={'min': '0', 'step': '0.01'}),
+            'descricao': forms.Textarea(attrs={'rows': 3}),
+        }
+        labels = {
+            'nome': 'Nome do Produto',
+            'descricao': 'Descrição',
+            'quantidade_estoque': 'Quantidade em Estoque',
+            'estoque_minimo': 'Estoque Mínimo',
+            'codigo_barras': 'Código de Barras',
+            'valor_unitario_atual': 'Valor Unitário Atual',
+        }
+        help_texts = {
+            'codigo_barras': 'Código único para identificação do produto',
+            'estoque_minimo': 'Quantidade mínima para alerta',
+        }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self._apply_bootstrap_classes()
+        self.fields['codigo_barras'].required = False
+        self.fields['valor_unitario_atual'].required = False
+
+    def clean_codigo_barras(self):
+        """Valida se o código de barras é único."""
+        codigo = self.cleaned_data.get('codigo_barras')
+        if codigo:
+            qs = Estoque.objects.filter(codigo_barras=codigo)
+            if self.instance.pk:
+                qs = qs.exclude(pk=self.instance.pk)
+            if qs.exists():
+                raise ValidationError('Este código de barras já está cadastrado.')
+        return codigo
+
+class ManagedEstoqueForm(EstoqueForm):  
+
+    class Meta(EstoqueForm.Meta):
+        fields = ('nome', 'descricao', 'quantidade_estoque', 'estoque_minimo')
+        labels = {
+            'nome': 'Nome do produto',
+            'descricao': 'Descrição',
+            'quantidade_estoque': 'Quantidade em Estoque',
+            'estoque_minimo': 'Estoque Mínimo',
+        }
+
+class MovimentacaoEstoqueForm(BootstrapFormMixin, forms.ModelForm):   
+
+    class Meta:
+        model = MovimentacaoEstoque
+        fields = (
+            'estoque',
+            'tipo',
+            'quantidade',
+            'valor_unitario',
+            'observacao'
+        )
+        widgets = {
+            'quantidade': forms.NumberInput(attrs={'min': '1'}),
+            'valor_unitario': forms.NumberInput(attrs={'min': '0', 'step': '0.01'}),
+            'observacao': forms.Textarea(attrs={'rows': 2, 'placeholder': 'Motivo da movimentação (opcional)'}),
+        }
+        labels = {
+            'estoque': 'Produto',
+            'tipo': 'Tipo de Movimentação',
+            'quantidade': 'Quantidade',
+            'valor_unitario': 'Valor Unitário',
+            'observacao': 'Observação',
+        }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self._apply_bootstrap_classes()
+        self.fields['estoque'].queryset = Estoque.objects.filter(ativo=True)
+
+    def clean(self):
+        """Valida se há estoque suficiente para saída."""
+        cleaned_data = super().clean()
+        tipo = cleaned_data.get('tipo')
+        quantidade = cleaned_data.get('quantidade')
+        estoque = cleaned_data.get('estoque')
+
+        if tipo == MovimentacaoEstoque.TIPO_SAIDA and estoque and quantidade:
+            if estoque.quantidade_estoque < quantidade:
+                raise ValidationError(
+                    f'Estoque insuficiente. Disponível: {estoque.quantidade_estoque}, Solicitado: {quantidade}'
+                )
+        return cleaned_data
+    

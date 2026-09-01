@@ -193,6 +193,12 @@ ADMINLTE = {
             'can': 'spi.view_produto',
         },
         {
+        'text': 'Estoque',
+        'icon': 'bi bi-shop',
+        'route': 'estoque_list',
+        'can': 'spi.view_estoque',
+        },
+        {
             'text': 'Descarte',
             'icon': 'bi bi-trash',
             'route': 'discard_list',

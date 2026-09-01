@@ -6,6 +6,7 @@ from .link import Link
 from .produto import Produto
 from .produto_pedido import ProdutoPedido
 from .valor_produto import ValorProduto
+from .estoque import Estoque, MovimentacaoEstoque
 
 __all__ = [
     "ControleData",
@@ -16,4 +17,6 @@ __all__ = [
     "Produto",
     "ProdutoPedido",
     "ValorProduto",
+    "Estoque",
+    "MovimentacaoEstoque"
 ]

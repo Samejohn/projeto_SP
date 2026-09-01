@@ -1,5 +1,3 @@
-"""Ponto de entrada das views funcionais da área de gestão."""
-
 from .access import (
     create_group,
     create_user,
@@ -45,6 +43,13 @@ from .suppliers import (
     update_supplier,
 )
 
+# Novo módulo de estoque
+from .stock import (
+    create_stock,
+    update_stock,
+    delete_stock,
+    list_stock,
+)
 
 __all__ = [
     "create_discard",
@@ -83,4 +88,9 @@ __all__ = [
     "update_product_value",
     "update_supplier",
     "update_user",
+    # Estoque
+    "create_stock",
+    "update_stock",
+    "delete_stock",
+    "list_stock",
 ]

@@ -1,0 +1,77 @@
+{% extends 'base.html' %}
+
+{% block page_title_text %}{{ form_title }}{% endblock %}
+{% block page_title %}{{ form_title }}{% endblock %}
+{% block breadcrumb_items %}
+<li class="breadcrumb-item"><a href="{% url cancel_url_name %}">Estoque</a></li>
+<li class="breadcrumb-item active">{{ form_title }}</li>
+{% endblock %}
+
+<!--Cadastrar/Editar produto em estoque-->
+{% block content %}
+<div class="container-fluid management-shell">
+    <form method="post" class="management-card management-form" novalidate>
+        {% csrf_token %}
+        {% include 'management/_form_errors.html' %}
+
+        <section class="form-section">
+            <h2>{{ section_title }}</h2>
+            <div class="row g-3">
+                {% include 'management/_field.html' with field=form.nome column='col-12 col-md-6' %}
+                {% include 'management/_field.html' with field=form.descricao column='col-12' %}
+                {% include 'management/_field.html' with field=form.quantidade_estoque column='col-12 col-md-4' %}
+                {% include 'management/_field.html' with field=form.estoque_minimo column='col-12 col-md-4' %}
+                {% include 'management/_field.html' with field=form.codigo_barras column='col-12 col-md-4' %}
+                {% include 'management/_field.html' with field=form.valor_unitario_atual column='col-12 col-md-6' %}
+                {% if form.ativo %}
+                    {% include 'management/_field.html' with field=form.ativo column='col-12 col-md-6' %}
+                {% endif %}
+            </div>
+        </section>
+
+        <footer class="form-actions">
+            <a class="btn btn-light" href="{% url cancel_url_name %}">Cancelar</a>
+            <button class="btn btn-outline-primary" type="submit">
+                <i class="bi bi-check-lg"></i> {{ submit_label }}
+            </button>
+        </footer>
+    </form>
+</div>
+{% endblock %}
+
+{% block page_js %}
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    const quantidadeInput = document.getElementById("id_quantidade_estoque");
+    const valorUnitarioInput = document.getElementById("id_valor_unitario_atual");
+    const totalMessage = document.createElement("div");
+    totalMessage.classList.add("form-text");
+    valorUnitarioInput.parentNode.appendChild(totalMessage);
+
+    function formatCurrency(rawValue) {
+        return new Intl.NumberFormat("pt-BR", {
+            style: "currency",
+            currency: "BRL",
+        }).format(Number(rawValue));
+    }
+
+    function updateTotalMessage() {
+        const quantidade = parseFloat(quantidadeInput.value) || 0;
+        const valorUnitario = parseFloat(valorUnitarioInput.value) || 0;
+        const total = quantidade * valorUnitario;
+
+        if (quantidade > 0 && valorUnitario > 0) {
+            totalMessage.innerHTML = `
+                Valor unitário: <strong>${formatCurrency(valorUnitario)}</strong> | 
+                Total (${quantidade}x): <strong>${formatCurrency(total)}</strong>
+            `;
+        } else {
+            totalMessage.textContent = "Informe quantidade e valor unitário para calcular o total.";
+        }
+    }
+
+    quantidadeInput.addEventListener("input", updateTotalMessage);
+    valorUnitarioInput.addEventListener("input", updateTotalMessage);
+});
+</script>
+{% endblock %}

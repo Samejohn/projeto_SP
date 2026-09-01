@@ -14,39 +14,40 @@
         </div>
         <span class="today"><i class="bi bi-calendar3"></i> {% now "d/m/Y" %}</span>
     </div>
-
+<!-- Cards de Métricas -->
     <div class="row g-4 mb-4">
-        
         <div class="col-12 col-md-6 col-lg-3"><article class="metric-card metric-icy1 card-glass card-hover"><div><strong>{{ total_produtos }}</strong><span>Produtos</span></div><i class="bi bi-box-seam"></i></article></div>
         <div class="col-12 col-md-6 col-lg-3"><article class="metric-card metric-icy2 card-glass card-hover"><div><strong>7</strong><span>Estoque</span></div><i class="bi bi-shop"></i></article></div>
         <div class="col-12 col-md-6 col-lg-3"><article class="metric-card metric-icy3 card-glass card-hover"><div><strong>{{ total_produtos_pendentes }}</strong><span>Produtos Pendentes</span></div><i class="bi bi-archive"></i></article></div>
+        <div class="col-12 col-md-6 col-lg-3"><article class="metric-card metric-icy1 card-glass card-hover"><div><strong>{{ total_investido }}</strong><span>Investimento</span></div><i class="bi bi-graph-up-arrow"></i></article></div>
         <!--Alerta de Estoque mínimo-->
         <div class="col-12 col-md-6 col-lg-3">
-    <article class="metric-card metric-icy4 card-glass card-hover
-        {% if total_produtos_alerta > 0 %}
-            metric-danger
-        {% else %}
-            metric-success
-        {% endif %}">
+            <article class="metric-card metric-icy4 card-glass card-hover
+                {% if total_produtos_alerta > 0 %}
+                    metric-danger
+                {% else %}
+                    metric-success
+                {% endif %}">
 
-        <div>
-            <strong>{{ total_produtos_alerta }}</strong>
-            <span>Alerta de Estoque mínimo</span>
+                <div>
+                    <strong>{{ total_produtos_alerta }}</strong>
+                    <span>Alerta de Estoque mínimo</span>
+                </div>
+
+                {% if total_produtos_alerta > 0 %}
+                    <i class="bi bi-exclamation-triangle-fill"></i>
+                {% else %}
+                    <i class="bi bi-check-circle-fill"></i>
+                {% endif %}
+
+            </article>
         </div>
+    </div>
 
-        {% if total_produtos_alerta > 0 %}
-            <i class="bi bi-exclamation-triangle-fill"></i>
-        {% else %}
-            <i class="bi bi-check-circle-fill"></i>
-        {% endif %}
-
-    </article>
-</div>
-</div>
-
+<!-- Gráfico de Variação de Preços e Cards de E-commerce -->
     <div class="row g-4">
         <div class="col-12 col-xl-5">
-            <section class="dashboard-panel chart-panel h-100">
+            <section class="dashboard-panel chart-panel card-hover h-100">
                 <div class="panel-heading"><i class="bi bi-grid-3x3-gap-fill"></i> Variação de preços por mês</div>
                 <div class="chart-wrap" role="img" aria-label="Gráfico ilustrativo de solicitações mensais">
                     <div class="chart-axis"><span>400</span><span>300</span><span>200</span><span>100</span><span>0</span></div>
@@ -59,22 +60,76 @@
                 </div>
             </section>
         </div>
-        <div class="col-12 col-xl-7">
-            <section class="dashboard-panel calls-panel h-100">
-                <div class="panel-heading d-flex justify-content-between"><span><i class="bi bi-clipboard2-check-fill"></i> Últimas solicitações</span><a href="#">Ver todas</a></div>
-                <div class="call-list">
-                    <a href="#"><span><small>03/07/2026</small><b>Aquisição de materiais de expediente</b></span><i class="bi bi-arrow-right"></i></a>
-                    <a href="#"><span><small>01/06/2026</small><b>Contratação de serviço especializado</b></span><i class="bi bi-arrow-right"></i></a>
-                    <a href="#"><span><small>07/04/2026</small><b>Manutenção de equipamentos</b></span><i class="bi bi-arrow-right"></i></a>
-                    <a href="#"><span><small>18/03/2026</small><b>Solicitação de apoio institucional</b></span><i class="bi bi-arrow-right"></i></a>
+
+<!-- Card Vertical -->
+        <!-- Container dos Cards -->
+<div class="col-12 col-xl-7">
+    <div class="row g-4 align-items-stretch">
+        
+        <!-- Card Mercado Livre -->
+        <div class="col-12 col-md-4">
+            <article class="dashboard-panel chart-panel card-hover h-100 p-4 d-flex flex-column justify-content-between text-center align-items-center">
+                <div class="mb-3">
+                    <i class="bi bi-handbag-fill display-5 mb-2 d-block"></i>
+                    <h6 class="fw-bold mb-1">Mercado Livre</h6>
+                    <span class="fs-4 fw-bold">{{ total_mercadolivre|default:"0" }}</span>
                 </div>
-                <button class="btn btn-light mt-3"><i class="bi bi-star-fill text-warning"></i> Ver favoritas</button>
-            </section>
+                <a href="https://www.mercadolivre.com.br/" target="_blank" rel="noopener noreferrer" class="btn btn-sm btn-outline-light rounded-pill px-3">
+                    Acessar <i class="bi bi-box-arrow-up-right ms-1"></i>
+                </a>
+            </article>
         </div>
+
+        <!-- Card Amazon -->
+        <div class="col-12 col-md-4">
+            <article class="metric-card metric-icy1 card-glass card-hover h-100 p-4 d-flex flex-column justify-content-between text-center align-items-center">
+                <div class="mb-3">
+                    <i class="bi bi-amazon display-5 mb-2 d-block"></i>
+                    <h6 class="fw-bold mb-1">Amazon</h6>
+                    <span class="fs-4 fw-bold">{{ total_amazon|default:"0" }}</span>
+                </div>
+                <a href="https://www.amazon.com/" target="_blank" rel="noopener noreferrer" class="btn btn-sm btn-outline-light rounded-pill px-3">
+                    Acessar <i class="bi bi-box-arrow-up-right ms-1"></i>
+                </a>
+            </article>
+        </div>
+
+        <!-- Card AliExpress -->
+        <div class="col-12 col-md-4">
+            <article class="metric-card metric-icy1 card-glass card-hover h-100 p-4 d-flex flex-column justify-content-between text-center align-items-center">
+                <div class="mb-3">
+                    <i class="bi bi-cart-fill display-5 mb-2 d-block"></i>
+                    <h6 class="fw-bold mb-1">AliExpress</h6>
+                    <span class="fs-4 fw-bold">{{ total_aliexpress|default:"0" }}</span>
+                </div>
+                <a href="https://www.aliexpress.com/" target="_blank" rel="noopener noreferrer" class="btn btn-sm btn-outline-light rounded-pill px-3">
+                    Acessar <i class="bi bi-box-arrow-up-right ms-1"></i>
+                </a>
+            </article>
+        </div>
+
     </div>
 </div>
+</div>
 
+<!-- Cards de E-commerce -->
+ <div class="container-fluid management-shell">
+        {% include 'management/_messages.html' %}
+        <section class="management-card">
+            <header class="management-toolbar">
+                <h2 class="management-card-title">E-commerce</h2>
+            </header>
+        </section>
+</div>
+<!-- Cards de E-commerce 
+<div class="DALGre S2iMyb"><di jscontroller="Zjgvvd" class="S2iMyb pla-exp-container" data-acu="false" data-aqid="NAqPauz5PN_JkPIPrcSYgQ4" data-at="false" data-ccg="12" data-dcm="8" data-deb="true" data-ecg="false" data-eig="false" data-eplas="false" data-erdg="false" data-erpl="true" data-eteislg="false" data-fplog="true" data-fplogef="false" data-fwc="false" data-fwcel="true" data-iapam="false" data-moitndv="5" data-npis="false" data-pgc="false" data-pgcoh="false" data-plask="6" data-pnb="false" data-q="fone de ouvido headset" data-rcbrk="1128" data-rcmax="170" data-rcmin="150" data-roc="false" data-slg="false" data-slgdt="0" data-uhagmd="false" data-wtatoken=""></div>
+-->
 {% endblock %}
 
-<!-- card de produto e-commerce -->
+
+
+
+
+
+
 

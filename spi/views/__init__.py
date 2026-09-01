@@ -2,14 +2,14 @@ from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth import login, logout
 from django.contrib.auth.decorators import login_required
-from django.db.models import F  # <-- NOVO IMPORT
+from django.db.models import F  
 from django.http import HttpResponseNotFound
 from django.shortcuts import redirect, render, resolve_url
 from django.utils.http import url_has_allowed_host_and_scheme
 from django.views.decorators.http import require_POST
 
 from spi.forms import SignInForm, SignUpForm
-from spi.models import Produto, ProdutoPedido
+from spi.models import Produto, ProdutoPedido  
 
 from .management import (
     create_discard,
@@ -48,6 +48,16 @@ from .management import (
     update_product_value,
     update_supplier,
     update_user,
+)
+
+from .management.stock import (
+    list_stock,
+    create_stock,
+    update_stock,
+    delete_stock,
+    list_movements,
+    create_movement,
+    estoque_alerta_json,
 )
 
 

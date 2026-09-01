@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+
+{% block page_title_text %}Estoque de Produtos{% endblock %}
+{% block page_title %}Gerenciar estoque de produtos{% endblock %}
+{% block breadcrumb_items %}<li class="breadcrumb-item active">Estoque de Produtos</li>{% endblock %}
+
+{% block content %}
+<div class="container-fluid management-shell">
+    {% include 'management/_messages.html' %}
+    <section class="management-card">
+        <header class="management-toolbar">
+            <form method="get" class="management-search">
+                <i class="bi bi-search"></i>
+                <input type="search" name="q" value="{{ search_query }}" placeholder="Pesquisar produtos em estoque" aria-label="Pesquisar produtos em estoque">
+                <button class="btn btn-outline-primary" type="submit">Pesquisar</button>
+            </form>
+            {% if perms.spi.add_estoque %}<a class="btn btn-outline-primary" href="{% url 'estoque_create' %}"><i class="bi bi-plus-lg"></i> Adicionar produto ao estoque</a>{% endif %}
+        </header>
+        <div class="table-responsive">
+            <table class="table management-table align-middle mb-0">
+                <thead><tr><th>Produto</th><th>Descrição</th><th>Quant.</th><th>Estoque Mínimo</th><th>Valor Unitário</th><th>Total</th><th>Responsável</th><th>Data</th><th>Ativo/Inativo</th><th class="text-end">Ações</th></tr></thead>
+                
+        <tbody>
+            {% for item in estoque_list %}
+            <tr class="{% if item.alerta_estoque_minimo %}table-danger{% endif %}">
+                <td>{{ item.nome }}</td>
+                <td>{{ item.descricao|default:"-" }}</td>
+                <td>{{ item.quantidade_estoque }}</td>
+                <td>{{ item.estoque_minimo }}</td>
+                <td>R$ {{ item.valor_unitario_atual }}</td>
+                <td>R$ {{ item.valor_total_estoque }}</td>
+                <td>{{ item.responsavel_cadastro }}</td>
+                <td>{{ item.data_criacao|date:"d/m/Y H:i" }}</td>
+                <td>
+                    {% if item.ativo %}
+                        ✅ Ativo
+                    {% else %}
+                        ❌ Inativo
+                    {% endif %}
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="9" class="text-center">Nenhum produto cadastrado.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}
