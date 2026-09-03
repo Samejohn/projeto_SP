@@ -34,7 +34,7 @@
                             {% if perms.spi.delete_produtopedido %}<a class="btn btn-sm btn-outline-danger" href="{% url 'produto_pedido_delete' item.pk %}" title="Excluir produto do pedido"><i class="bi bi-trash"></i></a>{% endif %}
                         </td>
                     </tr>
-                {% empty %}<tr><td colspan="7" class="empty-state">Nenhum produto de pedido encontrado.</td></tr>{% endfor %}
+                {% empty %}<tr><td colspan="8" class="empty-state">Nenhum produto de pedido encontrado.</td></tr>{% endfor %}
                 </tbody>
             </table>
         </div>

@@ -18,7 +18,7 @@
         </header>
         <div class="table-responsive">
             <table class="table management-table align-middle mb-0">
-                <thead><tr><th>Nº Patrimônio</th><th>ID Ativo</th><th>Categoria</th><th>Modelo</th><th>Nº(Série)Licença</th><th>Aquisição</th><th>Valor(R$)</th><th>Garantia</th><th>Status</th><th>Setor</th><th>Usuário</th><th>Observações</th></thead>
+                <thead><tr><th>Nº Patrimônio</th><th>ID Ativo</th><th>Categoria</th><th>Modelo</th><th>Nº(Série)Licença</th><th>Aquisição</th><th>Valor(R$)</th><th>Garantia</th><th>Status</th><th>Setor</th><th>Usuário</th><th>Observações</th><th class="text-end">Ações</th></thead>
                 <tbody>
                 {% for item in inventory %}
                     <tr>
@@ -34,8 +34,12 @@
                         <td>{{ item.setor }}</td>
                         <td>{{ item.usuario|default:"-" }}</td>
                         <td>{{ item.observacoes|default:"-" }}</td>
+                        <td class="text-end text-nowrap">
+                            {% if perms.spi.change_inventario %}<a class="btn btn-sm btn-outline-primary" href="{% url 'inventory_update' item.pk %}" title="Editar inventário"><i class="bi bi-pencil"></i></a>{% endif %}
+                            {% if perms.spi.delete_inventario %}<a class="btn btn-sm btn-outline-danger" href="{% url 'inventory_delete' item.pk %}" title="Excluir inventário"><i class="bi bi-trash"></i></a>{% endif %}
+                        </td>
                     </tr>
-                {% empty %}<tr><td colspan="12" class="empty-state">Nenhum item encontrado.</td></tr>{% endfor %}
+                {% empty %}<tr><td colspan="13" class="empty-state">Nenhum item encontrado.</td></tr>{% endfor %}
                 </tbody>
             </table>
         </div>

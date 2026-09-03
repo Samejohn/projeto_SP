@@ -61,7 +61,7 @@ class ProdutoPedido(models.Model):
         ordering = ["-controle_data__data_cadastro"]
 
     def __str__(self):
-        return f"{self.nome} - {self.quantidade_produto} un."
+        return f"{self.produto.nome} - {self.quantidade_produto} un."
 
     def get_registered_product_value(self):
         """Obtém o valor cadastrado para a combinação de produto e link."""
@@ -76,14 +76,14 @@ class ProdutoPedido(models.Model):
         ).first()
 
     def save(self, *args, **kwargs):
-        # 1. Busca o valor unitário cadastrado caso valor_produto não tenha sido preenchido
+        # Busca o valor unitário cadastrado caso valor_produto não tenha sido preenchido
         if not self.valor_produto:
             registro_valor = self.get_registered_product_value()
             if registro_valor:
                 # Assumindo que a model ValorProduto possui o campo 'valor'
                 self.valor_produto = registro_valor.valor
 
-        # 2. Calcula o Total automaticamente se o valor_produto existir
+        # Calcula o Total automaticamente se o valor_produto existir
         if self.valor_produto is not None:
             qtd = Decimal(self.quantidade_produto or 0)
             unitario = Decimal(self.valor_produto)

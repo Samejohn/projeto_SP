@@ -47,17 +47,18 @@ def create_discard(request):
         {"form": discard_form, "object": None},
     )
 
-
+#update_discard,
 @login_required
-@permission_required("spi.change_descarte", raise_exception=True)
 def update_discard(request, discard_id):
     discard_record = get_object_or_404(Descarte, id=discard_id)
     submitted_data = request.POST if request.method == "POST" else None
     discard_form = DescarteForm(submitted_data, instance=discard_record)
+
     if request.method == "POST" and discard_form.is_valid():
         discard_form.save()
         messages.success(request, "Descarte atualizado com sucesso.")
         return redirect("discard_list")
+
     return render(
         request,
         "management/discard_form.html",
@@ -65,6 +66,7 @@ def update_discard(request, discard_id):
     )
 
 
+#delete_discard,
 @login_required
 @permission_required("spi.delete_descarte", raise_exception=True)
 def delete_discard(request, discard_id):
@@ -75,6 +77,38 @@ def delete_discard(request, discard_id):
         "descarte",
         "discard_list",
         "Descarte excluído com sucesso.",
+    )
+
+
+@login_required
+@permission_required("spi.change_inventario", raise_exception=True)
+def update_inventory(request, inventory_id):
+    inventory_record = get_object_or_404(Inventario, id=inventory_id)
+    submitted_data = request.POST if request.method == "POST" else None
+    inventory_form = InventarioForm(submitted_data, instance=inventory_record)
+
+    if request.method == "POST" and inventory_form.is_valid():
+        inventory_form.save()
+        messages.success(request, "Item do inventário atualizado com sucesso.")
+        return redirect("inventory_list")
+
+    return render(
+        request,
+        "management/inventory_form.html",
+        {"form": inventory_form, "object": inventory_record},
+    )
+
+
+@login_required
+@permission_required("spi.delete_inventario", raise_exception=True)
+def delete_inventory(request, inventory_id):
+    inventory_record = get_object_or_404(Inventario, id=inventory_id)
+    return delete_record(
+        request,
+        inventory_record,
+        "inventário",
+        "inventory_list",
+        "Item do inventário excluído com sucesso.",
     )
 
 

@@ -20,7 +20,7 @@ class EstoqueListView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
     model = Estoque
     permission_required = 'spi.view_estoque'
     template_name = 'management/estoque_list.html'
-    context_object_name = 'itens_estoque'
+    context_object_name = 'estoque_list'
     paginate_by = 15
 
     def get_queryset(self):
@@ -187,20 +187,84 @@ def create_stock(request):
     }
     return render(request, 'management/estoque_form.html', context)
 
-#atualizar estoque
+#editar estoque
 @login_required
 @permission_required('spi.change_estoque', raise_exception=True)
 def update_stock(request, stock_id):
-   
-    return EstoqueUpdateView.as_view()(request, pk=stock_id)
+    estoque = get_object_or_404(Estoque, pk=stock_id)
+
+    if request.method == 'POST':
+        form = EstoqueForm(
+            request.POST,
+            instance=estoque
+        )
+
+        if form.is_valid():
+            form.save()
+
+            messages.success(
+                request,
+                'Produto do estoque atualizado com sucesso!'
+            )
+
+            return redirect('estoque_list')
+
+    else:
+        form = EstoqueForm(
+            instance=estoque
+        )
+
+    context = {
+        'form': form,
+        'form_title': 'Editar Produto em Estoque',
+        'section_title': 'Informações do Produto no Estoque',
+        'submit_label': 'Atualizar',
+        'cancel_url_name': 'estoque_list',
+    }
+
+    return render(
+        request,
+        'management/estoque_form.html',
+        context
+    )
 
 #deletar estoque
 @login_required
-@permission_required('spi.delete_estoque', raise_exception=True)
+@permission_required("spi.delete_estoque", raise_exception=True)
 def delete_stock(request, stock_id):
-    
-    return EstoqueDeleteView.as_view()(request, pk=stock_id)
+    estoque = get_object_or_404(
+        Estoque,
+        pk=stock_id
+    )
 
+    if request.method == "POST":
+        estoque.ativo = False
+
+        estoque.save(
+            update_fields=[
+                "ativo",
+                "data_atualizacao",
+            ]
+        )
+
+        messages.success(
+            request,
+            f'O produto "{estoque.nome}" foi desativado com sucesso.'
+        )
+
+        return redirect("estoque_list")
+
+    context = {
+        "object": estoque,
+        "object_label": "produto do estoque",
+        "cancel_url_name": "estoque_list",
+    }
+
+    return render(
+        request,
+        "management/confirm_delete.html",
+        context
+    )
 #listar movimentações
 @login_required
 @permission_required('spi.view_movimentacaoestoque', raise_exception=True)

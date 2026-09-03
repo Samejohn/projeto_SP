@@ -7,6 +7,17 @@ class Inventario(models.Model):
         ("DESC", "Descartado"),
     ]
 
+    ID_CHOICES = [
+        ("HW", "Hardware"),
+        ("SW", "Software"),
+        ("SRV", "Servidor"),
+        ("NET", "Rede"),
+        ("PER", "Periféricos"),
+        ("CLD", "Serviços em nuvem"),
+        ("SEC", "Segurança"),
+        ("LIC", "Licenças"),
+    ]
+
     CATEGORIA_CHOICES = [
         ("NOTE", "Notebook"),
         ("DESK", "Desktop"),
@@ -18,7 +29,7 @@ class Inventario(models.Model):
     ]
 
     numero_patrimonio = models.CharField("Nº Patrimônio", max_length=30, unique=True)
-    id_ativo = models.CharField("ID do Inventario", max_length=30, unique=True)
+    id_ativo = models.CharField("ID do Inventario", max_length=30, choices=ID_CHOICES, unique=True)
     categoria = models.CharField("Categoria", max_length=20, choices=CATEGORIA_CHOICES)
     item_modelo = models.CharField("Item / Modelo", max_length=150)
     serie_licenca = models.CharField("S/N (Série) / Licença", max_length=150, blank=True, null=True)

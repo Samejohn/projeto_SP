@@ -12,9 +12,7 @@ from spi.forms import SignInForm, SignUpForm
 from spi.models import Produto, ProdutoPedido  
 
 from .management import (
-    create_discard,
     create_group,
-    create_inventory,
     create_link,
     create_order_product,
     create_product,
@@ -23,7 +21,6 @@ from .management import (
     create_supplier,
     create_supplier_from_product,
     create_user,
-    delete_discard,
     delete_group,
     delete_link,
     delete_order_product,
@@ -31,16 +28,13 @@ from .management import (
     delete_product_value,
     delete_supplier,
     delete_user,
-    list_discards,
     list_groups,
-    list_inventory,
     list_links,
     list_order_products,
     list_product_values,
     list_products,
     list_suppliers,
     list_users,
-    update_discard,
     update_group,
     update_link,
     update_order_product,
@@ -48,6 +42,7 @@ from .management import (
     update_product_value,
     update_supplier,
     update_user,
+    
 )
 
 from .management.stock import (
@@ -59,7 +54,18 @@ from .management.stock import (
     create_movement,
     estoque_alerta_json,
 )
-
+from .management import (
+    list_discards,
+    create_discard,
+    update_discard,
+    delete_discard,
+)
+from .management.inventory import (
+    list_inventory,
+    create_inventory,
+    update_inventory,
+    delete_inventory,
+)
 
 @login_required
 def dashboard(request):

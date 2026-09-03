@@ -82,4 +82,6 @@ urlpatterns = [
     # Inventário
     path("gestao/inventario/", views.list_inventory, name="inventory_list"),
     path("gestao/inventario/cadastrar/", views.create_inventory, name="inventory_create"),
+    path("gestao/inventario/<int:inventory_id>/editar/", views.update_inventory, name="inventory_update"),
+    path("gestao/inventario/<int:inventory_id>/excluir/", views.delete_inventory, name="inventory_delete"),
 ]
