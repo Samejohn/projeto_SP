@@ -1,5 +1,3 @@
-"""Views responsáveis por descartes e pelo inventário."""
-
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required, permission_required
 from django.shortcuts import get_object_or_404, redirect, render
@@ -148,3 +146,5 @@ def create_inventory(request):
         "management/inventory_form.html",
         {"form": inventory_form, "object": None},
     )
+
+

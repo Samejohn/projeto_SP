@@ -4,6 +4,7 @@ from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.utils import timezone
 from django.contrib.auth import get_user_model
+from django.db.models import Q
 
 User = get_user_model()
 
@@ -41,10 +42,12 @@ class Estoque(models.Model):
     )
     
     responsavel_cadastro = models.ForeignKey(
-        User,
-        on_delete=models.PROTECT,
-        related_name='estoque_cadastrados',
-        verbose_name='Responsável pelo cadastro',
+    'auth.User',
+    on_delete=models.SET_NULL,
+    null=True,
+    blank=True,
+    verbose_name='Responsável pelo cadastro',
+    related_name='estoque_cadastrado'
     )
     data_criacao = models.DateTimeField('Data de Cadastro', auto_now_add=True)
     data_atualizacao = models.DateTimeField('Data de Atualização', auto_now=True)
@@ -157,3 +160,6 @@ class EstoqueMovimentoBatch(models.Model):
     class Meta:
         verbose_name = 'Movimento em Lote'
         verbose_name_plural = 'Movimentos em Lote'
+
+
+

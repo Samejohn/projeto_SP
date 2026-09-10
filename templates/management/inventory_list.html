@@ -18,7 +18,7 @@
         </header>
         <div class="table-responsive">
             <table class="table management-table align-middle mb-0">
-                <thead><tr><th>Nº Patrimônio</th><th>ID Ativo</th><th>Categoria</th><th>Modelo</th><th>Nº(Série)Licença</th><th>Aquisição</th><th>Valor(R$)</th><th>Garantia</th><th>Status</th><th>Setor</th><th>Usuário</th><th>Observações</th><th class="text-end">Ações</th></thead>
+                <thead><tr><th>Nº Patrimônio</th><th>ID Ativo</th><th>Categoria</th><th>Modelo</th><th>Nº(Série)Licença</th><th>Aquisição</th><th>Quant.</th><th>Valor(R$)</th><th>Total</th><th>Garantia</th><th>Status</th><th>Setor</th><th>Usuário</th><th>Observações</th><th class="text-end">Ações</th></thead>
                 <tbody>
                 {% for item in inventory %}
                     <tr>
@@ -28,7 +28,9 @@
                         <td>{{ item.item_modelo }}</td>
                         <td>{{ item.serie_licenca|default:"-" }}</td>
                         <td>{{ item.data_aquisicao|date:"d/m/Y" }}</td>
+                        <td>{{ item.quantidade}}</td>
                         <td>{{ item.valor|floatformat:2 }}</td>
+                        <td>{{ item.total|floatformat:2 }}</td>
                         <td>{{ item.validade_garantia|date:"d/m/Y"|default:"-" }}</td>
                         <td>{{ item.get_status_display }}</td>
                         <td>{{ item.setor }}</td>
@@ -46,4 +48,6 @@
         {% include 'management/_pagination.html' %}
     </section>
 </div>
+<font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">Gerar PDF</font></font>
+
 {% endblock %}

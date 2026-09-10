@@ -354,6 +354,7 @@ class InventarioForm(BootstrapFormMixin, forms.ModelForm):
     class Meta:
         model = Inventario
         fields = "__all__"
+        exclude = ["total"]  # Exclui o total do formulário para não sobrescrever o cálculo
         widgets = {
             "data_aquisicao": forms.DateInput(attrs={"type": "date"}),
             "validade_garantia": forms.DateInput(attrs={"type": "date"}),

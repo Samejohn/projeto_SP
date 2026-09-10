@@ -80,10 +80,24 @@
                     </div>
 
                     <div class="col-md-4 mb-3">
-                        <label>Valor (R$)</label>
-                        {{ form.valor }}
-                        {{ form.valor.errors }}
-                    </div>
+    <label>Quantidade</label>
+    {{ form.quantidade }}
+    {{ form.quantidade.errors }}
+</div>
+
+<div class="col-md-4 mb-3">
+    <label>Valor (R$)</label>
+    {{ form.valor }}
+    {{ form.valor.errors }}
+</div>
+
+<div class="col-md-4 mb-3">
+    <label>Total (R$)</label>
+
+    <div class="form-control bg-light">
+        R$ {{ object.total|default:"0,00" }}
+    </div>
+</div>
 
                     <div class="col-md-4 mb-3">
                         <label>Garantia</label>

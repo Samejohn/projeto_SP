@@ -21,7 +21,6 @@ from spi.models import ControleData, Link, Produto, ProdutoPedido, ValorProduto
 
 from .helpers import delete_record, render_catalog_form, render_searchable_list
 
-
 @login_required
 @permission_required("spi.view_produto", raise_exception=True)
 def list_products(request):
@@ -364,3 +363,9 @@ def delete_order_product(request, order_product_id):
         "produto_pedido_list",
         "Produto do pedido excluído com sucesso.",
     )
+
+#Scraper de preços
+
+
+
+
