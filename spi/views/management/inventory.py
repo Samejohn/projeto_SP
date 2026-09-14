@@ -2,10 +2,15 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required, permission_required
 from django.shortcuts import get_object_or_404, redirect, render
 
+from spi import models
 from spi.forms import DescarteForm, InventarioForm
 from spi.models import Descarte, Inventario
 
 from .helpers import delete_record, render_searchable_list
+
+from django.http import HttpResponse
+from django.template.loader import render_to_string
+from weasyprint import HTML
 
 
 @login_required
@@ -146,5 +151,26 @@ def create_inventory(request):
         "management/inventory_form.html",
         {"form": inventory_form, "object": None},
     )
+"""
+#Gerar relatório de inventário PDF
+@login_required
+@permission_required("spi.view_inventario", raise_exception=True)
+def exportar_inventario_pdf(request):
+    search_query = request.GET.get('q', '')
+    
+    if search_query:
+        inventory_records = Inventario.objects.filter(
+            models.Q(numero_patrimonio__icontains=search_query) |
+            models.Q(item_modelo__icontains=search_query) |
+            models.Q(setor__icontains=search_query)
+        )
+    else:
+        inventory_records = Inventario.objects.all()
 
+    html_string = render_to_string("management/inventory_pdf.html", {"inventory": inventory_records})
+    pdf_file = HTML(string=html_string).write_pdf()
 
+    response = HttpResponse(pdf_file, content_type="application/pdf")
+    response["Content-Disposition"] = 'inline; filename="inventario.pdf"'
+    return response
+"""

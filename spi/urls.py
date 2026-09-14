@@ -3,7 +3,7 @@ from django.urls import path
 from spi.views.management.stock import EstoqueListView
 
 from . import views
-
+#app_name = "spi" 
 
 urlpatterns = [
     path("", views.dashboard, name="dashboard"),
@@ -27,22 +27,14 @@ urlpatterns = [
     # Produtos
     path("gestao/produtos/", views.list_products, name="product_list"),
     path("gestao/produtos/cadastrar/", views.create_product, name="product_create"),
-    path(
-        "gestao/produtos/cadastrar-no-modal/",
-        views.create_product_from_modal,
-        name="product_create_from_modal",
-    ),
+    path("gestao/produtos/cadastrar-no-modal/",views.create_product_from_modal,name="product_create_from_modal"),
     path("gestao/produtos/<int:product_id>/editar/", views.update_product, name="product_update"),
     path("gestao/produtos/<int:product_id>/excluir/", views.delete_product, name="product_delete"),
 
     # Fornecedores
     path("gestao/fornecedores/", views.list_suppliers, name="fornecedor_list"),
     path("gestao/fornecedores/cadastrar/", views.create_supplier, name="fornecedor_create"),
-    path(
-        "gestao/fornecedores/cadastrar-no-produto/",
-        views.create_supplier_from_product,
-        name="supplier_create_from_product",
-    ),
+    path("gestao/fornecedores/cadastrar-no-produto/",views.create_supplier_from_product,name="supplier_create_from_product",),
     path("gestao/fornecedores/<int:supplier_id>/editar/", views.update_supplier, name="fornecedor_update"),
     path("gestao/fornecedores/<int:supplier_id>/excluir/", views.delete_supplier, name="fornecedor_delete"),
 
@@ -72,7 +64,7 @@ urlpatterns = [
     # Movimentações de Estoque
     path("gestao/movimentacoes/", views.list_movements, name="movimentacao_list"),
     path("gestao/movimentacoes/cadastrar/", views.create_movement, name="movimentacao_create"),
-
+   
     # Descartes
     path("gestao/descarte/", views.list_discards, name="discard_list"),
     path("gestao/descarte/cadastrar/", views.create_discard, name="discard_create"),
@@ -84,6 +76,7 @@ urlpatterns = [
     path("gestao/inventario/cadastrar/", views.create_inventory, name="inventory_create"),
     path("gestao/inventario/<int:inventory_id>/editar/", views.update_inventory, name="inventory_update"),
     path("gestao/inventario/<int:inventory_id>/excluir/", views.delete_inventory, name="inventory_delete"),
+    #path("gestao/inventario/gerar-pdf/", views.exportar_inventario_pdf, name="exportar_inventario_pdf"),    
 
     #
 ]

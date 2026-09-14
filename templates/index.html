@@ -14,10 +14,210 @@
         </div>
         <span class="today"><i class="bi bi-calendar3"></i> {% now "d/m/Y" %}</span>
     </div>
+
+<!-- Seção de Estoque em Cards -->
+
+<!-- Indicadores do Estoque -->
+<div class="row g-4 mt-4">
+
+    <!-- TOTAL DE PRODUTOS -->
+    <div class="col-12 col-md-6 col-lg-3">
+        <article class="metric-card metric-icy1 card-glass card-hover h-100 p-4
+                        d-flex flex-column justify-content-between
+                        text-center align-items-center">
+
+            <div class="mb-3">
+                <i class="bi bi-box-seam display-6 mb-2 d-block"
+                   style="color: #007bff;"></i>
+
+                <h6 class="fw-bold mb-1">
+                    Total de Produtos
+                </h6>
+
+                <span class="fs-4 fw-bold">
+                    {{ total_produtos_estoque }}
+                </span>
+            </div>
+
+            <a href="{% url 'estoque_list' %}"
+               class="btn btn-sm btn-outline-light rounded-pill px-3">
+
+                Ver Estoque
+                <i class="bi bi-box-arrow-up-right ms-1"></i>
+
+            </a>
+        </article>
+    </div>
+
+
+    <!-- ENTRADAS -->
+    <div class="col-12 col-md-6 col-lg-3">
+        <article class="metric-card metric-icy2 card-glass card-hover h-100 p-4
+                        d-flex flex-column justify-content-between
+                        text-center align-items-center">
+
+            <div class="mb-3">
+                <i class="bi bi-arrow-down-circle display-6 mb-2 d-block"
+                   style="color: #28a745;"></i>
+
+                <h6 class="fw-bold mb-1">
+                    Entradas
+                </h6>
+
+                <span class="fs-4 fw-bold">
+                    {{ entradas_recentes }}
+                </span>
+            </div>
+
+            <a href="{% url 'movimentacao_list' %}?tipo=E"
+               class="btn btn-sm btn-outline-light rounded-pill px-3">
+
+                Ver Entradas
+                <i class="bi bi-box-arrow-up-right ms-1"></i>
+
+            </a>
+        </article>
+    </div>
+
+
+    <!-- SAÍDAS -->
+    <div class="col-12 col-md-6 col-lg-3">
+        <article class="metric-card metric-icy4 card-glass card-hover h-100 p-4
+                        d-flex flex-column justify-content-between
+                        text-center align-items-center">
+
+            <div class="mb-3">
+                <i class="bi bi-arrow-up-circle display-6 mb-2 d-block"
+                   style="color: #dc3545;"></i>
+
+                <h6 class="fw-bold mb-1">
+                    Saídas
+                </h6>
+
+                <span class="fs-4 fw-bold">
+                    {{ saidas_recentes }}
+                </span>
+            </div>
+
+            <a href="{% url 'movimentacao_list' %}?tipo=S"
+               class="btn btn-sm btn-outline-light rounded-pill px-3">
+
+                Ver Saídas
+                <i class="bi bi-box-arrow-up-right ms-1"></i>
+
+            </a>
+        </article>
+    </div>
+
+
+    <!-- VALOR TOTAL -->
+    <div class="col-12 col-md-6 col-lg-3">
+        <article class="metric-card metric-icy3 card-glass card-hover h-100 p-4
+                        d-flex flex-column justify-content-between
+                        text-center align-items-center">
+
+            <div class="mb-3">
+                <i class="bi bi-currency-dollar display-6 mb-2 d-block"
+                   style="color: #F1C40F;"></i>
+
+                <h6 class="fw-bold mb-1">
+                    Valor Total Investido
+                </h6>
+
+                <span class="fs-4 fw-bold">
+                    R$ {{ valor_total|floatformat:2 }}
+                </span>
+            </div>
+
+            <a href="{% url 'estoque_list' %}"
+               class="btn btn-sm btn-outline-light rounded-pill px-3">
+
+                Ver Estoque
+                <i class="bi bi-box-arrow-up-right ms-1"></i>
+
+            </a>
+        </article>
+    </div>
+
+</div>
+
+
+<br>
+<!-- Container do Gráfico -->
+<div class="row g-4">
+    <div class="col-12 col-xl-5">
+        <section class="dashboard-panel chart-panel card-hover h-100">
+            <div class="panel-heading">
+                <i class="bi bi-grid-3x3-gap-fill"></i> Variação de preços por mês
+            </div>
+            
+            <!-- Canvas do Chart.js integrado ao container do painel -->
+            <div class="chart-wrap p-3" style="position: relative; min-height: 250px;">
+                <canvas id="priceChart"></canvas>
+            </div>
+        </section>
+    </div>
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const ctx = document.getElementById('priceChart');
+        if (!ctx) return;
+
+        // Parse dos dados vindos da view Django
+        const labels = JSON.parse('{{ chart_labels|safe }}' || '[]');
+        const data = JSON.parse('{{ chart_data|safe }}' || '[]');
+
+        new Chart(ctx.getContext('2d'), {
+            type: 'line',
+            data: {
+                labels: labels.length > 0 ? labels : ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'],
+                datasets: [{
+                    label: 'Preço Médio (R$)',
+                    data: data,
+                    borderColor: '#0d6efd',
+                    backgroundColor: 'rgba(13, 110, 253, 0.1)',
+                    borderWidth: 2.5,
+                    fill: true,
+                    tension: 0.3,
+                    pointRadius: 5,
+                    pointHoverRadius: 7,
+                    pointBackgroundColor: '#0d6efd'
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                },
+                scales: {
+                    x: {
+                        grid: {
+                            display: false
+                        }
+                    },
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            callback: function(value) {
+                                return 'R$ ' + Number(value).toFixed(2);
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    });
+</script>
+
+<br>
 <!-- Cards de Métricas -->
     <div class="row g-4 mb-4">
         <div class="col-12 col-md-6 col-lg-3"><article class="metric-card metric-icy1 card-glass card-hover"><div><strong>{{ total_produtos }}</strong><span>Produtos</span></div><i class="bi bi-box-seam"></i></article></div>
-        <div class="col-12 col-md-6 col-lg-3"><article class="metric-card metric-icy2 card-glass card-hover"><div><strong>7</strong><span>Estoque</span></div><i class="bi bi-shop"></i></article></div>
+        <div class="col-12 col-md-6 col-lg-3"><article class="metric-card metric-icy2 card-glass card-hover"><div><strong>7</strong><span>Pedidos em Análise</span></div><i class="bi bi-shop"></i></article></div>
         <div class="col-12 col-md-6 col-lg-3"><article class="metric-card metric-icy3 card-glass card-hover"><div><strong>{{ total_produtos_pendentes }}</strong><span>Produtos Pendentes</span></div><i class="bi bi-archive"></i></article></div>
       <!--Alerta de Estoque mínimo-->
         <div class="col-12 col-md-6 col-lg-3">
@@ -60,69 +260,6 @@
             </section>
         </div>
 
-<!-- Card Vertical -->
-        <!-- Container dos Cards -->
-<div class="col-12 col-xl-7">
-    <div class="row g-4 align-items-stretch">
-        
-        <!-- Card Mercado Livre -->
-        <div class="col-12 col-md-4">
-            <article class="dashboard-panel chart-panel card-hover h-100 p-4 d-flex flex-column justify-content-between text-center align-items-center">
-                <div class="mb-3">
-                    <i class="bi bi-handbag-fill display-5 mb-2 d-block"></i>
-                    <h6 class="fw-bold mb-1">Mercado Livre</h6>
-                    <span class="fs-4 fw-bold">{{ total_mercadolivre|default:"0" }}</span>
-                </div>
-                <a href="https://www.mercadolivre.com.br/" target="_blank" rel="noopener noreferrer" class="btn btn-sm btn-outline-light rounded-pill px-3">
-                    Acessar <i class="bi bi-box-arrow-up-right ms-1"></i>
-                </a>
-            </article>
-        </div>
-
-        <!-- Card Amazon -->
-        <div class="col-12 col-md-4">
-            <article class="metric-card metric-icy1 card-glass card-hover h-100 p-4 d-flex flex-column justify-content-between text-center align-items-center">
-                <div class="mb-3">
-                    <i class="bi bi-amazon display-5 mb-2 d-block"></i>
-                    <h6 class="fw-bold mb-1">Amazon</h6>
-                    <span class="fs-4 fw-bold">{{ total_amazon|default:"0" }}</span>
-                </div>
-                <a href="https://www.amazon.com/" target="_blank" rel="noopener noreferrer" class="btn btn-sm btn-outline-light rounded-pill px-3">
-                    Acessar <i class="bi bi-box-arrow-up-right ms-1"></i>
-                </a>
-            </article>
-        </div>
-
-        <!-- Card AliExpress -->
-        <div class="col-12 col-md-4">
-            <article class="metric-card metric-icy1 card-glass card-hover h-100 p-4 d-flex flex-column justify-content-between text-center align-items-center">
-                <div class="mb-3">
-                    <i class="bi bi-cart-fill display-5 mb-2 d-block"></i>
-                    <h6 class="fw-bold mb-1">AliExpress</h6>
-                    <span class="fs-4 fw-bold">{{ total_aliexpress|default:"0" }}</span>
-                </div>
-                <a href="https://www.aliexpress.com/" target="_blank" rel="noopener noreferrer" class="btn btn-sm btn-outline-light rounded-pill px-3">
-                    Acessar <i class="bi bi-box-arrow-up-right ms-1"></i>
-                </a>
-            </article>
-        </div>
-
-    </div>
-</div>
-</div>
-
-<!-- Cards de E-commerce -->
- <div class="container-fluid management-shell">
-        {% include 'management/_messages.html' %}
-        <section class="management-card">
-            <header class="management-toolbar">
-                <h2 class="management-card-title">E-commerce</h2>
-            </header>
-        </section>
-</div>
-<!-- Cards de E-commerce 
-<div class="DALGre S2iMyb"><di jscontroller="Zjgvvd" class="S2iMyb pla-exp-container" data-acu="false" data-aqid="NAqPauz5PN_JkPIPrcSYgQ4" data-at="false" data-ccg="12" data-dcm="8" data-deb="true" data-ecg="false" data-eig="false" data-eplas="false" data-erdg="false" data-erpl="true" data-eteislg="false" data-fplog="true" data-fplogef="false" data-fwc="false" data-fwcel="true" data-iapam="false" data-moitndv="5" data-npis="false" data-pgc="false" data-pgcoh="false" data-plask="6" data-pnb="false" data-q="fone de ouvido headset" data-rcbrk="1128" data-rcmax="170" data-rcmin="150" data-roc="false" data-slg="false" data-slgdt="0" data-uhagmd="false" data-wtatoken=""></div>
--->
 {% endblock %}
 
 

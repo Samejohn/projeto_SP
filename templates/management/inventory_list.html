@@ -14,11 +14,43 @@
                 <input type="search" name="q" value="{{ search_query }}" placeholder="Pesquisar produtos" aria-label="Pesquisar produtos">
                 <button class="btn btn-outline-primary" type="submit">Pesquisar</button>
             </form>
-            {% if perms.spi.add_inventario %}<a class="btn btn-outline-primary" href="{% url 'inventory_create' %}"><i class="bi bi-plus-lg"></i> Adicionar inventário</a>{% endif %}
+
+            <div class="d-flex gap-2">
+                <!-- Se não usar namespace: href="{% url 'exportar_inventario_pdf' %}?q={{ search_query }}" -->
+                <!-- Se usar namespace 'spi': href="{% url 'spi:exportar_inventario_pdf' %}?q={{ search_query }}" -->
+                <a class="btn btn-outline-secondary" href="{% url 'exportar_inventario_pdf' %}?q={{ search_query }}" target="_blank">
+                    <i class="bi bi-file-earmark-pdf"></i> Gerar PDF
+                </a>
+
+                {% if perms.spi.add_inventario %}
+                <a class="btn btn-outline-primary" href="{% url 'inventory_create' %}">
+                    <i class="bi bi-plus-lg"></i> Adicionar inventário
+                </a>
+                {% endif %}
+            </div>
         </header>
+
         <div class="table-responsive">
             <table class="table management-table align-middle mb-0">
-                <thead><tr><th>Nº Patrimônio</th><th>ID Ativo</th><th>Categoria</th><th>Modelo</th><th>Nº(Série)Licença</th><th>Aquisição</th><th>Quant.</th><th>Valor(R$)</th><th>Total</th><th>Garantia</th><th>Status</th><th>Setor</th><th>Usuário</th><th>Observações</th><th class="text-end">Ações</th></thead>
+                <thead>
+                    <tr>
+                        <th>Nº Patrimônio</th>
+                        <th>ID Ativo</th>
+                        <th>Categoria</th>
+                        <th>Modelo</th>
+                        <th>Nº(Série)Licença</th>
+                        <th>Aquisição</th>
+                        <th>Quant.</th>
+                        <th>Valor(R$)</th>
+                        <th>Total</th>
+                        <th>Garantia</th>
+                        <th>Status</th>
+                        <th>Setor</th>
+                        <th>Usuário</th>
+                        <th>Observações</th>
+                        <th class="text-end">Ações</th>
+                    </tr>
+                </thead>
                 <tbody>
                 {% for item in inventory %}
                     <tr>
@@ -28,7 +60,7 @@
                         <td>{{ item.item_modelo }}</td>
                         <td>{{ item.serie_licenca|default:"-" }}</td>
                         <td>{{ item.data_aquisicao|date:"d/m/Y" }}</td>
-                        <td>{{ item.quantidade}}</td>
+                        <td>{{ item.quantidade }}</td>
                         <td>{{ item.valor|floatformat:2 }}</td>
                         <td>{{ item.total|floatformat:2 }}</td>
                         <td>{{ item.validade_garantia|date:"d/m/Y"|default:"-" }}</td>
@@ -37,17 +69,27 @@
                         <td>{{ item.usuario|default:"-" }}</td>
                         <td>{{ item.observacoes|default:"-" }}</td>
                         <td class="text-end text-nowrap">
-                            {% if perms.spi.change_inventario %}<a class="btn btn-sm btn-outline-primary" href="{% url 'inventory_update' item.pk %}" title="Editar inventário"><i class="bi bi-pencil"></i></a>{% endif %}
-                            {% if perms.spi.delete_inventario %}<a class="btn btn-sm btn-outline-danger" href="{% url 'inventory_delete' item.pk %}" title="Excluir inventário"><i class="bi bi-trash"></i></a>{% endif %}
+                            {% if perms.spi.change_inventario %}
+                            <a class="btn btn-sm btn-outline-primary" href="{% url 'inventory_update' item.pk %}" title="Editar inventário">
+                                <i class="bi bi-pencil"></i>
+                            </a>
+                            {% endif %}
+                            {% if perms.spi.delete_inventario %}
+                            <a class="btn btn-sm btn-outline-danger" href="{% url 'inventory_delete' item.pk %}" title="Excluir inventário">
+                                <i class="bi bi-trash"></i>
+                            </a>
+                            {% endif %}
                         </td>
                     </tr>
-                {% empty %}<tr><td colspan="13" class="empty-state">Nenhum item encontrado.</td></tr>{% endfor %}
+                {% empty %}
+                    <tr>
+                        <td colspan="15" class="empty-state">Nenhum item encontrado.</td>
+                    </tr>
+                {% endfor %}
                 </tbody>
             </table>
         </div>
         {% include 'management/_pagination.html' %}
     </section>
 </div>
-<font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">Gerar PDF</font></font>
-
 {% endblock %}

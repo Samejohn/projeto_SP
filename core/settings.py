@@ -175,8 +175,8 @@ ADMINLTE = {
     'navbar_search': False,
     'color_mode_toggle': False,
     'sidebar_docs_url': False,
-    'footer_left': 'SPI &copy; 2026',
-    'footer_right': 'Sistema de Pedidos Internos',
+    'footer_left': 'Desenvolvido pela Gerência Executiva de Tecnologia da Informação (GETI) &copy; | FAPEAL - 2026 ',
+    'footer_right': 'SPI Sistema de Pedidos Internos',
     # Itens exibidos no menu lateral do dashboard.
     'menu': [
         {'text': 'Início', 'icon': 'bi bi-house-door-fill', 'route': 'dashboard'},

@@ -1,3 +1,6 @@
+import json
+from multiprocessing import context
+
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.contrib.messages.views import SuccessMessageMixin
@@ -5,6 +8,7 @@ from django.core.exceptions import ValidationError
 from django.db import models
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
+from django.template import context
 from django.urls import reverse_lazy
 from django.views.generic import CreateView, DetailView, ListView, UpdateView, DeleteView
 from django.views.decorators.csrf import csrf_protect
@@ -14,6 +18,8 @@ from django.contrib.auth.decorators import login_required, permission_required
 from spi.forms.management import EstoqueForm, ManagedOrderProductCreateForm, MovimentacaoEstoqueForm
 from spi.models.estoque import Estoque, MovimentacaoEstoque
 from spi.views.management.helpers import render_catalog_form
+from django.db.models import Sum, F, Avg, Q, DecimalField
+from django.db.models.functions import TruncMonth #Graficos de movimentações por mês
 
 #Lista todos os itens do estoque com suporte a busca e alerta.
 class EstoqueListView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
@@ -45,13 +51,33 @@ class EstoqueListView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
         
         return queryset
 
+        
+    #Dashboard informações do estoque, calcula entradas, saídas e valor total.
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['total_itens'] = Estoque.objects.count()
-        context['itens_alerta'] = Estoque.objects.filter(
-            quantidade_estoque__lte=models.F('estoque_minimo')
-        ).count()
+
+        context['entradas_recentes'] = (
+            MovimentacaoEstoque.objects.filter(tipo='E')
+            .aggregate(total=Sum('quantidade'))['total'] or 0
+        )
+
+        context['saidas_recentes'] = (
+            MovimentacaoEstoque.objects.filter(tipo='S')
+            .aggregate(total=Sum('quantidade'))['total'] or 0
+        )
+
+        context['valor_total'] = (
+            Estoque.objects.aggregate(
+                total=Sum(F('quantidade_estoque') * F('valor_unitario_atual'))
+            )['total'] or 0
+        )
+
         return context
+
+
+    
+
+ 
 
 #Cadastro de um novo item no estoque.
 class EstoqueCreateView(LoginRequiredMixin, PermissionRequiredMixin, SuccessMessageMixin, CreateView):
@@ -290,3 +316,61 @@ def estoque_alerta_json(request):
         'count': itens_alerta.count(),
         'itens': list(itens_alerta)
     })
+
+#Dashboard de informações do estoque, entradas, saídas e valor total.
+# Dashboard principal
+@login_required
+def index_view(request):
+
+    # ==========================================
+    # TOTAL DE PRODUTOS
+    # ==========================================
+    total_produtos_estoque = Estoque.objects.filter(
+        ativo=True
+    ).count()
+
+    # ==========================================
+    # TOTAL DE ENTRADAS
+    # ==========================================
+    entradas = MovimentacaoEstoque.objects.filter(
+        tipo=MovimentacaoEstoque.TIPO_ENTRADA
+    ).aggregate(
+        total=Sum('quantidade')
+    )['total'] or 0
+
+    # ==========================================
+    # TOTAL DE SAÍDAS
+    # ==========================================
+    saidas = MovimentacaoEstoque.objects.filter(
+        tipo=MovimentacaoEstoque.TIPO_SAIDA
+    ).aggregate(
+        total=Sum('quantidade')
+    )['total'] or 0
+
+    # ==========================================
+    # VALOR TOTAL INVESTIDO NO ESTOQUE
+    # ==========================================
+    valor_total_investido = Estoque.objects.filter(
+        ativo=True
+    ).aggregate(
+        total=Sum(
+            F('quantidade_estoque') *
+            F('valor_unitario_atual')
+        )
+    )['total'] or 0
+
+    # ==========================================
+    # CONTEXTO DO INDEX
+    # ==========================================
+    context = {
+        'total_produtos_estoque': total_produtos_estoque,
+        'entradas': entradas,
+        'saidas': saidas,
+        'valor_total_investido': valor_total_investido,
+    }
+
+    return render(
+        request,
+        'management/index.html',
+        context
+    )

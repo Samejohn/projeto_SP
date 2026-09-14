@@ -1,6 +1,9 @@
 from django.contrib.auth import get_user_model
 from django.test import TestCase
 from django.urls import reverse
+from .models import Estoque, MovimentacaoEstoque
+from decimal import Decimal
+
 
 from spi.models import (
     ControleData,
@@ -10,9 +13,10 @@ from spi.models import (
     Produto,
     ProdutoPedido,
     ValorProduto,
+    Estoque
 )
 
-
+User = get_user_model()
 class DashboardTests(TestCase):
     def setUp(self):
         self.user = get_user_model().objects.create_superuser(
@@ -484,3 +488,106 @@ class CatalogManagementTests(TestCase):
         self.assertRedirects(response, reverse("fornecedor_list"))
         self.assertFalse(Fornecedor.objects.filter(pk=fornecedor.pk).exists())
 
+#Estoque Management Tests
+class DashboardEstoqueTestCase(TestCase):
+    def setUp(self):
+        # Usuário para os testes
+        self.user = User.objects.create_user(
+            username='admin_dashboard',
+            password='password123',
+            first_name='João'
+        )
+        self.client.login(username='admin_dashboard', password='password123')
+
+        # 1. Produto Normal (Fora do Alerta)
+        self.produto_normal = Estoque.objects.create(
+            nome='HD Externo 500GB',
+            descricao='HD Externo USB 3.0',
+            quantidade_estoque=10,
+            estoque_minimo=5,
+            valor_unitario_atual=Decimal('154.00'),
+            responsavel_cadastro=self.user,
+            ativo=True
+        )
+
+        # 2. Produto no Limite do Estoque Mínimo (Entra no Alerta)
+        self.produto_alerta_limite = Estoque.objects.create(
+            nome='Teclado Logitech K120',
+            descricao='Teclado ABNT2',
+            quantidade_estoque=5,
+            estoque_minimo=5,
+            valor_unitario_atual=Decimal('67.00'),
+            responsavel_cadastro=self.user,
+            ativo=True
+        )
+
+        # 3. Produto Abaixo do Estoque Mínimo (Entra no Alerta)
+        self.produto_alerta_critico = Estoque.objects.create(
+            nome='Mouse Apple',
+            descricao='Mouse Magic USB-C',
+            quantidade_estoque=2,
+            estoque_minimo=5,
+            valor_unitario_atual=Decimal('1000.00'),
+            responsavel_cadastro=self.user,
+            ativo=True
+        )
+
+        # 4. Produto Inativo
+        self.produto_inativo = Estoque.objects.create(
+            nome='Monitor Antigo CRT',
+            descricao='Fora de linha',
+            quantidade_estoque=0,
+            estoque_minimo=2,
+            valor_unitario_atual=Decimal('50.00'),
+            responsavel_cadastro=self.user,
+            ativo=False
+        )
+
+    def test_metricas_contagem_produtos(self):
+        """Valida se a contagem total de produtos para o dashboard está correta."""
+        total_produtos = Estoque.objects.count()
+        produtos_ativos = Estoque.objects.filter(ativo=True).count()
+
+        self.assertEqual(total_produtos, 4)
+        self.assertEqual(produtos_ativos, 3)
+
+    def test_metricas_alerta_estoque_minimo(self):
+        """Valida se a quantidade de produtos no alerta do dashboard reflete o manager 'com_alerta_minimo'."""
+        produtos_em_alerta = Estoque.objects.com_alerta_minimo()
+        
+        # Devem estar em alerta: produto_alerta_limite (5 <= 5), produto_alerta_critico (2 <= 5) e produto_inativo (0 <= 2)
+        self.assertEqual(produtos_em_alerta.count(), 3)
+        self.assertIn(self.produto_alerta_limite, produtos_em_alerta)
+        self.assertIn(self.produto_alerta_critico, produtos_em_alerta)
+        self.assertNotIn(self.produto_normal, produtos_em_alerta)
+
+    def test_calculo_valor_total_acumulado_dashboard(self):
+        """Garante que a soma total do valor investido em estoque exibido no dashboard está correta."""
+        produtos_ativos = Estoque.objects.filter(ativo=True)
+        valor_total_dashboard = sum(p.valor_total_estoque for p in produtos_ativos)
+
+        # (10 * 154) + (5 * 67) + (2 * 1000) = 1540 + 335 + 2000 = 3875.00
+        valor_esperado = Decimal('3875.00')
+        self.assertEqual(valor_total_dashboard, valor_esperado)
+
+    def test_contexto_dashboard_view(self):
+        """Valida se a view da dashboard envia as variáveis de contexto corretas para o template HTML."""
+        # Altere 'dashboard' para o nome correto da sua rota no urls.py
+        url = reverse('dashboard') 
+        response = self.client.get(url)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'dashboard.html') # Altere para o caminho do seu template
+
+        # Verificação do contexto enviado para os cards do dashboard
+        self.assertIn('total_produtos', response.context)
+        self.assertIn('total_produtos_alerta', response.context)
+        self.assertEqual(response.context['total_produtos'], 4)
+        self.assertEqual(response.context['total_produtos_alerta'], 3)
+
+    def test_filtragem_busca_dashboard(self):
+        """Valida o filtro de busca no dashboard."""
+        resultados = Estoque.objects.buscar_por_nome('Teclado')
+        
+        self.assertEqual(resultados.count(), 1)
+        self.assertEqual(resultados.first(), self.produto_alerta_limite)
