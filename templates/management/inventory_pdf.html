@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="utf-8">
+    <title>Relatório de Inventário</title>
+    <style>
+        @page {
+            size: A4 landscape;
+            margin: 12mm 15mm 15mm 15mm;
+            @bottom-right {
+                content: "Página " counter(page) " de " counter(pages);
+                font-family: Arial, sans-serif;
+                font-size: 8pt;
+                color: #666;
+            }
+            @bottom-left {
+                content: "Sistema de Patrimônio";
+                font-family: Arial, sans-serif;
+                font-size: 8pt;
+                color: #666;
+            }
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            font-size: 8.5pt;
+            color: #212529;
+            margin: 0;
+        }
+
+        .report-header {
+            border-bottom: 2px solid #0d6efd;
+            padding-bottom: 8px;
+            margin-bottom: 12px;
+        }
+
+        .report-title {
+            font-size: 16pt;
+            font-weight: bold;
+            color: #0d6efd;
+            margin: 0 0 4px 0;
+        }
+
+        .report-meta {
+            display: table;
+            width: 100%;
+            font-size: 8pt;
+            color: #555;
+        }
+
+        .report-meta-col {
+            display: table-cell;
+            vertical-align: bottom;
+        }
+
+        .report-meta-right {
+            text-align: right;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        thead {
+            display: table-header-group;
+        }
+
+        tr {
+            page-break-inside: avoid;
+        }
+
+        th {
+            background-color: #f1f3f5;
+            font-weight: bold;
+            font-size: 8pt;
+            border: 1px solid #dee2e6;
+            padding: 5px 4px;
+            text-align: left;
+        }
+
+        td {
+            border: 1px solid #dee2e6;
+            padding: 4px;
+            vertical-align: middle;
+        }
+
+        tbody tr:nth-child(even) {
+            background-color: #f8f9fa;
+        }
+
+        .text-center { text-align: center; }
+        .text-end { text-align: right; }
+        .nowrap { white-space: nowrap; }
+    </style>
+</head>
+<body>
+
+    <header class="report-header">
+        <div class="report-meta">
+            <div class="report-meta-col">
+                <h1 class="report-title">Inventário de Patrimônio</h1>
+                {% if search_query %}
+                    <div><strong>Filtro aplicado:</strong> "{{ search_query }}"</div>
+                {% endif %}
+            </div>
+            <div class="report-meta-col report-meta-right">
+                <div><strong>Emissão:</strong> {{ generated_at|date:"d/m/Y H:i" }}</div>
+                <div><strong>Emitido por:</strong> {{ generated_by.get_full_name|default:generated_by.username }}</div>
+                <div><strong>Total de Itens:</strong> {{ total_items }}</div>
+            </div>
+        </div>
+    </header>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Nº Patr.</th>
+                <th>ID Ativo</th>
+                <th>Categoria</th>
+                <th>Modelo</th>
+                <th>Nº/Série</th>
+                <th>Aquisição</th>
+                <th class="text-center">Qtd.</th>
+                <th class="text-end">Valor(R$)</th>
+                <th class="text-end">Total(R$)</th>
+                <th>Garantia</th>
+                <th>Status</th>
+                <th>Setor</th>
+                <th>Usuário</th>
+                <th>Obs.</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for item in inventory %}
+            <tr>
+                <td><strong>{{ item.numero_patrimonio }}</strong></td>
+                <td>{{ item.id_ativo }}</td>
+                <td>{{ item.get_categoria_display }}</td>
+                <td>{{ item.item_modelo }}</td>
+                <td>{{ item.serie_licenca|default:"-" }}</td>
+                <td class="nowrap">{{ item.data_aquisicao|date:"d/m/Y" }}</td>
+                <td class="text-center">{{ item.quantidade }}</td>
+                <td class="text-end nowrap">{{ item.valor|floatformat:2 }}</td>
+                <td class="text-end nowrap">{{ item.total|floatformat:2 }}</td>
+                <td class="nowrap">{{ item.validade_garantia|date:"d/m/Y"|default:"-" }}</td>
+                <td>{{ item.get_status_display }}</td>
+                <td>{{ item.setor }}</td>
+                <td>{{ item.usuario|default:"-" }}</td>
+                <td>{{ item.observacoes|default:"-" }}</td>
+            </tr>
+        {% empty %}
+            <tr>
+                <td colspan="14" class="text-center">Nenhum item encontrado.</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+</body>
+</html>

@@ -11,6 +11,7 @@ from .helpers import delete_record, render_searchable_list
 from django.http import HttpResponse
 from django.template.loader import render_to_string
 from weasyprint import HTML
+from django.utils import timezone
 
 
 @login_required
@@ -151,26 +152,37 @@ def create_inventory(request):
         "management/inventory_form.html",
         {"form": inventory_form, "object": None},
     )
-"""
-#Gerar relatório de inventário PDF
+#Gerador de PDF do inventário
 @login_required
 @permission_required("spi.view_inventario", raise_exception=True)
 def exportar_inventario_pdf(request):
-    search_query = request.GET.get('q', '')
+    search_query = request.GET.get('q', '').strip()
     
+    queryset = Inventario.objects.all()
+
     if search_query:
-        inventory_records = Inventario.objects.filter(
+        queryset = queryset.filter(
             models.Q(numero_patrimonio__icontains=search_query) |
+            models.Q(id_ativo__icontains=search_query) |
             models.Q(item_modelo__icontains=search_query) |
             models.Q(setor__icontains=search_query)
         )
-    else:
-        inventory_records = Inventario.objects.all()
 
-    html_string = render_to_string("management/inventory_pdf.html", {"inventory": inventory_records})
-    pdf_file = HTML(string=html_string).write_pdf()
+    inventory_records = queryset.order_by('numero_patrimonio')
+
+    # Passa as variáveis que o template 'inventory_pdf.html' espera
+    context = {
+        'inventory': inventory_records,
+        'search_query': search_query,
+        'generated_at': timezone.now(),
+        'generated_by': request.user,
+        'total_items': inventory_records.count(),
+    }
+
+    html_string = render_to_string("management/inventory_pdf.html", context, request=request)
+    pdf_file = HTML(string=html_string, base_url=request.build_absolute_uri('/')).write_pdf()
 
     response = HttpResponse(pdf_file, content_type="application/pdf")
-    response["Content-Disposition"] = 'inline; filename="inventario.pdf"'
+    filename = f"inventario_{timezone.now().strftime('%Y-%m-%d')}.pdf"
+    response["Content-Disposition"] = f'inline; filename="{filename}"'
     return response
-"""

@@ -1,5 +1,6 @@
 from django.urls import path
 
+from spi.views.management import inventory
 from spi.views.management.stock import EstoqueListView
 
 from . import views
@@ -76,7 +77,8 @@ urlpatterns = [
     path("gestao/inventario/cadastrar/", views.create_inventory, name="inventory_create"),
     path("gestao/inventario/<int:inventory_id>/editar/", views.update_inventory, name="inventory_update"),
     path("gestao/inventario/<int:inventory_id>/excluir/", views.delete_inventory, name="inventory_delete"),
-    #path("gestao/inventario/gerar-pdf/", views.exportar_inventario_pdf, name="exportar_inventario_pdf"),    
+    #path("gestao/inventario/gerar-pdf/", views.exportar_inventario_pdf, name="exportar_inventario_pdf"),
+    path('gestao/inventario/exportar-pdf/', inventory.exportar_inventario_pdf, name='exportar_inventario_pdf'),    
 
     #
 ]

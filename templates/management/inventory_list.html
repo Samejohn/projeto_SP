@@ -16,9 +16,8 @@
             </form>
 
             <div class="d-flex gap-2">
-                <!-- Se não usar namespace: href="{% url 'exportar_inventario_pdf' %}?q={{ search_query }}" -->
-                <!-- Se usar namespace 'spi': href="{% url 'spi:exportar_inventario_pdf' %}?q={{ search_query }}" -->
-                <a class="btn btn-outline-secondary" href="{% url 'exportar_inventario_pdf' %}?q={{ search_query }}" target="_blank">
+                <!-- BOTÃO QUE CHAMA A VIEW DO PDF -->
+                <a class="btn btn-outline-danger" href="{% url 'exportar_inventario_pdf' %}?q={{ search_query }}" target="_blank">
                     <i class="bi bi-file-earmark-pdf"></i> Gerar PDF
                 </a>
 

@@ -65,7 +65,7 @@ from .management.inventory import (
     create_inventory,
     update_inventory,
     delete_inventory,
-    #exportar_inventario_pdf,
+    exportar_inventario_pdf,
 )
 
 @login_required
