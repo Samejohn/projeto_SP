@@ -401,6 +401,13 @@ class EstoqueForm(BootstrapFormMixin, forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        # Garante o empty label e filtra os produtos disponíveis:
+        self.fields['nome'] = forms.ModelChoiceField(
+            queryset=Produto.objects.all(),
+            empty_label="--------",
+            label="Nome do Produto",
+            required=True
+        )   
         self._apply_bootstrap_classes()
         self.fields['codigo_barras'].required = False
         self.fields['valor_unitario_atual'].required = False
