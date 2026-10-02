@@ -9,7 +9,8 @@ from django.utils.http import url_has_allowed_host_and_scheme
 from django.views.decorators.http import require_POST
 
 from spi.forms import SignInForm, SignUpForm
-from spi.models import Produto, ProdutoPedido  
+from spi.models import Produto, ProdutoPedido
+ 
 
 from .management import (
     create_group,
@@ -52,7 +53,7 @@ from .management.stock import (
     delete_stock,
     list_movements,
     create_movement,
-    estoque_alerta_json,
+    stock_alert_json,
 )
 from .management import (
     list_discards,
@@ -66,6 +67,13 @@ from .management.inventory import (
     update_inventory,
     delete_inventory,
     exportar_inventario_pdf,
+)
+
+from .management.entry import (
+    list_entry,
+    create_entry,
+    update_entry,
+    delete_entry,
 )
 
 @login_required

@@ -6,11 +6,21 @@ from django.contrib.auth.models import Group
 from django.contrib.auth.password_validation import validate_password
 from django.core.exceptions import ValidationError
 
-from spi.models import Descarte, Fornecedor, Inventario, Link, Produto, ProdutoPedido, ValorProduto
-# Importações dos modelos de estoque
+from spi.models import (
+    Descarte,
+    Fornecedor,
+    Inventario,
+    Link,
+    Produto,
+    ProdutoPedido,
+    ValorProduto,
+)
 from spi.models.estoque import Estoque, MovimentacaoEstoque
+from spi.models.entrada import Entrada
+
 
 class BootstrapFormMixin:
+    """Mixin para aplicar automaticamente classes Bootstrap aos campos dos formulários."""
     def _apply_bootstrap_classes(self):
         for field in self.fields.values():
             widget = field.widget
@@ -22,7 +32,10 @@ class BootstrapFormMixin:
                 css_class = "form-control"
             widget.attrs["class"] = f'{widget.attrs.get("class", "")} {css_class}'.strip()
 
-# FORMS USUÁRIO E GRUPO 
+
+# ==========================================
+# FORMS USUÁRIO E GRUPO
+# ==========================================
 class ManagedUserForm(BootstrapFormMixin, forms.ModelForm):
     password1 = forms.CharField(
         label="Senha",
@@ -99,7 +112,10 @@ class ManagedGroupForm(BootstrapFormMixin, forms.ModelForm):
         ).order_by("content_type__app_label", "content_type__model", "codename")
         self._apply_bootstrap_classes()
 
-# FORMS DE PRODUTO 
+
+# ==========================================
+# FORMS DE PRODUTO
+# ==========================================
 class ManagedProductForm(BootstrapFormMixin, forms.ModelForm):
     class Meta:
         model = Produto
@@ -156,7 +172,10 @@ class ManagedProductSelectionForm(BootstrapFormMixin, forms.Form):
     def _get_product_label(product_record):
         return f"{product_record.nome} — {product_record.codigo_barras}"
 
-# FORMS DE DESCARTE 
+
+# ==========================================
+# FORMS DE DESCARTE
+# ==========================================
 class DescarteForm(BootstrapFormMixin, forms.ModelForm):
     class Meta:
         model = Descarte
@@ -174,7 +193,10 @@ class DescarteForm(BootstrapFormMixin, forms.ModelForm):
         super().__init__(*args, **kwargs)
         self._apply_bootstrap_classes()
 
+
+# ==========================================
 # FORMS DE FORNECEDOR
+# ==========================================
 class ManagedFornecedorForm(BootstrapFormMixin, forms.ModelForm):
     class Meta:
         model = Fornecedor
@@ -208,7 +230,10 @@ class ManagedFornecedorForm(BootstrapFormMixin, forms.ModelForm):
         super().__init__(*args, **kwargs)
         self._apply_bootstrap_classes()
 
-# FORMS DE LINK 
+
+# ==========================================
+# FORMS DE LINK
+# ==========================================
 class ManagedLinkForm(BootstrapFormMixin, forms.ModelForm):
     class Meta:
         model = Link
@@ -221,7 +246,10 @@ class ManagedLinkForm(BootstrapFormMixin, forms.ModelForm):
         self.fields["fornecedor"].queryset = Fornecedor.objects.order_by("nome_fornecedor")
         self._apply_bootstrap_classes()
 
-# FORMS DE VALOR PRODUTO 
+
+# ==========================================
+# FORMS DE VALOR PRODUTO
+# ==========================================
 class ManagedValorProdutoForm(BootstrapFormMixin, forms.ModelForm):
     class Meta:
         model = ValorProduto
@@ -236,9 +264,10 @@ class ManagedValorProdutoForm(BootstrapFormMixin, forms.ModelForm):
             "fornecedor__nome_fornecedor", "nome"
         )
         self._apply_bootstrap_classes()
-#
-class ProductLinkSelect(forms.Select): #Inclui os valores de produto nos link
 
+
+class ProductLinkSelect(forms.Select):
+    """Widget customizado para incluir os valores do produto no atributo data do select."""
     def create_option(self, name, value, label, selected, index, subindex=None, attrs=None):
         option = super().create_option(
             name,
@@ -259,7 +288,10 @@ class ProductLinkSelect(forms.Select): #Inclui os valores de produto nos link
             option["attrs"]["data-supplier-name"] = link_record.fornecedor.nome_fornecedor
         return option
 
-# FORMS DE PEDIDO 
+
+# ==========================================
+# FORMS DE PEDIDO
+# ==========================================
 class ManagedProdutoPedidoForm(BootstrapFormMixin, forms.ModelForm):
     class Meta:
         model = ProdutoPedido
@@ -337,8 +369,7 @@ class ManagedOrderProductCreateForm(ManagedProdutoPedidoForm):
         )
 
 
-class ManagedProductValueAmountForm(BootstrapFormMixin, forms.ModelForm):  
-
+class ManagedProductValueAmountForm(BootstrapFormMixin, forms.ModelForm):
     class Meta:
         model = ValorProduto
         fields = ("valor",)
@@ -349,12 +380,15 @@ class ManagedProductValueAmountForm(BootstrapFormMixin, forms.ModelForm):
         super().__init__(*args, **kwargs)
         self._apply_bootstrap_classes()
 
-# FORMS DE INVENTÁRIO 
+
+# ==========================================
+# FORMS DE INVENTÁRIO
+# ==========================================
 class InventarioForm(BootstrapFormMixin, forms.ModelForm):
     class Meta:
         model = Inventario
         fields = "__all__"
-        exclude = ["total"]  # Exclui o total do formulário para não sobrescrever o cálculo
+        exclude = ["total"]
         widgets = {
             "data_aquisicao": forms.DateInput(attrs={"type": "date"}),
             "validade_garantia": forms.DateInput(attrs={"type": "date"}),
@@ -367,113 +401,67 @@ class InventarioForm(BootstrapFormMixin, forms.ModelForm):
         for field in self.fields.values():
             field.widget.attrs["autocomplete"] = "off"
 
-# FORMS PARA ESTOQUE 
-class EstoqueForm(BootstrapFormMixin, forms.ModelForm):  
 
-    class Meta:
-        model = Estoque
-        fields = (
-            'nome',
-            'descricao',
-            'quantidade_estoque',
-            'estoque_minimo',
-            'codigo_barras',
-            'valor_unitario_atual'
-        )
-        widgets = {
-            'quantidade_estoque': forms.NumberInput(attrs={'min': '0'}),
-            'estoque_minimo': forms.NumberInput(attrs={'min': '0'}),
-            'valor_unitario_atual': forms.NumberInput(attrs={'min': '0', 'step': '0.01'}),
-            'descricao': forms.Textarea(attrs={'rows': 3}),
-        }
-        labels = {
-            'nome': 'Nome do Produto',
-            'descricao': 'Descrição',
-            'quantidade_estoque': 'Quantidade em Estoque',
-            'estoque_minimo': 'Estoque Mínimo',
-            'codigo_barras': 'Código de Barras',
-            'valor_unitario_atual': 'Valor Unitário Atual',
-        }
-        help_texts = {
-            'codigo_barras': 'Código único para identificação do produto',
-            'estoque_minimo': 'Quantidade mínima para alerta',
-        }
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        # Garante o empty label e filtra os produtos disponíveis:
-        self.fields['nome'] = forms.ModelChoiceField(
-            queryset=Produto.objects.all(),
-            empty_label="--------",
-            label="Nome do Produto",
-            required=True
-        )   
-        self._apply_bootstrap_classes()
-        self.fields['codigo_barras'].required = False
-        self.fields['valor_unitario_atual'].required = False
-
-    def clean_codigo_barras(self):
-        """Valida se o código de barras é único."""
-        codigo = self.cleaned_data.get('codigo_barras')
-        if codigo:
-            qs = Estoque.objects.filter(codigo_barras=codigo)
-            if self.instance.pk:
-                qs = qs.exclude(pk=self.instance.pk)
-            if qs.exists():
-                raise ValidationError('Este código de barras já está cadastrado.')
-        return codigo
-
-class ManagedEstoqueForm(EstoqueForm):  
-
-    class Meta(EstoqueForm.Meta):
-        fields = ('nome', 'descricao', 'quantidade_estoque', 'estoque_minimo')
-        labels = {
-            'nome': 'Nome do produto',
-            'descricao': 'Descrição',
-            'quantidade_estoque': 'Quantidade em Estoque',
-            'estoque_minimo': 'Estoque Mínimo',
-        }
-
-class MovimentacaoEstoqueForm(BootstrapFormMixin, forms.ModelForm):   
-
+# ==========================================
+# FORMS PARA ESTOQUE
+# ==========================================
+class ManagedMovimentacaoEstoqueForm(forms.ModelForm):
+    """Formulário para registro de movimentações de estoque."""
     class Meta:
         model = MovimentacaoEstoque
-        fields = (
-            'estoque',
-            'tipo',
-            'quantidade',
-            'valor_unitario',
-            'observacao'
-        )
+        fields = ['estoque', 'tipo', 'quantidade', 'observacao']  # Alterado de 'tipo_movimentacao' para 'tipo'
         widgets = {
-            'quantidade': forms.NumberInput(attrs={'min': '1'}),
-            'valor_unitario': forms.NumberInput(attrs={'min': '0', 'step': '0.01'}),
-            'observacao': forms.Textarea(attrs={'rows': 2, 'placeholder': 'Motivo da movimentação (opcional)'}),
+            'estoque': forms.Select(attrs={'class': 'form-select'}),
+            'tipo': forms.Select(attrs={'class': 'form-select'}),
+            'quantidade': forms.NumberInput(attrs={'class': 'form-control', 'min': '1'}),
+            'observacao': forms.Textarea(attrs={'class': 'form-control', 'rows': 3}),
         }
         labels = {
-            'estoque': 'Produto',
+            'estoque': 'Item do Estoque',
             'tipo': 'Tipo de Movimentação',
             'quantidade': 'Quantidade',
-            'valor_unitario': 'Valor Unitário',
             'observacao': 'Observação',
         }
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self._apply_bootstrap_classes()
-        self.fields['estoque'].queryset = Estoque.objects.filter(ativo=True)
+class ManagedEstoqueForm(forms.ModelForm):
+    """Formulário para registro de movimentações de estoque."""
+    class Meta:
+        model = Estoque
+        fields = ['produto', 'descricao', 'quantidade', 'entrada', 'valor_unitario', 'estoque_minimo', 'responsavel', 'localizacao']
+        widgets = {
+            'estoque': forms.Select(attrs={'class': 'form-select'}),
+            'tipo': forms.Select(attrs={'class': 'form-select'}),
+            'quantidade': forms.NumberInput(attrs={'class': 'form-control', 'min': '1'}),
+            'observacao': forms.Textarea(attrs={'class': 'form-control', 'rows': 3}),
+        }
+        labels = {
+            'estoque': 'Item do Estoque',
+            'tipo': 'Tipo de Movimentação',
+            'quantidade': 'Quantidade',
+            'observacao': 'Observação',
+        }
 
-    def clean(self):
-        """Valida se há estoque suficiente para saída."""
-        cleaned_data = super().clean()
-        tipo = cleaned_data.get('tipo')
-        quantidade = cleaned_data.get('quantidade')
-        estoque = cleaned_data.get('estoque')
-
-        if tipo == MovimentacaoEstoque.TIPO_SAIDA and estoque and quantidade:
-            if estoque.quantidade_estoque < quantidade:
-                raise ValidationError(
-                    f'Estoque insuficiente. Disponível: {estoque.quantidade_estoque}, Solicitado: {quantidade}'
-                )
-        return cleaned_data
-    
+# ==========================================
+# ENTRADA DE PRODUTOS
+# ==========================================
+class EntradaForm(forms.ModelForm):
+    class Meta:
+        model = Entrada
+        fields = [
+            'produto', 
+            'quantidade', 
+            'preco_custo', 
+            'nota_fiscal', 
+            'ordem_fornecimento', 
+            'fornecedor', 
+            'observacao'
+        ]
+        widgets = {
+            'produto': forms.Select(attrs={'class': 'form-select'}),
+            'quantidade': forms.NumberInput(attrs={'class': 'form-control', 'min': '1'}),
+            'preco_custo': forms.NumberInput(attrs={'class': 'form-control', 'step': '0.01'}),
+            'nota_fiscal': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Nº da Nota Fiscal'}),
+            'ordem_fornecimento': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Nº da Ordem de Fornecimento'}),
+            'fornecedor': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Nome do Fornecedor'}),
+            'observacao': forms.Textarea(attrs={'class': 'form-control', 'rows': 3}),
+        }

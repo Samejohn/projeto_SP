@@ -199,6 +199,12 @@ ADMINLTE = {
         'can': 'spi.view_estoque',
         },
         {
+        'text': 'Entrada',
+        'icon': 'bi bi-arrow-down-circle text-success',
+        'route': 'entrada_list',
+        'can': 'spi.view_entrada',
+        },
+        {
             'text': 'Descarte',
             'icon': 'bi bi-trash',
             'route': 'discard_list',

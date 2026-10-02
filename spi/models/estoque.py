@@ -1,165 +1,105 @@
 from decimal import Decimal
-from django.db import models, transaction
-from django.conf import settings
-from django.core.exceptions import ValidationError
-from django.utils import timezone
+from django.db import models
+from django.core.validators import MinValueValidator
 from django.contrib.auth import get_user_model
-from django.db.models import Q
 
 User = get_user_model()
 
 
-class EstoqueManager(models.Manager):
-  
-    def com_alerta_minimo(self):
-        return self.filter(quantidade_estoque__lte=models.F('estoque_minimo'))
-    
-    def buscar_por_nome(self, termo):
-        return self.filter(nome__icontains=termo)
-    
-    def com_movimentacoes_recentes(self, limite=10):
-        return self.prefetch_related(
-            models.Prefetch(
-                'movimentacoes',
-                queryset=MovimentacaoEstoque.objects.select_related('responsavel')
-                .order_by('-data_movimentacao')[:limite]
-            )
-        )
-
-
-class Estoque(models.Model):    
-    nome = models.CharField('Produto', max_length=100, db_index=True)
-    descricao = models.TextField('Descrição', blank=True, null=True)
-    quantidade_estoque = models.PositiveIntegerField('Quantidade Disponível', default=0)
-    estoque_minimo = models.PositiveIntegerField('Estoque Mínimo', default=5)
-    codigo_barras = models.CharField('Código de Barras', max_length=50, unique=True, null=True, blank=True)
-    valor_unitario_atual = models.DecimalField(
-    'Valor Unitário Atual',
-    max_digits=10,
-    decimal_places=2,
-    null=False,
-    blank=False
+class Estoque(models.Model):
+    produto = models.CharField(
+        max_length=150,
+        verbose_name='Produto'
     )
-    
-    responsavel_cadastro = models.ForeignKey(
-    'auth.User',
-    on_delete=models.SET_NULL,
-    null=True,
-    blank=True,
-    verbose_name='Responsável pelo cadastro',
-    related_name='estoque_cadastrado'
+    descricao = models.TextField(
+        blank=True,
+        verbose_name='Descrição'
     )
-    data_criacao = models.DateTimeField('Data de Cadastro', auto_now_add=True)
-    data_atualizacao = models.DateTimeField('Data de Atualização', auto_now=True)
-    ativo = models.BooleanField('Ativo', default=True)
-
-    objects = EstoqueManager()
+    quantidade = models.PositiveIntegerField(
+        default=0,
+        verbose_name='Quantidade em estoque'
+    )
+    entrada = models.PositiveIntegerField(
+        default=0,
+        verbose_name='Entrada'
+    )
+    valor_unitario = models.DecimalField(
+        max_digits=10,
+        decimal_places=2,
+        validators=[MinValueValidator(0)],
+        verbose_name='Valor Unitário'
+    )
+    estoque_minimo = models.PositiveIntegerField(
+        default=0,
+        verbose_name='Estoque Mínimo'
+    )
+    responsavel = models.CharField(
+        max_length=150,
+        blank=True,
+        verbose_name='Responsável'
+    )
+    localizacao = models.CharField(
+        max_length=50,
+        blank=True,
+        verbose_name='Localização'
+    )
+    data = models.DateField(
+        auto_now_add=True,
+        verbose_name='Data'
+    )
+    criado_em = models.DateTimeField(auto_now_add=True)
+    atualizado_em = models.DateTimeField(auto_now=True)
 
     class Meta:
-        verbose_name = 'Produto em estoque'
-        verbose_name_plural = 'Produtos em estoque'
-        ordering = ['-data_criacao']
-        indexes = [
-            models.Index(fields=['nome']),
-            models.Index(fields=['quantidade_estoque', 'estoque_minimo']),
-        ]
+        ordering = ['produto']
+        verbose_name = 'Estoque'
+        verbose_name_plural = 'Estoques'
 
     def __str__(self):
-        return f'{self.nome} - {self.quantidade_estoque} un.'
+        return self.produto
 
     @property
-    def alerta_estoque_minimo(self):
-        """Retorna True se o estoque atual for menor ou igual ao estoque mínimo."""
-        return self.quantidade_estoque <= self.estoque_minimo
-
-    @property
-    def valor_total_estoque(self):
-        """Retorna o valor total do estoque."""
-        return self.quantidade_estoque * self.valor_unitario_atual
-
-    def atualizar_quantidade(self, quantidade, tipo_movimentacao, responsavel, valor_unitario=None):
-        """Método seguro para atualizar quantidade com validação."""
-        if tipo_movimentacao == MovimentacaoEstoque.TIPO_SAIDA:
-            if self.quantidade_estoque < quantidade:
-                raise ValidationError(
-                    f'Estoque insuficiente. Disponível: {self.quantidade_estoque}, Solicitado: {quantidade}'
-                )
-            nova_quantidade = self.quantidade_estoque - quantidade
-        else:  # Entrada
-            nova_quantidade = self.quantidade_estoque + quantidade
-        
-        # Atualiza valor unitário se fornecido
-        if valor_unitario is not None:
-            self.valor_unitario_atual = valor_unitario
-        
-        self.quantidade_estoque = nova_quantidade
-        self.save()
-        
-        # Registra movimentação
-        return MovimentacaoEstoque.objects.create(
-            estoque=self,
-            tipo=tipo_movimentacao,
-            quantidade=quantidade,
-            valor_unitario=valor_unitario or self.valor_unitario_atual,
-            responsavel=responsavel
-        )
+    def total(self):
+        if self.quantidade and self.valor_unitario:
+            return self.quantidade * self.valor_unitario
+        return Decimal('0.00')
 
 
 class MovimentacaoEstoque(models.Model):
-    
-    TIPO_ENTRADA = 'E'
-    TIPO_SAIDA = 'S'
     TIPO_CHOICES = [
-        (TIPO_ENTRADA, 'Entrada'),
-        (TIPO_SAIDA, 'Saída'),
+        ('ENTRADA', 'Entrada'),
+        ('SAIDA', 'Saída'),
     ]
 
     estoque = models.ForeignKey(
-        Estoque, 
-        on_delete=models.CASCADE, 
-        related_name='movimentacoes',
-        verbose_name='Item do Estoque'
+        Estoque,
+        on_delete=models.CASCADE,
+        related_name='movimentacoes'
     )
-    tipo = models.CharField('Tipo de Movimentação', max_length=1, choices=TIPO_CHOICES, db_index=True)
-    quantidade = models.PositiveIntegerField('Quantidade')
-    valor_unitario = models.DecimalField('Valor Unitário', max_digits=10, decimal_places=2)
-    total = models.DecimalField('Total', max_digits=10, decimal_places=2, editable=False)
-    
-    data_movimentacao = models.DateTimeField('Data da Movimentação', auto_now_add=True, db_index=True)
-    observacao = models.TextField('Observação', blank=True, null=True)
-    responsavel = models.ForeignKey(
-        User,
-        on_delete=models.PROTECT,
-        verbose_name='Responsável'
+    tipo = models.CharField(
+        max_length=10,
+        choices=TIPO_CHOICES
     )
+    quantidade = models.PositiveIntegerField()
+    data = models.DateTimeField(auto_now_add=True)
+    observacao = models.TextField(blank=True, null=True)
 
     class Meta:
         verbose_name = 'Movimentação de Estoque'
         verbose_name_plural = 'Movimentações de Estoque'
-        ordering = ['-data_movimentacao']
-        indexes = [
-            models.Index(fields=['estoque', '-data_movimentacao']),
-            models.Index(fields=['tipo', 'data_movimentacao']),
-        ]
+        ordering = ['-data']
 
     def __str__(self):
-        return f'{self.get_tipo_display()} - {self.estoque.nome} - {self.quantidade} un.'
+        return f"{self.get_tipo_display()} - {self.estoque.produto} ({self.quantidade})"
 
     def save(self, *args, **kwargs):
-        self.total = Decimal(self.quantidade) * Decimal(self.valor_unitario)
+        """Atualiza automaticamente a quantidade do estoque."""
+        is_new = self.pk is None
         super().save(*args, **kwargs)
-
-
-class EstoqueMovimentoBatch(models.Model):    
-    data_inicio = models.DateTimeField(auto_now_add=True)
-    data_fim = models.DateTimeField(null=True, blank=True)
-    responsavel = models.ForeignKey(User, on_delete=models.PROTECT)
-    descricao = models.CharField(max_length=200)
-    finalizado = models.BooleanField(default=False)
-    
-    class Meta:
-        verbose_name = 'Movimento em Lote'
-        verbose_name_plural = 'Movimentos em Lote'
-
-
-
+        if is_new:
+            if self.tipo == 'ENTRADA':
+                self.estoque.quantidade = models.F('quantidade') + self.quantidade
+                self.estoque.entrada = models.F('entrada') + self.quantidade
+            elif self.tipo == 'SAIDA':
+                self.estoque.quantidade = models.F('quantidade') - self.quantidade
+            self.estoque.save(update_fields=['quantidade', 'entrada'])

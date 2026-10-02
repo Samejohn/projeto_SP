@@ -1,11 +1,14 @@
 from .SignInForm import SignInForm
 from .SignUpForm import SignUpForm
+
 from .management import (
     DescarteForm,
     InventarioForm,
+    ManagedEstoqueForm,               
     ManagedFornecedorForm,
     ManagedGroupForm,
     ManagedLinkForm,
+    ManagedMovimentacaoEstoqueForm,   
     ManagedOrderProductCreateForm,
     ManagedProductForm,
     ManagedProductSelectionForm,
@@ -13,14 +16,19 @@ from .management import (
     ManagedProdutoPedidoForm,
     ManagedUserForm,
     ManagedValorProdutoForm,
+    ManagedGroupForm,
+    
 )
+
 
 __all__ = [
     'DescarteForm',
     'InventarioForm',
+    'ManagedEstoqueForm',               
     'ManagedFornecedorForm',
     'ManagedGroupForm',
     'ManagedLinkForm',
+    'ManagedMovimentacaoEstoqueForm',   
     'ManagedOrderProductCreateForm',
     'ManagedProductForm',
     'ManagedProductSelectionForm',

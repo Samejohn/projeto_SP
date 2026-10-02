@@ -1,0 +1,74 @@
+{% extends 'base.html' %}
+
+{% block page_title_text %}Entrada{% endblock %}
+{% block page_title %}Controle de entrada{% endblock %}
+{% block breadcrumb_items %}<li class="breadcrumb-item active">Entrada</li>{% endblock %}
+
+{% block content %}
+<div class="container-fluid management-shell">
+    {% include 'management/_messages.html' %}
+    <section class="management-card">
+        <header class="management-toolbar">
+            <form method="get" class="management-search">
+                <i class="bi bi-search"></i>
+                <input type="search" name="q" value="{{ search_query }}" placeholder="Pesquisar entrada" aria-label="Pesquisar entrada">
+                <button class="btn btn-outline-primary" type="submit">Pesquisar</button>
+            </form>
+            {% if perms.spi.add_entrada %}
+                <a class="btn btn-outline-primary" href="{% url 'entrada_create' %}">
+                    <i class="bi bi-plus-lg"></i> Adicionar entrada
+                </a>
+            {% endif %}
+        </header>
+
+        <div class="table-responsive">
+            <table class="table management-table align-middle mb-0">
+                <thead>
+                    <tr>
+                        <th>Cód. Produto</th>
+                        <th>Descrição</th>
+                        <th>Qtd. Recebida</th>
+                        <th>Nº NF 
+                            <i class="bi bi-info-circle text-muted" data-bs-toggle="tooltip" data-bs-placement="top" title="Número da Nota Fiscal referente ao recebimento do material"></i>    
+                        </th> <!-- NF: Nota Fiscal -->
+                        <th>Nº OF
+                            <i class="bi bi-info-circle text-muted" data-bs-toggle="tooltip" data-bs-placement="top" title="Número da Ordem de Fornecimento referente a compra/entrega do material"></i>
+                        </th> <!-- OF: Ordem de Fornecimento -->
+                        <th>Fornecedor</th>
+                        <th>Total (R$)</th>
+                        <th>Responsável</th>
+                        <th>Data/Hora</th>
+                        <th>Ações</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for entrada in entradas %}
+                    <tr>
+                        <td>{{ entrada.produto.codigo|default:entrada.produto.id }}</td>
+                        <td>{{ entrada.produto }}</td>
+                        <td><span class="badge bg-success">+{{ entrada.quantidade }}</span></td>
+                        <td>{{ entrada.nota_fiscal|default:"-" }}</td>
+                        <td>{{ entrada.ordem_fornecimento|default:"-" }}</td>
+                        <td>{{ entrada.fornecedor|default:"-" }}</td>
+                        <td>R$ {{ entrada.total|floatformat:2 }}</td>
+                        <td>{{ entrada.usuario.username|default:"Sistema" }}</td>
+                        <td>{{ entrada.data_entrada|date:"d/m/Y H:i" }}</td>
+                        <td>
+                            <a href="{% url 'entrada_update' entrada.id %}" class="btn btn-sm btn-outline-warning">Editar</a>
+                            <a href="{% url 'entrada_delete' entrada.id %}" class="btn btn-sm btn-outline-danger">Excluir</a>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="10" class="text-center text-muted">Nenhuma entrada cadastrada.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+            {% include 'management/_pagination.html' %}
+    </section>
+</div>
+{% endblock %}

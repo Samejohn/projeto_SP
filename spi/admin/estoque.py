@@ -3,9 +3,25 @@ from spi.models import Estoque, MovimentacaoEstoque
 
 @admin.register(Estoque)
 class EstoqueAdmin(admin.ModelAdmin):
-    list_display = ("nome", "quantidade_estoque", "estoque_minimo", "responsavel_cadastro", "data_criacao")
-    search_fields = ("nome", "descricao", "responsavel_cadastro__username")
-    list_select_related = ("responsavel_cadastro",)
+    list_display = (
+        'produto',
+        'quantidade',
+        'entrada',
+        'valor_unitario',
+        'estoque_minimo',
+        'responsavel',
+        'data',
+    )
+
+    search_fields = (
+        'produto',
+        'descricao',
+        'responsavel',
+    )
+
+    list_filter = (
+        'data',
+    )
 
 @admin.register(MovimentacaoEstoque)
 class MovimentacaoEstoqueAdmin(admin.ModelAdmin):

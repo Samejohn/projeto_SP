@@ -3,7 +3,7 @@
 {% block page_title_text %}{{ page_title }}{% endblock %}
 {% block page_title %}{{ page_title }}{% endblock %}
 {% block breadcrumb_items %}
-    <li class="breadcrumb-item"><a href="{% url 'estoque_list' %}">Estoque</a></li>
+    <li class="breadcrumb-item"><a href="{% url 'entrada_list' %}">Entradas</a></li>
     <li class="breadcrumb-item active">{{ page_title }}</li>
 {% endblock %}
 
@@ -29,7 +29,7 @@
 
             <div class="row g-3">
                 {% for field in form %}
-                    <div class="{% if field.name == 'descricao' %}col-12{% else %}col-md-6{% endif %}">
+                    <div class="{% if field.name == 'observacao' %}col-12{% else %}col-md-6{% endif %}">
                         <label for="{{ field.id_for_label }}" class="form-label fw-semibold text-secondary">
                             {{ field.label }}
                             {% if field.field.required %}
@@ -56,7 +56,7 @@
                 <button type="submit" class="btn btn-primary px-4">
                     {{ submit_button_label|default:"Salvar" }}
                 </button>
-                <a href="{% url cancel_url_name|default:'estoque_list' %}" class="btn btn-outline-secondary px-4">
+                <a href="{% url cancel_url_name|default:'entrada_list' %}" class="btn btn-outline-secondary px-4">
                     Cancelar
                 </a>
             </div>
