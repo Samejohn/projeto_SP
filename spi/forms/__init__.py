@@ -17,6 +17,8 @@ from .management import (
     ManagedUserForm,
     ManagedValorProdutoForm,
     ManagedGroupForm,
+    EntradaForm,
+    SaidaProdutoForm
     
 )
 
@@ -38,4 +40,6 @@ __all__ = [
     'ManagedValorProdutoForm',
     'SignInForm',
     'SignUpForm',
+    'EntradaForm',
+    'SaidaProdutoForm'
 ]

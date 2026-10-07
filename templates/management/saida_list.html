@@ -1,0 +1,90 @@
+{% extends 'base.html' %}
+
+{% block page_title_text %}Saída{% endblock %}
+{% block page_title %}Controle de saída{% endblock %}
+{% block breadcrumb_items %}<li class="breadcrumb-item active">Saída</li>{% endblock %}
+
+{% block content %}
+<div class="container-fluid management-shell">
+    {% include 'management/_messages.html' %}
+    <section class="management-card">
+        <header class="management-toolbar">
+            <form method="get" class="management-search">
+                {# Mantém o período selecionado ao pesquisar saídas. #}
+                <input type="hidden" name="periodo" value="{{ selected_period }}">
+                <i class="bi bi-search"></i>
+                <input type="search" name="q" value="{{ search_query }}" placeholder="Pesquisar saída" aria-label="Pesquisar saída">
+                <button class="btn btn-outline-primary" type="submit">Pesquisar</button>
+            </form>
+            {# Cada seleção preserva a pesquisa e volta à primeira página. #}
+            <div class="dropdown">
+                <button class="btn btn-outline-primary dropdown-toggle" type="button" id="exitDeparturePeriodFilter" data-bs-toggle="dropdown" aria-expanded="false">
+                    <i class="bi bi-calendar3"></i> Filtro{% if selected_period == 'hoje' %}: Hoje{% elif selected_period %}: {{ selected_period }} dias{% endif %}
+                </button>
+                <ul class="dropdown-menu" aria-labelledby="exitDeparturePeriodFilter">
+                    <li><a class="dropdown-item{% if not selected_period %} active{% endif %}" href="?q={{ search_query|urlencode }}">Todos os períodos</a></li>
+                    <li><a class="dropdown-item{% if selected_period == 'hoje' %} active{% endif %}" href="?q={{ search_query|urlencode }}&amp;periodo=hoje">Hoje</a></li>
+                    <li><a class="dropdown-item{% if selected_period == '7' %} active{% endif %}" href="?q={{ search_query|urlencode }}&amp;periodo=7">7 dias</a></li>
+                    <li><a class="dropdown-item{% if selected_period == '15' %} active{% endif %}" href="?q={{ search_query|urlencode }}&amp;periodo=15">15 dias</a></li>
+                    <li><a class="dropdown-item{% if selected_period == '30' %} active{% endif %}" href="?q={{ search_query|urlencode }}&amp;periodo=30">30 dias</a></li>
+                </ul>
+            </div>
+            {% if perms.spi.add_saidaproduto %}
+                <a class="btn btn-outline-primary" href="{% url 'saida_create' %}">
+                    <i class="bi bi-plus-lg"></i> Adicionar saída
+                </a>
+            {% endif %}
+        </header>
+
+        <div class="table-responsive">
+            <table class="table management-table align-middle mb-0">
+                <thead>
+                    <tr>
+                        <th>Cód. Produto</th>
+                        <th>Descrição</th>
+                        <th>Qtd. Saída</th>
+                        <th>Motivo / Destino</th>
+                        <th>Setor</th>
+                        <th>Total (R$)</th>
+                        <th>Responsável</th>
+                        <th>Data/Hora</th>
+                        <th>Ações</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for saida in saidas %}
+                    <tr>
+                        <td>{{ saida.codigo_produto }}</td>
+                        <td>{{ saida.descricao }}</td>
+                        <td><span class="badge bg-danger">-{{ saida.quantidade_saida }}</span></td>
+                        <td>{{ saida.get_motivo_destino_display|default:saida.motivo_destino }}</td>
+                        <td>{{ saida.setor }}</td>
+                        <td>R$ {{ saida.total|floatformat:2 }}</td>
+                        <td>{{ saida.responsavel.username|default:"Sistema" }}</td>
+                        <td>{{ saida.data_hora|date:"d/m/Y H:i" }}</td>
+                        <td class="text-end text-nowrap">
+                            {% if perms.spi.change_saidaproduto %}
+                                <a class="btn btn-sm btn-outline-success" href="{% url 'saida_update' saida.pk %}" title="Editar saída">
+                                    <i class="bi bi-pencil"></i>
+                                </a>
+                            {% endif %}
+                            {% if perms.spi.delete_saidaproduto %}
+                                <a class="btn btn-sm btn-outline-danger" href="{% url 'saida_delete' saida.pk %}" title="Excluir saída">
+                                    <i class="bi bi-trash"></i>
+                                </a>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="9" class="text-center text-muted">Nenhuma saída cadastrada.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        {% include 'management/_pagination.html' %}
+    </section>
+</div>
+{% endblock %}

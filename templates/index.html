@@ -10,7 +10,7 @@
         <div>
             <span class="eyebrow">PAINEL DE CONTROLE</span>
             <h1>Olá, {{ request.user.first_name|default:request.user.username }}!</h1>
-            <p>Acompanhe as solicitações e atividades mais recentes do sistema.</p>
+            <p>Acompanhe os totais acumulados de todo o histórico do sistema.</p>
         </div>
         <span class="today"><i class="bi bi-calendar3"></i> {% now "d/m/Y" %}</span>
     </div>
@@ -35,7 +35,7 @@
                 </h6>
 
                 <span class="fs-4 fw-bold">
-                    {{ total_produtos_estoque }}
+                    {{ total_produtos }}
                 </span>
             </div>
 
@@ -65,11 +65,11 @@
                 </h6>
 
                 <span class="fs-4 fw-bold">
-                    {{ entradas_recentes }}
+                    {{ total_entradas }}
                 </span>
             </div>
 
-            <a href="{% url 'movimentacao_list' %}?tipo=E"
+            <a href="{% url 'entrada_list' %}?tipo=E"
                class="btn btn-sm btn-outline-light rounded-pill px-3">
 
                 Ver Entradas
@@ -95,11 +95,11 @@
                 </h6>
 
                 <span class="fs-4 fw-bold">
-                    {{ saidas_recentes }}
+                    {{ total_saidas }}
                 </span>
             </div>
 
-            <a href="{% url 'movimentacao_list' %}?tipo=S"
+            <a href="{% url 'saida_list' %}?tipo=S"
                class="btn btn-sm btn-outline-light rounded-pill px-3">
 
                 Ver Saídas
@@ -125,7 +125,7 @@
                 </h6>
 
                 <span class="fs-4 fw-bold">
-                    R$ {{ valor_total|floatformat:2 }}
+                    R$ {{ valor_total_investido|floatformat:2 }}
                 </span>
             </div>
 
@@ -144,106 +144,6 @@
 
 <br>
 <!-- Container do Gráfico -->
-<div class="row g-4">
-    <div class="col-12 col-xl-5">
-        <section class="dashboard-panel chart-panel card-hover h-100">
-            <div class="panel-heading">
-                <i class="bi bi-grid-3x3-gap-fill"></i> Variação de preços por mês
-            </div>
-            
-            <!-- Canvas do Chart.js integrado ao container do painel -->
-            <div class="chart-wrap p-3" style="position: relative; min-height: 250px;">
-                <canvas id="priceChart"></canvas>
-            </div>
-        </section>
-    </div>
-</div>
-
-<script>
-    document.addEventListener("DOMContentLoaded", function() {
-        const ctx = document.getElementById('priceChart');
-        if (!ctx) return;
-
-        // Parse dos dados vindos da view Django
-        const labels = JSON.parse('{{ chart_labels|safe }}' || '[]');
-        const data = JSON.parse('{{ chart_data|safe }}' || '[]');
-
-        new Chart(ctx.getContext('2d'), {
-            type: 'line',
-            data: {
-                labels: labels.length > 0 ? labels : ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'],
-                datasets: [{
-                    label: 'Preço Médio (R$)',
-                    data: data,
-                    borderColor: '#0d6efd',
-                    backgroundColor: 'rgba(13, 110, 253, 0.1)',
-                    borderWidth: 2.5,
-                    fill: true,
-                    tension: 0.3,
-                    pointRadius: 5,
-                    pointHoverRadius: 7,
-                    pointBackgroundColor: '#0d6efd'
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: {
-                        display: false
-                    }
-                },
-                scales: {
-                    x: {
-                        grid: {
-                            display: false
-                        }
-                    },
-                    y: {
-                        beginAtZero: true,
-                        ticks: {
-                            callback: function(value) {
-                                return 'R$ ' + Number(value).toFixed(2);
-                            }
-                        }
-                    }
-                }
-            }
-        });
-    });
-</script>
-
-<br>
-<!-- Cards de Métricas -->
-    <div class="row g-4 mb-4">
-        <div class="col-12 col-md-6 col-lg-3"><article class="metric-card metric-icy1 card-glass card-hover"><div><strong>{{ total_produtos }}</strong><span>Produtos</span></div><i class="bi bi-box-seam"></i></article></div>
-        <div class="col-12 col-md-6 col-lg-3"><article class="metric-card metric-icy2 card-glass card-hover"><div><strong>7</strong><span>Pedidos em Análise</span></div><i class="bi bi-shop"></i></article></div>
-        <div class="col-12 col-md-6 col-lg-3"><article class="metric-card metric-icy3 card-glass card-hover"><div><strong>{{ total_produtos_pendentes }}</strong><span>Produtos Pendentes</span></div><i class="bi bi-archive"></i></article></div>
-      <!--Alerta de Estoque mínimo-->
-        <div class="col-12 col-md-6 col-lg-3">
-            <article class="metric-card metric-icy4 card-glass card-hover
-                {% if total_produtos_alerta > 0 %}
-                    metric-danger
-                {% else %}
-                    metric-success
-                {% endif %}">
-
-                <div>
-                    <strong>{{ total_produtos_alerta }}</strong>
-                    <span>Alerta de Estoque mínimo</span>
-                </div>
-
-                {% if total_produtos_alerta > 0 %}
-                    <i class="bi bi-exclamation-triangle-fill"></i>
-                {% else %}
-                    <i class="bi bi-check-circle-fill"></i>
-                {% endif %}
-
-            </article>
-        </div>
-    </div>
-
-<!-- Gráfico de Variação de Preços e Cards de E-commerce -->
     <div class="row g-4">
         <div class="col-12 col-xl-5">
             <section class="dashboard-panel chart-panel card-hover h-100">

@@ -17,6 +17,7 @@ from spi.models import (
 )
 from spi.models.estoque import Estoque, MovimentacaoEstoque
 from spi.models.entrada import Entrada
+from spi.models.saida import SaidaProduto
 
 
 class BootstrapFormMixin:
@@ -423,8 +424,23 @@ class ManagedMovimentacaoEstoqueForm(forms.ModelForm):
             'observacao': 'Observação',
         }
 
-class ManagedEstoqueForm(forms.ModelForm):
-    """Formulário para registro de movimentações de estoque."""
+class ManagedEstoqueForm(BootstrapFormMixin, forms.ModelForm):
+    """Cadastro de estoque com seleção dos produtos do catálogo."""
+    produto = forms.ChoiceField(label='Produto', choices=())
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        product_names = list(
+            Produto.objects.order_by('nome').values_list('nome', flat=True).distinct()
+        )
+        current_product = self.instance.produto
+        if current_product and current_product not in product_names:
+            product_names.append(current_product)
+        self.fields['produto'].choices = [('', 'Selecione um produto')] + [
+            (name, name) for name in product_names
+        ]
+        self._apply_bootstrap_classes()
+
     class Meta:
         model = Estoque
         fields = ['produto', 'descricao', 'quantidade', 'entrada', 'valor_unitario', 'estoque_minimo', 'responsavel', 'localizacao']
@@ -445,6 +461,30 @@ class ManagedEstoqueForm(forms.ModelForm):
 # ENTRADA DE PRODUTOS
 # ==========================================
 class EntradaForm(forms.ModelForm):
+    fornecedor = forms.ChoiceField(
+        label='Fornecedor',
+        required=False,
+        widget=forms.Select(attrs={'class': 'form-select'}),
+    )
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        product_field = self.fields['produto']
+        product_field.queryset = Produto.objects.order_by('nome', 'codigo_barras')
+        product_field.empty_label = 'Selecione um produto'
+        product_field.label_from_instance = ManagedProductSelectionForm._get_product_label
+        supplier_names = list(
+            Fornecedor.objects.order_by('nome_fornecedor')
+            .values_list('nome_fornecedor', flat=True).distinct()
+        )
+        # Preserva o fornecedor informado nas entradas anteriores.
+        current_supplier = self.instance.fornecedor
+        if current_supplier and current_supplier not in supplier_names:
+            supplier_names.append(current_supplier)
+        self.fields['fornecedor'].choices = [('', 'Selecione um fornecedor')] + [
+            (name, name) for name in supplier_names
+        ]
+
     class Meta:
         model = Entrada
         fields = [
@@ -462,6 +502,27 @@ class EntradaForm(forms.ModelForm):
             'preco_custo': forms.NumberInput(attrs={'class': 'form-control', 'step': '0.01'}),
             'nota_fiscal': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Nº da Nota Fiscal'}),
             'ordem_fornecimento': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Nº da Ordem de Fornecimento'}),
-            'fornecedor': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Nome do Fornecedor'}),
             'observacao': forms.Textarea(attrs={'class': 'form-control', 'rows': 3}),
+        }
+# ==========================================
+# SAÍDA DE PRODUTOS
+# ==========================================
+class SaidaProdutoForm(forms.ModelForm):
+    class Meta:
+        model = SaidaProduto
+        fields = [
+            'codigo_produto',
+            'descricao',
+            'quantidade_saida',
+            'valor_unitario',
+            'motivo_destino',
+            'setor',
+        ]
+        widgets = {
+            'codigo_produto': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Informe o código'}),
+            'descricao': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Descrição detalhada'}),
+            'quantidade_saida': forms.NumberInput(attrs={'class': 'form-control', 'min': '1'}),
+            'valor_unitario': forms.NumberInput(attrs={'class': 'form-control', 'step': '0.01', 'placeholder': '0.00'}),
+            'motivo_destino': forms.Select(attrs={'class': 'form-select'}),
+            'setor': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Setor solicitante'}),
         }

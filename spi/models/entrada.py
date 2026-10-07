@@ -2,9 +2,9 @@ from django.db import models
 from django.contrib.auth.models import User
 
 class Entrada(models.Model):
-    # Relacionamento com o item/produto em estoque
+    # Produto do catálogo recebido nesta entrada.
     produto = models.ForeignKey(
-        'spi.Estoque', 
+        'spi.Produto', 
         on_delete=models.CASCADE, 
         related_name='entradas',
         verbose_name="Produto"
@@ -55,6 +55,11 @@ class Entrada(models.Model):
         null=True, 
         verbose_name="Observação"
     )
+
+    def save(self, *args, **kwargs):
+        from spi.stock_automation import save_record_and_synchronize_stock
+
+        save_record_and_synchronize_stock(self, super().save, *args, **kwargs)
 
     class Meta:
         ordering = ['-data_entrada']

@@ -10,10 +10,25 @@
     <section class="management-card">
         <header class="management-toolbar">
             <form method="get" class="management-search">
+                {# Preserva o período selecionado ao pesquisar entradas. #}
+                <input type="hidden" name="periodo" value="{{ selected_period }}">
                 <i class="bi bi-search"></i>
                 <input type="search" name="q" value="{{ search_query }}" placeholder="Pesquisar entrada" aria-label="Pesquisar entrada">
                 <button class="btn btn-outline-primary" type="submit">Pesquisar</button>
             </form>
+            {# Os links mantêm a pesquisa e iniciam o novo período na primeira página. #}
+            <div class="dropdown">
+                <button class="btn btn-outline-primary dropdown-toggle" type="button" id="entryReceiptPeriodFilter" data-bs-toggle="dropdown" aria-expanded="false">
+                    <i class="bi bi-funnel"></i> Filtro{% if selected_period == 'hoje' %}: Hoje{% elif selected_period %}: {{ selected_period }} dias{% endif %}
+                </button>
+                <ul class="dropdown-menu" aria-labelledby="entryReceiptPeriodFilter">
+                    <li><a class="dropdown-item{% if not selected_period %} active{% endif %}" href="?q={{ search_query|urlencode }}">Todos os períodos</a></li>
+                    <li><a class="dropdown-item{% if selected_period == 'hoje' %} active{% endif %}" href="?q={{ search_query|urlencode }}&amp;periodo=hoje">Hoje</a></li>
+                    <li><a class="dropdown-item{% if selected_period == '7' %} active{% endif %}" href="?q={{ search_query|urlencode }}&amp;periodo=7">7 dias</a></li>
+                    <li><a class="dropdown-item{% if selected_period == '15' %} active{% endif %}" href="?q={{ search_query|urlencode }}&amp;periodo=15">15 dias</a></li>
+                    <li><a class="dropdown-item{% if selected_period == '30' %} active{% endif %}" href="?q={{ search_query|urlencode }}&amp;periodo=30">30 dias</a></li>
+                </ul>
+            </div>
             {% if perms.spi.add_entrada %}
                 <a class="btn btn-outline-primary" href="{% url 'entrada_create' %}">
                     <i class="bi bi-plus-lg"></i> Adicionar entrada
@@ -44,7 +59,7 @@
                 <tbody>
                     {% for entrada in entradas %}
                     <tr>
-                        <td>{{ entrada.produto.codigo|default:entrada.produto.id }}</td>
+                        <td>{{ entrada.produto.codigo_barras }}</td>
                         <td>{{ entrada.produto }}</td>
                         <td><span class="badge bg-success">+{{ entrada.quantidade }}</span></td>
                         <td>{{ entrada.nota_fiscal|default:"-" }}</td>
@@ -53,9 +68,17 @@
                         <td>R$ {{ entrada.total|floatformat:2 }}</td>
                         <td>{{ entrada.usuario.username|default:"Sistema" }}</td>
                         <td>{{ entrada.data_entrada|date:"d/m/Y H:i" }}</td>
-                        <td>
-                            <a href="{% url 'entrada_update' entrada.id %}" class="btn btn-sm btn-outline-warning">Editar</a>
-                            <a href="{% url 'entrada_delete' entrada.id %}" class="btn btn-sm btn-outline-danger">Excluir</a>
+                        <td class="text-end text-nowrap">
+                            {% if perms.spi.change_entrada %}
+                                <a class="btn btn-sm btn-outline-success" href="{% url 'entrada_update' entrada.pk %}" title="Editar entrada">
+                                    <i class="bi bi-pencil"></i>
+                                </a>
+                            {% endif %}
+                            {% if perms.spi.delete_entrada %}
+                                <a class="btn btn-sm btn-outline-danger" href="{% url 'entrada_delete' entrada.pk %}" title="Excluir entrada">
+                                    <i class="bi bi-trash"></i>
+                                </a>
+                            {% endif %}
                         </td>
                     </tr>
                     {% empty %}

@@ -10,10 +10,24 @@
     <section class="management-card">
         <header class="management-toolbar">
             <form method="get" class="management-search">
+                {# Mantém o período selecionado ao enviar uma nova pesquisa. #}
+                <input type="hidden" name="periodo" value="{{ selected_period }}">
                 <i class="bi bi-search"></i>
                 <input type="search" name="q" value="{{ search_query }}" placeholder="Pesquisar estoque" aria-label="Pesquisar estoque">
                 <button class="btn btn-outline-primary" type="submit">Pesquisar</button>
             </form>
+            <div class="dropdown">
+                <button class="btn btn-outline-primary dropdown-toggle" type="button" id="stockPeriodFilter" data-bs-toggle="dropdown" aria-expanded="false">
+                    <i class="bi bi-calendar3"></i> Filtro{% if selected_period == 'hoje' %}: Hoje{% elif selected_period %}: {{ selected_period }} dias{% endif %}
+                </button>
+                <ul class="dropdown-menu" aria-labelledby="stockPeriodFilter">
+                    <li><a class="dropdown-item{% if not selected_period %} active{% endif %}" href="?q={{ search_query|urlencode }}">Todos os períodos</a></li>
+                    <li><a class="dropdown-item{% if selected_period == 'hoje' %} active{% endif %}" href="?q={{ search_query|urlencode }}&amp;periodo=hoje">Hoje</a></li>
+                    <li><a class="dropdown-item{% if selected_period == '7' %} active{% endif %}" href="?q={{ search_query|urlencode }}&amp;periodo=7">7 dias</a></li>
+                    <li><a class="dropdown-item{% if selected_period == '15' %} active{% endif %}" href="?q={{ search_query|urlencode }}&amp;periodo=15">15 dias</a></li>
+                    <li><a class="dropdown-item{% if selected_period == '30' %} active{% endif %}" href="?q={{ search_query|urlencode }}&amp;periodo=30">30 dias</a></li>
+                </ul>
+            </div>
             {% if perms.spi.add_estoque %}
                 <a class="btn btn-outline-primary" href="{% url 'estoque_create' %}">
                     <i class="bi bi-plus-lg"></i> Adicionar estoque

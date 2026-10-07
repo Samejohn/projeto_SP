@@ -1,11 +1,16 @@
 """Views de estoque, movimentações de estoque e alertas."""
 
+from datetime import timedelta
+
 from django.contrib.auth.decorators import login_required, permission_required
+from django.contrib import messages
 from django.db import models
 from django.http import JsonResponse
-from django.shortcuts import get_object_or_404
+from django.shortcuts import get_object_or_404, redirect, render
+from django.utils import timezone
 
 from spi.forms import ManagedEstoqueForm, ManagedMovimentacaoEstoqueForm
+from .entry import render_entry_form
 from spi.models import Estoque, MovimentacaoEstoque
 
 from .helpers import delete_record, render_catalog_form, render_searchable_list
@@ -15,10 +20,32 @@ from .helpers import delete_record, render_catalog_form, render_searchable_list
 # ESTOQUE
 # ==========================================
 
+def filter_stock_by_registration_period(stock_records, requested_period):
+    """Filtra pela data de cadastro e devolve o período válido selecionado."""
+    period_duration_days = {"hoje": 1, "7": 7, "15": 15, "30": 30}
+    if requested_period not in period_duration_days:
+        # Sem filtro ou com um valor inválido, mostramos todos os registros.
+        return stock_records, ""
+
+    current_date = timezone.localdate()
+    # Hoje já conta como um dia: o período de 7 dias começa há 6 dias.
+    registration_start_date = current_date - timedelta(
+        days=period_duration_days[requested_period] - 1
+    )
+    filtered_stock_records = stock_records.filter(
+        data__range=(registration_start_date, current_date)
+    )
+    return filtered_stock_records, requested_period
+
+
 @login_required
 @permission_required("spi.view_estoque", raise_exception=True)
 def list_stock(request):
     stock_records = Estoque.objects.all().order_by("produto")
+    # Aplicamos o período antes da busca e da paginação para manter os totais corretos.
+    stock_records, selected_period = filter_stock_by_registration_period(
+        stock_records, request.GET.get("periodo", "")
+    )
 
     return render_searchable_list(
         request,
@@ -30,13 +57,14 @@ def list_stock(request):
         ),
         "management/estoque_list.html",
         "estoque",
+        extra_context={"selected_period": selected_period},
     )
 
 
 @login_required
 @permission_required("spi.add_estoque", raise_exception=True)
 def create_stock(request):
-    return render_catalog_form(
+    return render_stock_form(
         request,
         ManagedEstoqueForm,
         "estoque_list",
@@ -52,7 +80,7 @@ def create_stock(request):
 @permission_required("spi.change_estoque", raise_exception=True)
 def update_stock(request, stock_id):
     stock_record = get_object_or_404(Estoque, id=stock_id)
-    return render_catalog_form(
+    return render_stock_form(
         request,
         ManagedEstoqueForm,
         "estoque_list",
@@ -63,6 +91,22 @@ def update_stock(request, stock_id):
         database_record=stock_record,
         template_name="management/estoque_form.html",
     )
+
+
+def render_stock_form(request, form_class, success_route_name, success_message,
+                      form_title, section_title, submit_label,
+                      database_record=None, template_name="management/estoque_form.html"):
+    form = form_class(request.POST if request.method == "POST" else None,
+                      instance=database_record)
+    if request.method == "POST" and form.is_valid():
+        form.save()
+        messages.success(request, success_message)
+        return redirect(success_route_name)
+    return render(request, template_name, {
+        "form": form, "object": database_record,
+        "page_title": form_title, "card_title": section_title,
+        "submit_button_label": submit_label, "cancel_url_name": success_route_name,
+    })
 
 
 @login_required
@@ -105,7 +149,7 @@ def list_movements(request):
 @login_required
 @permission_required("spi.add_movimentacaoestoque", raise_exception=True)
 def create_movement(request):
-    return render_catalog_form(
+    return render_entry_form(
         request,
         ManagedMovimentacaoEstoqueForm,
         "list_movements",

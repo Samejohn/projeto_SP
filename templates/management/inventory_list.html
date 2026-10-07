@@ -18,8 +18,10 @@
             <div class="d-flex gap-2">
                 <!-- BOTÃO QUE CHAMA A VIEW DO PDF -->
                 <a class="btn btn-outline-danger" href="{% url 'exportar_inventario_pdf' %}?q={{ search_query }}" target="_blank">
-                    <i class="bi bi-file-earmark-pdf"></i> Gerar PDF
-                </a>
+                    <i class="bi bi-file-earmark-pdf"></i> PDF </a>               
+                <a class="btn btn-outline-success" href="{% url 'exportar_inventario_excel' %}?q={{ search_query }}">
+                    <i class="bi bi-file-earmark-excel"></i> Excel </a>
+                
 
                 {% if perms.spi.add_inventario %}
                 <a class="btn btn-outline-primary" href="{% url 'inventory_create' %}">

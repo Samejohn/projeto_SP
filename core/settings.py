@@ -197,13 +197,32 @@ ADMINLTE = {
         'icon': 'bi bi-shop',
         'route': 'estoque_list',
         'can': 'spi.view_estoque',
+        
+        'submenu': [
+            {
+                'text': 'Controle Estoque',
+                'icon': 'bi bi-shop text-primary',
+                'route': 'estoque_list',
+                'can': 'spi.view_estoque',
+                'background-color': 'bg-primary',
+            },
+            {
+                'text': 'Entrada',
+                'icon': 'bi bi-arrow-down-circle text-success',
+                'route': 'entrada_list',
+                'can': 'spi.view_entrada',
+                'background-color': 'bg-success',
+            },
+            {
+                'text': 'Saída',
+                'icon': 'bi bi-arrow-up-circle text-danger',
+                'route': 'saida_list',
+                'can': 'spi.view_saida',
+                'background-color': 'bg-danger',
+            },
+        ],
         },
-        {
-        'text': 'Entrada',
-        'icon': 'bi bi-arrow-down-circle text-success',
-        'route': 'entrada_list',
-        'can': 'spi.view_entrada',
-        },
+        
         {
             'text': 'Descarte',
             'icon': 'bi bi-trash',

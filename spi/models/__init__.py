@@ -8,6 +8,7 @@ from .produto_pedido import ProdutoPedido
 from .valor_produto import ValorProduto
 from .estoque import Estoque, MovimentacaoEstoque
 from .entrada import Entrada
+from .saida import SaidaProduto
 
 
 __all__ = [
@@ -21,5 +22,6 @@ __all__ = [
     "ValorProduto",
     "Estoque",
     "MovimentacaoEstoque",
-    "Entrada"
+    "Entrada",
+    "SaidaProduto",
 ]

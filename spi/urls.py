@@ -1,6 +1,6 @@
 from django.urls import path
 from . import views
-from spi.views.management import entry, inventory
+from spi.views.management import entry, inventory, inventory_excel
 #app_name = "spi" 
 
 urlpatterns = [
@@ -68,6 +68,12 @@ urlpatterns = [
     path("gestao/entrada/cadastrar/", entry.create_entry, name="entrada_create"),
     path("gestao/entrada/<int:entry_id>/editar/", entry.update_entry, name="entrada_update"),
     path("gestao/entrada/<int:entry_id>/excluir/", entry.delete_entry, name="entrada_delete"),
+
+    # Saída de produtos
+    path("gestao/saida/", views.list_exit, name="saida_list"),
+    path("gestao/saida/cadastrar/", views.create_exit, name="saida_create"),
+    path("gestao/saida/<int:exit_id>/editar/", views.update_exit, name="saida_update"),
+    path("gestao/saida/<int:exit_id>/excluir/", views.delete_exit, name="saida_delete"),
    
     # Descartes
     path("gestao/descarte/", views.list_discards, name="discard_list"),
@@ -81,7 +87,7 @@ urlpatterns = [
     path("gestao/inventario/<int:inventory_id>/editar/", views.update_inventory, name="inventory_update"),
     path("gestao/inventario/<int:inventory_id>/excluir/", views.delete_inventory, name="inventory_delete"),
     #path("gestao/inventario/gerar-pdf/", views.exportar_inventario_pdf, name="exportar_inventario_pdf"),
-    path('gestao/inventario/exportar-pdf/', inventory.exportar_inventario_pdf, name='exportar_inventario_pdf'),    
-
+    path("gestao/inventario/exportar-pdf/", inventory.exportar_inventario_pdf, name="exportar_inventario_pdf"),
+    path("gestao/inventario/exportar-excel/", inventory_excel.exportar_inventario_excel, name="exportar_inventario_excel"),
     #
 ]

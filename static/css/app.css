@@ -326,4 +326,10 @@ body { font-family: Inter, "Segoe UI", system-ui, -apple-system, sans-serif;}
     color: #e74c3c;
 }
 
-/* -- Card de Produto E-commerce -- */
+/* -- Sidebar submenu -- */
+.submenu-link.bg-success {
+  background-color: rgba(25, 135, 84, 0.35) !important;
+}
+.submenu-link.bg-danger {
+  background-color: rgba(220, 53, 69, 0.35) !important;
+}

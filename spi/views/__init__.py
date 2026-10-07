@@ -2,14 +2,16 @@ from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth import login, logout
 from django.contrib.auth.decorators import login_required
-from django.db.models import F  
+from decimal import Decimal
+
+from django.db.models import DecimalField, F, Sum
 from django.http import HttpResponseNotFound
 from django.shortcuts import redirect, render, resolve_url
 from django.utils.http import url_has_allowed_host_and_scheme
 from django.views.decorators.http import require_POST
 
 from spi.forms import SignInForm, SignUpForm
-from spi.models import Produto, ProdutoPedido
+from spi.models import Entrada, Produto, ProdutoPedido, SaidaProduto
  
 
 from .management import (
@@ -76,8 +78,24 @@ from .management.entry import (
     delete_entry,
 )
 
+from .management.outside import (
+    list_exit,
+    create_exit,
+    update_exit,
+    delete_exit
+)
+
 @login_required
 def dashboard(request):
+    # Totais de todo o histórico, independentes de período e saldo atual.
+    entradas = Entrada.objects.aggregate(
+        total_quantidade=Sum("quantidade"),
+        investimento=Sum(
+            F("quantidade") * F("preco_custo"),
+            output_field=DecimalField(max_digits=24, decimal_places=2),
+        ),
+    )
+    saidas = SaidaProduto.objects.aggregate(quantidade=Sum("quantidade_saida"))
     # Produtos cujo estoque atual está no mínimo ou abaixo dele
     produtos_em_alerta = Produto.objects.filter(
         estoque_atual__lte=F("estoque_minimo")
@@ -88,6 +106,9 @@ def dashboard(request):
 
     dashboard_context = {
         "total_produtos": Produto.objects.count(),
+        "total_entradas": entradas["total_quantidade"] or 0,
+        "total_saidas": saidas["quantidade"] or 0,
+        "valor_total_investido": entradas["investimento"] or Decimal("0.00"),
         "total_produtos_pendentes": ProdutoPedido.objects.filter(
             status="PENDENTE"
         ).count(),

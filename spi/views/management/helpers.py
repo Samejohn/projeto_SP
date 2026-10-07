@@ -1,6 +1,7 @@
 """Funções auxiliares compartilhadas pelas views da área de gestão."""
 
 from django.contrib import messages
+from django.core.exceptions import ValidationError
 from django.core.paginator import Paginator
 from django.db import transaction
 from django.db.models import Q
@@ -19,6 +20,7 @@ def render_searchable_list(
     search_fields,
     template_name,
     context_list_name,
+    extra_context=None,
 ):
     """Filtra, pagina e renderiza uma listagem da área de gestão."""
     search_query = request.GET.get("q", "").strip()
@@ -39,6 +41,9 @@ def render_searchable_list(
         "is_paginated": records_paginator.num_pages > 1,
         "search_query": search_query,
     }
+    if extra_context:
+        # Cada página pode enviar informações próprias, como o filtro selecionado.
+        template_context.update(extra_context)
     return render(request, template_name, template_context)
 
 
@@ -101,7 +106,10 @@ def delete_record(
     """Exibe a confirmação e exclui um registro após um envio POST."""
     if request.method == "POST":
         try:
-            database_record.delete()
+            with transaction.atomic():
+                database_record.delete()
+        except ValidationError as error:
+            messages.error(request, " ".join(error.messages))
         except ProtectedError:
             messages.error(
                 request,

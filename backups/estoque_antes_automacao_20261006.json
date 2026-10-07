@@ -1,0 +1,122 @@
+{
+  "spi_produto": [
+    {
+      "id": 1,
+      "nome": "Mouse",
+      "codigo_barras": "55152146132165",
+      "controle_data_id": 1,
+      "responsavel_cadastro_id": 1,
+      "descricao": null,
+      "estoque_atual": 0,
+      "estoque_minimo": 2
+    },
+    {
+      "id": 5,
+      "nome": "Teclado",
+      "codigo_barras": "135165125",
+      "controle_data_id": 10,
+      "responsavel_cadastro_id": 1,
+      "descricao": null,
+      "estoque_atual": 0,
+      "estoque_minimo": 2
+    },
+    {
+      "id": 6,
+      "nome": "Teclado",
+      "codigo_barras": "123135415210",
+      "controle_data_id": 12,
+      "responsavel_cadastro_id": 1,
+      "descricao": null,
+      "estoque_atual": 0,
+      "estoque_minimo": 2
+    },
+    {
+      "id": 4,
+      "nome": "HD externo",
+      "codigo_barras": "1516816898165",
+      "controle_data_id": 8,
+      "responsavel_cadastro_id": 1,
+      "descricao": "",
+      "estoque_atual": 0,
+      "estoque_minimo": 2
+    },
+    {
+      "id": 7,
+      "nome": "Monitor",
+      "codigo_barras": "1521684151841652",
+      "controle_data_id": 17,
+      "responsavel_cadastro_id": 1,
+      "descricao": "",
+      "estoque_atual": 0,
+      "estoque_minimo": 2
+    },
+    {
+      "id": 9,
+      "nome": "Sem produto",
+      "codigo_barras": "ESTOQUE-5",
+      "controle_data_id": 34,
+      "responsavel_cadastro_id": 1,
+      "descricao": "Mouse mágico Apple com superfície multitoque USB-C preto - Distribuidor Autorizado",
+      "estoque_atual": 0,
+      "estoque_minimo": 5
+    }
+  ],
+  "spi_estoque": [
+    {
+      "id": 6,
+      "descricao": "Hd Externo 500gb Usb 3.0 P Ps4 Ps5 Xbox One Series S E X Infokit ECASE-350 Preto",
+      "estoque_minimo": 5,
+      "atualizado_em": "2026-09-28 03:56:33.169149+00:00",
+      "criado_em": "2026-09-28 03:56:33.187499+00:00",
+      "data": "2026-09-28",
+      "entrada": 0,
+      "produto": "Sem produto",
+      "quantidade": 0,
+      "responsavel": "",
+      "valor_unitario": "0.00",
+      "localizacao": ""
+    },
+    {
+      "id": 5,
+      "descricao": "Mouse mágico Apple com superfície multitoque USB-C preto - Distribuidor Autorizado",
+      "estoque_minimo": 5,
+      "atualizado_em": "2026-10-02 05:53:39.881884+00:00",
+      "criado_em": "2026-09-28 03:56:33.187499+00:00",
+      "data": "2026-09-28",
+      "entrada": 0,
+      "produto": "Sem produto",
+      "quantidade": 10,
+      "responsavel": "",
+      "valor_unitario": "0.00",
+      "localizacao": ""
+    }
+  ],
+  "spi_entrada": [
+    {
+      "id": 1,
+      "quantidade": 10,
+      "preco_custo": "10.00",
+      "fornecedor": null,
+      "nota_fiscal": null,
+      "data_entrada": "2026-10-02 05:53:39.876875+00:00",
+      "observacao": "",
+      "usuario_id": 1,
+      "ordem_fornecimento": null,
+      "produto_id": 9
+    }
+  ],
+  "spi_saidaproduto": [
+    {
+      "id": 1,
+      "codigo_produto": "20261234",
+      "descricao": "Acabamento laminado madeira 4 gavetas",
+      "quantidade_saida": 3,
+      "valor_unitario": "10.00",
+      "motivo_destino": "TRANSFERENCIA",
+      "setor": "TI",
+      "data_hora": "2026-10-02 06:52:36.795116+00:00",
+      "responsavel_id": 1
+    }
+  ],
+  "spi_movimentacaoestoque": []
+}

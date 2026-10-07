@@ -380,3 +380,6 @@ pyrightconfig.json
 
 # Django collectstatic output
 /staticfiles/
+#Test files
+spi/test_*.py
+
