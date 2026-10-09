@@ -1,0 +1,15 @@
+{
+  "name": "spi-interface",
+  "private": true,
+  "scripts": {
+    "build": "tailwindcss -i ./static/src/theme.css -o ./static/css/flyonui.css --minify && node scripts/copy-ui-assets.cjs",
+    "watch": "tailwindcss -i ./static/src/theme.css -o ./static/css/flyonui.css --watch"
+  },
+  "devDependencies": {
+    "@tailwindcss/cli": "^4.1.0",
+    "tailwindcss": "^4.1.0",
+    "flyonui": "2.4.1",
+    "animate.css": "4.1.1",
+    "node-waves": "0.7.6"
+  }
+}

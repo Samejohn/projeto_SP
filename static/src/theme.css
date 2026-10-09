@@ -1,0 +1,8 @@
+/* Keep legacy AdminLTE utilities while introducing Tailwind with a prefix. */
+@import "tailwindcss/theme.css" layer(theme) prefix(tw);
+@import "tailwindcss/utilities.css" layer(utilities) prefix(tw);
+@plugin "flyonui" {
+  themes: light --default, dark --prefersdark, gourmet, soft;
+}
+@import "flyonui/src/vendor/waves.css";
+@source "../../templates";

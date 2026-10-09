@@ -143,13 +143,22 @@ def sign_in(request):
     return render(
         request,
         "registration/signin.html",
-        {"form": authentication_form, "next": requested_destination},
+        {
+            "form": authentication_form,
+            "next": requested_destination,
+            "last_login_name": request.session.get("last_login_name", ""),
+        },
     )
 
 
 @require_POST
 def sign_out(request):
+    last_login_name = request.session.get("last_login_name", "")
+    if request.user.is_authenticated:
+        last_login_name = request.user.first_name or request.user.get_username()
     logout(request)
+    if last_login_name:
+        request.session["last_login_name"] = last_login_name
     return redirect(resolve_url(settings.LOGOUT_REDIRECT_URL))
 
 

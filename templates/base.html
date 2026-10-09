@@ -1,10 +1,14 @@
 {% extends 'adminlte/page.html' %}
 
 {% load static %}
-    <button id="theme-toggle" class="btn btn-link"> <i class="bi bi-moon-fill"></i></button> <!-- Botão para alternar entre os temas claro e escuro -->
 {% block title %}{% block page_title_text %}SPI{% endblock %} |Sistema de Pedidos Internos{% endblock %}
 
 {% block extra_css %}
+    <script src="{% static 'js/theme.js' %}?v=2"></script>
+    <script src="https://code.iconify.design/iconify-icon/3.0.2/iconify-icon.min.js"></script>
+    <link rel="stylesheet" href="{% static 'css/flyonui.css' %}">
+    <link rel="stylesheet" href="{% static 'vendor/animate.min.css' %}">
+    <link rel="stylesheet" href="{% static 'vendor/waves.min.css' %}">
 <!-- Bootstrap Icons -->
     <!-- Bootstrap CSS (traz .text-success, .text-danger, etc.) -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
@@ -12,6 +16,7 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
 
     <link rel="stylesheet" href="{% static 'css/app.css' %}">
+    <link rel="stylesheet" href="{% static 'css/interface.css' %}">
     {% block page_css %}{% endblock %}
 {% endblock %}
 
@@ -23,7 +28,8 @@
 {% block content %}{% endblock %}
 
 {% block extra_js %}
-    <script src="{% static 'js/theme.js' %}"></script>
+    <script src="{% static 'vendor/waves.min.js' %}"></script>
+    <script src="{% static 'js/interface.js' %}"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     {% block page_js %}{% endblock %}
 {% endblock %}

@@ -61,7 +61,7 @@ body { font-family: Inter, "Segoe UI", system-ui, -apple-system, sans-serif;}
 .call-list > a > i { display: grid; place-items: center; flex: 0 0 34px; width: 34px; height: 34px; background: #fff; color: #15933b; border-radius: .55rem; }
 
 .auth-page { margin: 0; min-height: 100vh; background: #fff; }
-.auth-layout { display: grid; grid-template-columns: minmax(360px, 1fr) minmax(480px, 1.05fr); min-height: 100vh; overflow: hidden; }
+.auth-layout { display: grid; grid-template-columns: minmax(360px, 1fr) minmax(480px, 1.05fr); min-height: 100vh; min-height: 100svh; }
 .auth-visual { position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 5rem 3rem 3rem; background: #fff; }
 .auth-brand { position: absolute; top: 2rem; left: 2.5rem; display: flex; align-items: center; gap: .7rem; text-decoration: none; color: var(--spi-navy); }
 .auth-brand img { width: 42px; height: 42px; }
@@ -70,11 +70,11 @@ body { font-family: Inter, "Segoe UI", system-ui, -apple-system, sans-serif;}
 .auth-brand small { margin-top: .25rem; color: var(--spi-muted); font-size: .68rem; }
 .auth-illustration { width: min(75%, 430px); height: auto; filter: drop-shadow(0 18px 35px rgba(31,81,126,.11)); }
 .auth-visual > p { max-width: 410px; text-align: center; color: var(--spi-muted); margin-top: 1.5rem; }
-.auth-action { position: relative; display: grid; place-items: center; padding: 3rem; background: linear-gradient(145deg, #087ee5, #0875d7); border-radius: 28px 0 0 28px; overflow: hidden; }
+.auth-action { position: relative; display: flex; flex-direction: column; min-width: 0; padding: 3rem; background: linear-gradient(145deg, #087ee5, #0875d7); border-radius: 28px 0 0 28px; overflow: hidden; }
 .auth-action::before { content: ""; position: absolute; top: -130px; right: -100px; width: 330px; height: 330px; border-radius: 50%; background: rgba(255,255,255,.045); }
 .decorative-rings { position: absolute; width: 360px; height: 360px; border: 1px solid rgba(255,255,255,.32); border-radius: 50%; right: -170px; bottom: -170px; }
 .decorative-rings::after { content: ""; position: absolute; inset: 27px; border: 1px solid rgba(255,255,255,.2); border-radius: inherit; }
-.auth-card { position: relative; z-index: 1; width: min(100%, 440px); padding: clamp(1.8rem, 4vw, 3rem); background: #fff; border-radius: 1rem; box-shadow: 0 24px 60px rgba(0,44,90,.22); }
+.auth-card { position: relative; z-index: 1; flex: 0 0 auto; box-sizing: border-box; width: 100%; max-width: 440px; margin: auto; padding: clamp(1.8rem, 4vw, 3rem); background: #fff; border-radius: 1rem; box-shadow: 0 24px 60px rgba(0,44,90,.22); }
 .auth-card h1 { margin: .35rem 0 .25rem; color: #1f2937; font-size: 2rem; font-weight: 780; }
 .auth-subtitle { color: var(--spi-muted); margin-bottom: 1.6rem; }
 .auth-form { display: grid; gap: 1rem; }
@@ -133,7 +133,7 @@ body { font-family: Inter, "Segoe UI", system-ui, -apple-system, sans-serif;}
 @media (max-width: 900px) {
     .auth-layout { grid-template-columns: 1fr; }
     .auth-visual { display: none; }
-    .auth-action { min-height: 100vh; border-radius: 0; padding: 1.5rem; }
+    .auth-action { min-height: 100vh; min-height: 100svh; border-radius: 0; padding: 1.5rem; }
 }
 
 @media (max-width: 575px) {

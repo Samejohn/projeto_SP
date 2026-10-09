@@ -5,14 +5,19 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>{% block title %}Acesso{% endblock %} | SPI</title>
+    <script src="{% static 'js/theme.js' %}?v=2"></script>
+    <link rel="stylesheet" href="{% static 'css/flyonui.css' %}">
     {% include 'adminlte/partials/_assets_prebuilt.html' %}
     <link rel="stylesheet" href="{% static 'css/app.css' %}">
+    <link rel="stylesheet" href="{% static 'vendor/animate.min.css' %}">
+    <link rel="stylesheet" href="{% static 'vendor/waves.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/interface.css' %}">
 </head>
 <body class="auth-page">
     <main class="auth-layout">
         <section class="auth-visual" aria-label="Apresentação do sistema">
-            <a class="auth-brand" href="{% url 'login' %}"><img src="{% static 'images/spi-mark.svg' %}" alt=""><span><b>SPI</b><small style="font-size:20px;">Sistema de Pedidos Internos</small></span></a>
-            <img class="auth-illustration" src="{% static 'images/gemini-svg.svg' %}" alt="Pessoa utilizando o sistema em um computador">
+            <a class="auth-brand animate__animated animate__tada" href="{% url 'login' %}"><img src="{% static 'images/spi-mark.svg' %}" alt=""><span><b>SPI</b><small style="font-size:20px;">Sistema de Pedidos Internos</small></span></a>
+            <img class="auth-illustration animate__animated animate__zoomIn animate__slow" src="{% static 'images/gemini-svg.svg' %}" alt="...">
             <p>Organize solicitações, acompanhe etapas e simplifique sua rotina.</p>
         </section>
         <section class="auth-action">
@@ -21,5 +26,7 @@
         </section>
     </main>
 
+    <script src="{% static 'vendor/waves.min.js' %}"></script>
+    <script src="{% static 'js/interface.js' %}"></script>
 </body>
 </html>

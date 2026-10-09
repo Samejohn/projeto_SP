@@ -1,7 +1,7 @@
 {% extends 'registration/auth_base.html' %}
 {% block title %}Entrar{% endblock %}
 {% block auth_content %}
-<span class="eyebrow text-primary">BEM-VINDO DE VOLTA</span><h1>Olá!</h1><p class="auth-subtitle">Entre para acessar o seu painel.</p>
+<span class="eyebrow text-primary">BEM-VINDO DE VOLTA</span><h1>Olá{% if last_login_name %}, {{ last_login_name }}{% endif %}!</h1><p class="auth-subtitle">Entre para acessar o seu painel.</p>
 {% if form.non_field_errors %}<div class="alert alert-danger">{{ form.non_field_errors|striptags }}</div>{% endif %}
 <form method="post" class="auth-form" novalidate>
     {% csrf_token %}<input type="hidden" name="next" value="{{ next }}">
